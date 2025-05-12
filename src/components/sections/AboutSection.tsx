@@ -77,7 +77,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
               </h3>
               <p>
                 {/* Replace [X years] and bracketed content with your actual details */}
-                Over the past [X years], I&apos;ve had the opportunity to work on diverse projects, from building APIs for web applications, developing microservices, to optimizing database performance. This has equipped me with a strong foundation in Node.js, Python, and various database systems. I particularly enjoy tackling architectural challenges or optimizing for high performance.
+                Throughout my experience since college, I&apos;ve had the opportunity to work on diverse projects, from building APIs for web applications, developing microservices, to optimizing database performance. This has equipped me with a strong foundation in Node.js, Python, and various database systems. I particularly enjoy tackling architectural challenges or optimizing for high performance.
               </p>
             </div>
 
