@@ -1,15 +1,21 @@
-@import "tailwindcss";
+/* src/app/globals.css */
+@import "tailwindcss"; /* Main Tailwind v4 import */
+/* Make sure this is the FIRST import in your file */
 
 :root {
+  /* Light Mode Defaults */
   --background: #ffffff;
   --foreground: #171717;
-}
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Your Portfolio Theme Colors (as CSS variables - for direct CSS use if needed) */
+  --color-primary: #043CAA;
+  --color-secondary: #62B6B8;
+  --color-accent: #FFD580;
+  --color-light-bg: #F8F9FA;
+  --color-dark-text: #070B0C;
+  --color-light-text: #575454;
+
+  --font-rubik: 'Rubik', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,7 +26,11 @@
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-rubik), Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
