@@ -240,7 +240,7 @@ const Header = () => {
         <div onClick={(e) => handleScrollTo('home', '/', e)} className="text-2xl font-bold text-[#043CAA] hover:text-[#62B6B8] transition-colors cursor-pointer">
           <div className="flex items-center gap-2">
             <CodeXml size={28} />
-            <span>Elwison Denampo</span>
+            <span>Erudi</span>
           </div>
         </div>
         <nav className="hidden md:flex space-x-6">
