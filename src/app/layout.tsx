@@ -10,7 +10,7 @@ const rubik = Rubik({
 });
 
 export const metadata: Metadata = {
-  title: "My Developer Portfolio",
+  title: "Erudi's Developer Portfolio",
   description: "Showcasing backend projects and expertise.",
 };
 
