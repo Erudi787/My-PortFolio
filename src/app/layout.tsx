@@ -3,6 +3,12 @@ import { Rubik } from "next/font/google";
 import "./globals.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import 'swiper/css';
+import 'swiper/css/navigation'; // if you use navigation
+import 'swiper/css/pagination'; // if you use pagination
+import "yet-another-react-lightbox/styles.css";
 
 const rubik = Rubik({
   subsets: ["latin"],

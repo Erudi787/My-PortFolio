@@ -1,4 +1,10 @@
 /* src/app/globals.css */
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
+@import "yet-another-react-lightbox/styles.css";
 @import "tailwindcss"; /* Main Tailwind v4 import */
 /* Make sure this is the FIRST import in your file */
 
@@ -33,4 +39,108 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Ensure the container that holds the Slider has position: relative */
+.slick-container-custom {
+  position: relative;
+  padding-bottom: 40px; /* Add padding at the bottom of the main container to make space for dots */
+  /* Adjust this value based on dot size and desired spacing */
+}
+
+/* Custom styles for react-slick dots */
+.custom-dots-styling { /* Use the custom class */
+  position: absolute;
+  bottom: 10px;     /* Position dots from the bottom of .slick-container-custom */
+  left: 50%;
+  transform: translateX(-50%);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex !important;
+  justify-content: center; /* Ensure dots are centered if they wrap */
+  align-items: center;
+  width: 100%; /* Take full width to center properly */
+  z-index: 5; /* Ensure dots are above slides if any overlap, but below arrows usually */
+}
+
+.custom-dots-styling li {
+  margin: 0 4px; /* Space between dot list items */
+}
+
+.custom-dots-styling li button {
+  font-size: 0;
+  line-height: 0;
+  display: block;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background-color: #ccc; /* Default inactive dot color - light gray */
+  border-radius: 50%;
+  transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.custom-dots-styling li button:hover,
+.custom-dots-styling li button:focus {
+  background-color: #aaa; /* Darker gray on hover/focus */
+}
+
+.custom-dots-styling li.slick-active button {
+  background-color: #043CAA; /* Your primary color for active dot */
+  width: 12px;   /* Make active dot slightly larger */
+  height: 12px;  /* Make active dot slightly larger */
+}
+
+/* Adjust arrow positions if needed due to new dot positioning */
+.slick-container-custom .slick-prev {
+  left: 10px; /* Example: adjust if default is too close to edge */
+  z-index: 10; /* Ensure arrows are above dots if they overlap */
+}
+.slick-container-custom .slick-next {
+  right: 10px; /* Example */
+  z-index: 10;
+}
+
+.slick-container-custom .slick-dots li {
+  margin: 0; /* Reset default margins if any */
+}
+
+.slick-container-custom .slick-dots li button {
+  font-size: 0; /* Hide the default text (usually a number) */
+  line-height: 0;
+  display: block;
+  width: 10px;    /* Size of the dot */
+  height: 10px;   /* Size of the dot */
+  padding: 0;     /* Reset padding */
+  cursor: pointer;
+  border: none;   /* Remove default button border */
+  outline: none;
+  background: #ccc; /* Default dot color (inactive) */
+  border-radius: 50%; /* Make it a circle */
+  transition: background-color 0.3s ease;
+}
+
+.slick-container-custom .slick-dots li button:hover,
+.slick-container-custom .slick-dots li button:focus {
+  background: #aaa; /* Darker on hover/focus */
+}
+
+.slick-container-custom .slick-dots li.slick-active button {
+  background: #62B6B8; /* Active dot color (your primary theme color) */
+  width: 12px; /* Optional: Make active dot slightly larger */
+  height: 12px; /* Optional: Make active dot slightly larger */
+}
+
+/* Ensure the main slide track has enough bottom padding if dots are absolutely positioned inside */
+/* This is tricky as react-slick controls its internal structure.
+   The absolute positioning of slick-dots within .slick-container-custom
+   should usually work. If slides overlap the dots, you might need to
+   add some bottom padding to the individual slide items' inner content
+   or adjust the 'bottom' value of .slick-dots.
+*/
+.slick-container-custom .slick-list { /* The track containing slides */
+  padding-bottom: 30px !important; /* Add space for dots, adjust value as needed. Use !important cautiously. */
 }
