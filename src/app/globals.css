@@ -51,7 +51,7 @@ html {
 /* Custom styles for react-slick dots */
 .custom-dots-styling { /* Use the custom class */
   position: absolute;
-  bottom: 0;     /* Position dots from the bottom of .slick-container-custom */
+  bottom: -10;     /* Position dots from the bottom of .slick-container-custom */
   left: 50%;
   transform: translateX(-50%);
   list-style: none;
