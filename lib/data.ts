@@ -89,7 +89,7 @@ export const projectsData: Project[] = [
         solution: "Developed API endpoints for doctors to define their availability slots. Implemented transactional logic (or careful sequencing of operations) for booking appointments to ensure that a time slot is confirmed only if available, reducing the likelihood of double bookings."
       }
     ],
-    // architectureDiagramUrl: "/images/project-bsdoc-architecture.png",
+    architectureDiagramUrl: "/images/project-bsdoc-architecture.png",
     githubUrl: "https://github.com/mantequilla45/bsdoc",
     liveDemoUrl: "https://bsdoc-project.vercel.app"
   },
@@ -142,6 +142,7 @@ export const projectsData: Project[] = [
         solution: "Filtered all data queries using user.uid and enforced access control rules in both the client and Firestore queries"
       },
     ],
+    architectureDiagramUrl: "/images/project-sync-architecture.png",
     githubUrl: "https://github.com/mantequilla45/Sync",
   },
   // Add more projects
