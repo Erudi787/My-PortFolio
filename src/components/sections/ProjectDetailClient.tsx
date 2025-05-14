@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/app/components/sections/ProjectDetailClient.tsx
 'use client'; // This marks the component as a Client Component
 
@@ -175,6 +174,7 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
                         sizes="(max-width: 640px) 90vw, (max-width: 1024px) 600px, 800px"
                         quality={90}
                         priority={index === 0}
+                        unoptimized
                       />
                     </div>
                     {image.caption && (
@@ -213,6 +213,7 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
                   className="object-contain" // Use object-contain to see the whole image
                   sizes="(max-width: 640px) 90vw, (max-width: 1024px) 600px, 800px"
                   priority // Consider if this is LCP
+                  unoptimized
                 />
               </div>
             </div>

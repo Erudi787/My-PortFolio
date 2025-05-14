@@ -16,7 +16,7 @@ const Footer = () => {
             <FiGithub size={28} />
           </a>
           <a
-            href="https://linkedin.com/in/yourusername" // Replace
+            href="https://www.linkedin.com/in/elwison-l-denampo-b2042b285/" // Replace
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"

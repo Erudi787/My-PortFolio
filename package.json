@@ -12,6 +12,7 @@
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
     "@tailwindcss/postcss": "^4.1.6",
+    "@vercel/analytics": "^1.5.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.11.0",
     "lucide-react": "^0.510.0",
@@ -20,6 +21,7 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-slick": "^0.30.3",
+    "resend": "^4.5.1",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.2.6",
     "yet-another-react-lightbox": "^3.23.1"

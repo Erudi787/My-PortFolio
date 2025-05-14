@@ -9,6 +9,7 @@ import 'swiper/css';
 import 'swiper/css/navigation'; // if you use navigation
 import 'swiper/css/pagination'; // if you use pagination
 import "yet-another-react-lightbox/styles.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const rubik = Rubik({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
         <Header />
         <main className="min-h-screen pt-20"> {/* Adjust pt if header height changes */}
           {children}
+          <Analytics/>
         </main>
         <Footer />
       </body>
