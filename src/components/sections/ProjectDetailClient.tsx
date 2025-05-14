@@ -121,6 +121,7 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
   })) || [];
 
   const hasCarouselImages = project.carouselImages && project.carouselImages.length > 0;
+  const hasFrontendFeatures = project.frontendFeatures && project.frontendFeatures.length > 0;
 
   return (
     <article className="bg-white p-6 md:p-10 rounded-xl shadow-xl border border-gray-200">
@@ -277,6 +278,21 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
             ))}
           </ul>
         </motion.section>
+        {hasFrontendFeatures ? (
+          <motion.section custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
+            <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
+              <Zap size={24} className="mr-3 text-[#043CAA]" /> Key Frontend Features
+            </h2>
+            <ul className="list-none pl-0 space-y-2">
+              {project.frontendFeatures?.map((feature, index) => (
+                <li key={index} className="flex items-start">
+                  <CheckCircle size={20} className="text-[#62B6B8] mr-3 mt-1 flex-shrink-0" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.section>
+        ) : null}
 
         <motion.section custom={5} initial="hidden" animate="visible" variants={sectionVariants}>
           <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
