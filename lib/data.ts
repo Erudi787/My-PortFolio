@@ -31,6 +31,8 @@ export interface Project {
   githubUrl?: string;
   liveDemoUrl?: string;
   techStack: string[]; // Full tech stack list
+  classDiagramUrl?: string;
+  erdUrl?: string;
 }
 
 export const skillsData: Skill[] = [
@@ -144,6 +146,64 @@ export const projectsData: Project[] = [
     ],
     architectureDiagramUrl: "/images/project-sync-architecture.png",
     githubUrl: "https://github.com/mantequilla45/Sync",
+  },
+  {
+    id: "3",
+    slug: "wildchat-chatting-app",
+    title: "Wildchat - Campus-Based Real-Time Chat Application",
+    shortDescription: "A campus-exclusive desktop chat application built using Windows Forms in C#. It allows students to connect through real-time private messaging in a familiar and lightweight interface.",
+    imageUrl: "/images/wildchat_login.png",
+    carouselImages: [
+      { src: "/images/wildchat_home.png", alt: "Landing Page View", caption: "Login/Registration Modals." },
+      { src: "/images/wildchat_login.png", alt: "About Page View", caption: "What The Project is About." },
+      { src: "/images/wildchat_register.png", alt: "Home Page View", caption: "Home Page With Projects." },
+      { src: "/images/wildchat_account.png", alt: "User Account Page View", caption: "User can view/edit their details." },
+      { src: "/images/wildchat_chat.png", alt: "Task Manager Page View", caption: "Task Manager and Meeting List." },
+    ],
+    tags: ["Windows Forms", ".NET", "SQL", "SSMS", "C#"],
+    longDescription: "Wildchat was initially envisioned as a dating app tailored specifically for the lively Wildcats/Teknoys community, WildChat has transformed into an exclusive chatting platform for Wildcats. Providing a secure, enjoyable, and user-friendly environment, this app will allow students to engage in meaningful conversations, cultivate friendships, and foster connections within our school's network.",
+    myRole: "Solo / Full-Stack Developer",
+    techStack: ["Windows Forms", ".NET", "SQL", "C#", "Microsoft SQL Server (SSMS)"],
+    backendFeatures: [
+      "Integrated a basic messaging system that allowed simulated real-time communication.",
+      "Utilized SQL Server Management Studio (SSMS) to manage user data and chat history.",
+      "Implemented a basic user authentication",
+    ],
+    frontendFeatures: [
+      "Designed and implemented a desktop-based chat interface using Windows Forms and C#.",
+      "Created a simple message send/receive simulation to mimic chat flow for development.",
+      "Disabled user interaction in display fields (RichTextBox) to enhance UI clarity and prevent input conflicts.",
+      "Handled edge cases such as message duplication and button-triggered vs. Enter-key interactions.",
+    ],
+    challengesAndSolutions: [
+      {
+        challenge: "Preventing user interaction with the RichTextBox.",
+        solution: "Disabled it and changed appearance using [ReadOnly = true] and setting [BackColor] to match form."
+      },
+      {
+        challenge: "Message duplication or delayed appearance.",
+        solution: "Added checks to differentiate between Enter key and button click."
+      },
+      {
+        challenge: "Simulating message reception from another user.",
+        solution: "Used [Timer] or delayed method to insert and display a mock response"
+      },
+      {
+        challenge: "Cursor still appearing on message display box.",
+        solution: "Managed focus behavior and made RichTextBox uneditable but readable."
+      },
+      {
+        challenge: "Database connectivity setup errors.",
+        solution: "Used parameterized SQL queries and proper connection string from SSMS."
+      },
+      {
+        challenge: "Deployment for testing on other machines.",
+        solution: "Generated .exe file with local DB connection or backup SQL script."
+      }
+    ],
+    classDiagramUrl: "/images/wildchat_cd.png",
+    erdUrl: "/images/wildchat_erd.png",
+    githubUrl: "https://github.com/Erudi787/WildChat---Campus-Based-Real-Time-Chat-Application--Unfinished",
   },
   // Add more projects
 ];

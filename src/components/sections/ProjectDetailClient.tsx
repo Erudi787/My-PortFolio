@@ -122,6 +122,8 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
 
   const hasCarouselImages = project.carouselImages && project.carouselImages.length > 0;
   const hasFrontendFeatures = project.frontendFeatures && project.frontendFeatures.length > 0;
+  const hasClassDiagram = project.classDiagramUrl && project.classDiagramUrl.length > 0;
+  const hasERD = project.erdUrl && project.erdUrl.length > 0;
 
   return (
     <article className="bg-white p-6 md:p-10 rounded-xl shadow-xl border border-gray-200">
@@ -265,19 +267,6 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
           )}
         </motion.section>
 
-        <motion.section custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
-          <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
-            <Zap size={24} className="mr-3 text-[#043CAA]" /> Key Backend Features
-          </h2>
-          <ul className="list-none pl-0 space-y-2">
-            {project.backendFeatures.map((feature, index) => (
-              <li key={index} className="flex items-start">
-                <CheckCircle size={20} className="text-[#62B6B8] mr-3 mt-1 flex-shrink-0" />
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-        </motion.section>
         {hasFrontendFeatures ? (
           <motion.section custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
             <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
@@ -293,6 +282,20 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
             </ul>
           </motion.section>
         ) : null}
+
+        <motion.section custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
+          <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
+            <Zap size={24} className="mr-3 text-[#043CAA]" /> Key Backend Features
+          </h2>
+          <ul className="list-none pl-0 space-y-2">
+            {project.backendFeatures.map((feature, index) => (
+              <li key={index} className="flex items-start">
+                <CheckCircle size={20} className="text-[#62B6B8] mr-3 mt-1 flex-shrink-0" />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.section>
 
         <motion.section custom={5} initial="hidden" animate="visible" variants={sectionVariants}>
           <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
@@ -325,6 +328,42 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
             </div>
           </motion.section>
         )}
+
+        {hasClassDiagram ? (
+          <motion.section custom={6} initial="hidden" animate="visible" variants={sectionVariants}>
+            <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
+              <Share2 size={24} className="mr-3 text-[#043CAA]" /> Class Diagram
+            </h2>
+            <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
+              <Image
+                src={project.classDiagramUrl ?? ''}
+                alt={`${project.title} Architecture Diagram`}
+                width={800}
+                height={450} // Adjust aspect ratio as needed
+                className="max-w-full h-auto rounded-md shadow-sm mx-auto"
+              />
+              <p className="text-sm text-gray-500 mt-2 italic">Project class diagram.</p>
+            </div>
+          </motion.section>
+        ) : null}
+
+        {hasERD ? (
+          <motion.section custom={6} initial="hidden" animate="visible" variants={sectionVariants}>
+            <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
+              <Share2 size={24} className="mr-3 text-[#043CAA]" /> Entity Relationship Diagram
+            </h2>
+            <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
+              <Image
+                src={project.erdUrl ?? ''}
+                alt={`${project.title} Entity Relationship Diagram`}
+                width={800}
+                height={450} // Adjust aspect ratio as needed
+                className="max-w-full h-auto rounded-md shadow-sm mx-auto"
+              />
+              <p className="text-sm text-gray-500 mt-2 italic">Project entity relationship diagram.</p>
+            </div>
+          </motion.section>
+        ) : null}
       </div>
 
       {/* Links Section */}
