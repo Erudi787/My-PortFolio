@@ -27,7 +27,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((props, ref) => {
           Hi, I&apos;m Elwison Denampo
         </h1>
         <p className="text-2xl sm:text-3xl font-light mb-4">
-          Backend Developer
+          Full-stack Developer
         </p>
         <motion.p
           initial={{ opacity: 0 }}

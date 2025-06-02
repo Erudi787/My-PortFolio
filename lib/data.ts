@@ -1,7 +1,17 @@
 // Define types for your data
+export type SkillCategory =
+ | 'Language'
+ | 'Framework/Library'
+ | 'Database'
+ | 'API/Protocol'
+ | 'Cloud/DevOps'
+ | 'Core Stack'
+ | 'Development Environment'
+ | 'Communication'
+ | 'Tool'
 export interface Skill {
   name: string;
-  category: 'Language' | 'Framework/Library' | 'Database' | 'API/Protocol' | 'Cloud/DevOps' | 'Tool' | 'Communication' | 'Development Environment';
+  filterCategories: string[];
   description?: string;
   // Optional: proficiency: number; // 1-5 or similar
 }
@@ -36,23 +46,37 @@ export interface Project {
 }
 
 export const skillsData: Skill[] = [
-  { name: "TypeScript", category: "Language" },
-  { name: "Node.js", category: "Language" },
-  { name: "Python", category: "Language" },
-  { name: "Next.js (API Routes)", category: "Framework/Library" },
-  { name: "Express.js", category: "Framework/Library" },
-  { name: "Supabase (PostgreSQL)", category: "Database" },
-  { name: "Firebase (Realtime DB / Firestore)", category: "Database" },
-  { name: "REST APIs", category: "API/Protocol" },
-  { name: "GraphQL", category: "API/Protocol" },
-  { name: "Docker", category: "Cloud/DevOps" },
-  { name: "Git & GitHub", category: "Tool", description: "Version Control" },
-  { name: "Jira", category: "Tool", description: "Task Tracking & Project Management" },
-  { name: "VS Code", category: "Development Environment", description: "Primary Code Editor" },
-  { name: "Discord", category: "Communication", description: "Team & Community Chat" },
-  { name: "Google Meet", category: "Communication", description: "Video Conferencing" },
-  { name: "Microsoft Teams", category: "Communication", description: "Team Collaboration & Meetings" },
-  { name: "Facebook Messenger", category: "Communication", description: "Informal Team Communication" },
+  { name: "TypeScript", filterCategories: ["all", "core", "language", "frontend"] },
+  { name: "JavaScript", filterCategories: ["all", "core", "language", "frontend"] },
+  { name: "Node.js", filterCategories: ["all", "core", "backend"] },
+  { name: "Dart", filterCategories: ["all", "core", "language"] },
+  { name: "React", filterCategories: ["all", "core", "framework/library", "frontend"] },
+  { name: "Next.js", filterCategories: ["all", "core", "framework/library", "frontend"] },
+  { name: "Tailwind CSS", filterCategories: ["all", "core", "frontend", "framework/library", "css"] },
+  { name: "Express.js", filterCategories: ["all", "core", "framework/library", "backend"] },
+  { name: "Flutter", filterCategories: ["all", "core", "framework/library", "frontend"] },
+  { name: "GraphQL", filterCategories: ["all", "api/protocol", "framework/library", "backend"] },
+  { name: "C", filterCategories: ["all", "core", "language"] },
+  { name: "C++", filterCategories: ["all", "core", "language"] },
+  { name: "C#", filterCategories: ["all", "core", "language", "backend"] },
+  { name: "Swift", filterCategories: ["all", "core", "language"] },
+  { name: "Python", filterCategories: ["all", "core", "language", "backend"] },
+  { name: "HTML5", filterCategories: ["all", "language", "frontend"] },
+  { name: "CSS3", filterCategories: ["all", "frontend", "language", "css"] },
+  { name: "Supabase", filterCategories: ["all", "core", "database", "backend", "cloud", "environment"] },
+  { name: "MySQL", filterCategories: ["all", "core", "database", "cloud"] },
+  { name: "Firebase", filterCategories: ["all", "core", "database", "backend", "cloud", "environment"] },
+  { name: "REST APIs", filterCategories: ["all", "api/protocol", 'backend'] },
+  { name: "Git & GitHub", filterCategories: ["all", "core", "tool", "environment"], description: "Version Control" },
+  { name: "Jira", filterCategories: ["all", "core", "tool"], description: "Task Tracking & Project Management" },
+  { name: "VS Code", filterCategories: ["all", "core", "environment"], description: "Primary Code Editor" },
+  { name: "Android Studio", filterCategories: ["all", "core", "environment", "tool"], description: "Android Emulator" },
+  { name: "Docker", filterCategories: ["all", "cloud", "cloud/devops", "tool", "environment"] },
+  { name: "Discord", filterCategories: ["all", "core", "communication", "tool"], description: "Team & Community Chat" },
+  { name: "Google Meet", filterCategories: ["all", "core", "communication", "tool"], description: "Video Conferencing" },
+  { name: "Microsoft Teams", filterCategories: ["all", "core", "communication", "tool"], description: "Team Collaboration & Meetings" },
+  { name: "Facebook Messenger", filterCategories: ["all", "core", "communication", "tool"], description: "Informal Team Communication" },
+  { name: "MSAccess", filterCategories: ["all", "database", "environment"] },
   // Add more skills
 ];
 
