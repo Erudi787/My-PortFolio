@@ -29,7 +29,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
             About Me
           </h2>
           <p className="text-lg text-[#575454] max-w-2xl mx-auto"> {/* Assuming text-[#575454] works */}
-            A brief introduction to who I am, my journey as a backend developer, and my technical approach.
+            A brief introduction to who I am, my journey as a software engineer, and my technical approach.
           </p>
         </motion.div>
 
@@ -45,7 +45,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
             <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shadow-xl border-4 border-[#62B6B8]/50"> {/* Assuming secondary color works */}
               <Image
                 src="/images/profile.jpg"
-                alt="Elwison Denampo - Backend Developer" // Personalized alt text
+                alt="Elwison Denampo - Software Engineer" // Personalized alt text
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -67,7 +67,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
                 <UserCircle size={24} className="mr-2 text-[#62B6B8]" /> Who I Am {/* Assuming text-secondary works */}
               </h3>
               <p>
-                Hello! I&apos;m Elwison Denampo, a passionate Backend Developer with a knack for crafting efficient, scalable, and reliable server-side solutions. My journey into the world of technology was driven by a curiosity to understand how complex systems work and a desire to build them.
+                Hello! I&apos;m Elwison Denampo, a Junior Software Engineer with a strong focus on backend development and system design. I specialize in building scalable APIs, designing database architectures, and deploying production infrastructure. My journey into technology was driven by a curiosity to understand how complex systems work and a desire to build solutions that make a real impact.
               </p>
             </div>
 
@@ -76,8 +76,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
                 <Briefcase size={24} className="mr-2 text-[#62B6B8]" /> My Journey & Experience
               </h3>
               <p>
-                {/* Replace [X years] and bracketed content with your actual details */}
-                Throughout my experience since college, I&apos;ve had the opportunity to work on diverse projects, from building APIs for web applications, developing microservices, to optimizing database performance. This has equipped me with a strong foundation in Node.js, Python, and various database systems. I particularly enjoy tackling architectural challenges or optimizing for high performance.
+                I recently contributed to FutureThink Edge, a production AI-powered learning platform deployed on Render, where I built 40+ API endpoints, designed 42+ database models, and integrated multiple AI providers. I&apos;ve also led team projects like Book Buddi (ASP.NET Core library system) and BSDOC (health management platform). This experience has equipped me with strong skills in Python/FastAPI, C#/ASP.NET Core, Node.js, and multiple database systems including PostgreSQL, SQL Server, and Firebase.
               </p>
             </div>
 
@@ -86,12 +85,12 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
                 <Lightbulb size={24} className="mr-2 text-[#62B6B8]" /> Technical Philosophy
               </h3>
               <p>
-                I believe in the principles of clean code, thorough testing, and continuous learning. My approach to backend development emphasizes security, maintainability, and creating systems that not only meet current needs but are also prepared for future growth. I&apos;m always eager to explore new technologies and methodologies to enhance my skillset.
+                I believe in clean architecture, thorough testing, and continuous learning. My approach emphasizes security (implementing RBAC, JWT auth, audit logging), maintainability (Repository and Unit of Work patterns), and scalability (Redis caching, connection pooling). I&apos;m comfortable working across multiple tech stacks and always eager to explore new technologies to solve real-world problems.
               </p>
             </div>
              <div className="pt-6">
                 <a
-                  href="/resume/ElwisonDenampo_BackendDeveloper_Resume.pdf" // Example resume name
+                  href="/resume/ElwisonDenampo_SoftwareEngineer_Resume.pdf" // Updated resume name
                   download
                   className="inline-flex items-center gap-2 bg-[#043CAA] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#043CAA]/90 transition-colors text-md shadow-md hover:shadow-lg" // Assuming primary color works
                 >

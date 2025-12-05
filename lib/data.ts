@@ -1,14 +1,14 @@
 // Define types for your data
 export type SkillCategory =
- | 'Language'
- | 'Framework/Library'
- | 'Database'
- | 'API/Protocol'
- | 'Cloud/DevOps'
- | 'Core Stack'
- | 'Development Environment'
- | 'Communication'
- | 'Tool'
+  | 'Language'
+  | 'Framework/Library'
+  | 'Database'
+  | 'API/Protocol'
+  | 'Cloud/DevOps'
+  | 'Core Stack'
+  | 'Development Environment'
+  | 'Communication'
+  | 'Tool'
 export interface Skill {
   name: string;
   filterCategories: string[];
@@ -77,12 +77,94 @@ export const skillsData: Skill[] = [
   { name: "Microsoft Teams", filterCategories: ["all", "core", "communication", "tool"], description: "Team Collaboration & Meetings" },
   { name: "Facebook Messenger", filterCategories: ["all", "core", "communication", "tool"], description: "Informal Team Communication" },
   { name: "MSAccess", filterCategories: ["all", "database", "environment"] },
+  // Backend & Database (from FutureThink Edge)
+  { name: "FastAPI", filterCategories: ["all", "core", "framework/library", "backend"], description: "Python Web Framework" },
+  { name: "SQLAlchemy", filterCategories: ["all", "core", "database", "backend"], description: "Python ORM" },
+  { name: "PostgreSQL", filterCategories: ["all", "core", "database", "backend", "cloud"] },
+  { name: "Redis", filterCategories: ["all", "core", "database", "backend", "cloud"], description: "Caching & Session Store" },
+  { name: "JWT Auth", filterCategories: ["all", "api/protocol", "backend"], description: "Token-based Authentication" },
+  { name: "WebSocket", filterCategories: ["all", "api/protocol", "backend"], description: "Real-time Communication" },
+  // AI/ML Integration
+  { name: "OpenAI API", filterCategories: ["all", "api/protocol", "backend", "cloud"], description: "LLM Integration" },
+  { name: "Groq API", filterCategories: ["all", "api/protocol", "backend", "cloud"], description: "Fast AI Inference" },
+  { name: "Prompt Engineering", filterCategories: ["all", "backend", "tool"], description: "LLM Optimization" },
+  // DevOps & Deployment
+  { name: "Render", filterCategories: ["all", "cloud", "cloud/devops", "environment"], description: "Full-Stack Deployment" },
+  { name: "Sentry", filterCategories: ["all", "cloud", "tool", "environment"], description: "Error Tracking & Monitoring" },
+  // ASP.NET Core Stack (from Book Buddi)
+  { name: "ASP.NET Core", filterCategories: ["all", "core", "framework/library", "backend"], description: "C# Web Framework" },
+  { name: "Razor Pages", filterCategories: ["all", "framework/library", "frontend", "backend"], description: "Server-Side Rendering" },
+  { name: "Entity Framework Core", filterCategories: ["all", "core", "database", "backend"], description: "C# ORM" },
+  { name: "SQL Server", filterCategories: ["all", "core", "database", "backend"], description: "Microsoft RDBMS" },
+  { name: "AutoMapper", filterCategories: ["all", "tool", "backend"], description: "Object-to-Object Mapping" },
   // Add more skills
 ];
 
 export const projectsData: Project[] = [
   {
     id: "1",
+    slug: "futurethink-edge",
+    title: "FutureThink Edge - AI-Powered Adaptive Learning Platform",
+    shortDescription: "A production EdTech platform for students with ADHD and learning differences, featuring AI-powered adaptive learning, multi-role portals, and real-time collaboration.",
+    imageUrl: "/images/futurethink-thumbnail.png",
+    carouselImages: [
+      { src: "/images/futurethink_dashboard.png", alt: "Student Dashboard", caption: "Personalized student dashboard with progress tracking." },
+      { src: "/images/futurethink_classroom.png", alt: "AI Classroom", caption: "AI-powered interactive learning classroom." },
+      { src: "/images/futurethink_braingym.png", alt: "Brain Gym", caption: "Gamified brain training exercises." },
+    ],
+    tags: ["FastAPI", "Next.js", "PostgreSQL", "Redis", "OpenAI API", "WebSocket", "TypeScript", "Python"],
+    longDescription: "FutureThink Edge is a comprehensive AI-powered adaptive learning platform specifically designed for students with ADHD and learning differences. The platform serves 3,000+ concurrent users across multiple roles (Students, Teachers, Parents, Admins, Organizations) with features including AI-powered tutoring, real-time collaboration, gamification, mental health monitoring, and advanced analytics. Fully deployed on Render with PostgreSQL database and Redis caching.",
+    myRole: "Junior Full-Stack Developer",
+    myRoles: [
+      "Backend Developer",
+      "Database Administrator",
+      "DevOps Engineer",
+      "AI Integration Specialist",
+    ],
+    techStack: ["FastAPI", "Python", "Next.js 15.3", "TypeScript", "PostgreSQL", "SQLAlchemy ORM", "Redis", "OpenAI API", "Groq API", "WebSocket", "JWT Auth", "Render", "Sentry", "Tailwind CSS"],
+    backendFeatures: [
+      "Built 40+ RESTful API endpoints using FastAPI handling authentication, learning sessions, analytics, and admin functions.",
+      "Designed and implemented 42+ database models with SQLAlchemy ORM supporting complex role-based relationships.",
+      "Developed JWT authentication system with role-based access control (RBAC) for 5 user types (Student, Teacher, Parent, Admin, Organization).",
+      "Implemented Redis caching strategy with connection pooling (pool size: 20, max overflow: 40) supporting 3,000+ concurrent users.",
+      "Created WebSocket server with room-based broadcasting for real-time collaboration and notifications.",
+      "Built 25+ database migration scripts ensuring zero-downtime production deployments.",
+      "Integrated 3 AI providers (OpenAI, Groq, Google Gemini) with orchestration layer for optimal performance.",
+      "Developed audit logging system for FERPA, COPPA, and GDPR compliance.",
+      "Created rate limiting and security measures preventing account enumeration and brute-force attacks.",
+    ],
+    frontendFeatures: [
+      "Integrated backend APIs with existing Next.js 15.3 frontend components using TypeScript.",
+      "Connected database endpoints to UI components for seamless data flow and state management.",
+      "Adjusted UI/UX elements using Tailwind CSS v4 to improve user experience and visual consistency.",
+      "Modified existing React hooks and components to support new backend functionality.",
+    ],
+    challengesAndSolutions: [
+      {
+        challenge: "Supporting 3,000+ concurrent users without performance degradation.",
+        solution: "Implemented Redis caching with multiple cache layers (SmartCache, AnalyticsCache, AICache), configured database connection pooling with pool size of 20 and max overflow of 40, and optimized database queries."
+      },
+      {
+        challenge: "Managing complex role-based access across 5 different user types with varying permissions.",
+        solution: "Designed a comprehensive RBAC system with JWT tokens, middleware-based permission checks, and database-level row security for sensitive data."
+      },
+      {
+        challenge: "Integrating multiple AI providers while maintaining consistent response quality.",
+        solution: "Built an AI orchestration layer that dynamically selects providers based on availability, cost, and latency. Optimized LLM prompts for the AI Classroom to improve student engagement."
+      },
+      {
+        challenge: "Ensuring zero-downtime deployments with database schema changes.",
+        solution: "Created 25+ incremental migration scripts with rollback capabilities, tested migrations in staging environment before production deployment."
+      },
+      {
+        challenge: "Real-time collaboration features across multiple user sessions.",
+        solution: "Implemented WebSocket server with room-based broadcasting, allowing targeted notifications and live updates without overwhelming the server."
+      }
+    ],
+    liveDemoUrl: "https://www.futurethinkedge.org",
+  },
+  {
+    id: "2",
     slug: "bsdoc-health-platform",
     title: "BSDOC - Personal Health Management Platform",
     shortDescription: "A comprehensive platform for health record management, OTC suggestions, and doctor appointments.",
@@ -120,7 +202,66 @@ export const projectsData: Project[] = [
     liveDemoUrl: "https://bsdoc-project.vercel.app"
   },
   {
-    id: "2",
+    id: "3",
+    slug: "book-buddi",
+    title: "Book Buddi - Library Management System",
+    shortDescription: "A comprehensive web-based Library Management and Book Catalogue System built with ASP.NET Core and Razor Pages, featuring clean 3-tier architecture.",
+    imageUrl: "/images/bookbuddi-thumbnail.jpg",
+    carouselImages: [
+      { src: "/images/bookbuddi_catalogue.png", alt: "Book Catalogue", caption: "Browse comprehensive book information with detailed metadata." },
+      { src: "/images/bookbuddi_admin.png", alt: "Admin Panel", caption: "Secure admin panel for catalogue management." },
+      { src: "/images/bookbuddi_reports.png", alt: "Reports Module", caption: "Comprehensive reporting for borrowing activity and inventory." },
+    ],
+    tags: ["ASP.NET Core", "C#", "SQL Server", "Entity Framework", "Razor Pages", "Clean Architecture"],
+    longDescription: "Book Buddi is a comprehensive web-based Library Management System designed for both general users and administrators. It provides a complete solution for library operations including book cataloguing, borrowing management, notifications, and comprehensive reporting. Built using ASP.NET Core 9.0 with a clean 3-tier N-layer architecture following the ASI (Abstraction-Service-Interface) pattern.",
+    myRole: "Team Leader",
+    myRoles: [
+      "Project Manager",
+      "Backend Developer",
+      "Database Administrator",
+    ],
+    techStack: ["ASP.NET Core 9.0", "C#", "Razor Pages", "Entity Framework Core 9.0", "SQL Server", "AutoMapper", "Identity Authentication", "Repository Pattern", "Unit of Work Pattern"],
+    backendFeatures: [
+      "Clean 3-tier N-layer architecture following ASI (Abstraction-Service-Interface) pattern.",
+      "Repository Pattern and Unit of Work Pattern for data access abstraction and transaction management.",
+      "Entity Framework Core 9.0 with migration-based schema management.",
+      "ASP.NET Core Identity for secure authentication with role-based access control (Admin/Member).",
+      "AutoMapper for clean object-to-object mapping between entities and DTOs.",
+      "Comprehensive audit trail system tracking CreatedBy, CreatedTime, UpdatedBy, UpdatedTime.",
+      "RESTful API design for CRUD operations on books, members, and borrowing records.",
+      "Reporting module with borrowing activity, inventory, member reports, and lost books tracking.",
+      "Notification system for book request updates, due date reminders, and overdue alerts.",
+    ],
+    frontendFeatures: [
+      "Razor Pages for server-side rendered UI with clean separation of concerns.",
+      "Advanced search functionality for quick book discovery.",
+      "Secure admin panel with authentication-protected routes.",
+      "Book catalogue management interface (list, add, edit, delete).",
+      "User-friendly borrowing and return workflow.",
+      "Notification dropdown panel and dedicated notifications page.",
+    ],
+    challengesAndSolutions: [
+      {
+        challenge: "Implementing a scalable and maintainable architecture for a growing library system.",
+        solution: "Adopted clean 3-tier N-layer architecture with Repository and Unit of Work patterns, ensuring separation of concerns and easy testability."
+      },
+      {
+        challenge: "Managing complex database relationships between books, members, borrowing records, and notifications.",
+        solution: "Used Entity Framework Core with Fluent API configurations for precise relationship mapping and migration-based schema management."
+      },
+      {
+        challenge: "Ensuring data integrity and tracking changes for audit compliance.",
+        solution: "Implemented comprehensive audit trail pattern with automatic tracking of CreatedBy, CreatedTime, UpdatedBy, and UpdatedTime on all entities."
+      },
+      {
+        challenge: "Coordinating team development with multiple contributors working on different features.",
+        solution: "Established Gitflow-inspired workflow with feature branches, pull request reviews, and clear commit guidelines for accountability."
+      },
+    ],
+    githubUrl: "https://github.com/Erudi787/book-buddi",
+  },
+  {
+    id: "4",
     slug: "sync-task-collaboration",
     title: "Sync() – Personal Task and Collaboration Web App",
     shortDescription: "A centralized web platform for managing personal tasks, collaborating with colleagues, and maintaining customizable user profiles.",
@@ -172,7 +313,7 @@ export const projectsData: Project[] = [
     githubUrl: "https://github.com/mantequilla45/Sync",
   },
   {
-    id: "3",
+    id: "5",
     slug: "wildchat-chatting-app",
     title: "Wildchat - Campus-Based Real-Time Chat Application",
     shortDescription: "A campus-exclusive desktop chat application built using Windows Forms in C#. It allows students to connect through real-time private messaging in a familiar and lightweight interface.",

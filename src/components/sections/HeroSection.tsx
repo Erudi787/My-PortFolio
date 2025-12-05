@@ -7,7 +7,7 @@ import { ArrowRight } from 'lucide-react';
 
 // Define props for the component if it ever needs them (empty for now)
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface HeroSectionProps {}
+interface HeroSectionProps { }
 
 // Use forwardRef to allow parent components to pass a ref to the <section> element
 const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((props, ref) => {
@@ -27,7 +27,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((props, ref) => {
           Hi, I&apos;m Elwison Denampo
         </h1>
         <p className="text-2xl sm:text-3xl font-light mb-4">
-          Full-stack Developer
+          Junior Software Engineer
         </p>
         <motion.p
           initial={{ opacity: 0 }}
