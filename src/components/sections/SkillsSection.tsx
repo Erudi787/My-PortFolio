@@ -5,15 +5,20 @@ import { skillsData } from '../../../lib/data';
 import { motion } from 'framer-motion';
 import { LayoutDashboard } from 'lucide-react';
 import { FaDiscord, FaDocker, FaFacebookMessenger, FaGithubSquare, FaJira } from 'react-icons/fa';
-import { SiAndroidstudio, SiFirebase, SiSupabase, SiTypescript, SiJavascript, SiPython, SiPhp, SiHtml5, SiCss3, SiDart, SiCplusplus, SiTailwindcss, SiReact, SiNextdotjs, SiExpress, SiFlutter, SiGooglemeet } from 'react-icons/si'; // Added more language icons
+import { SiAndroidstudio, SiFirebase, SiSupabase, SiTypescript, SiJavascript, SiPython, SiPhp, SiHtml5, SiCss3, SiDart, SiCplusplus, SiTailwindcss, SiReact, SiNextdotjs, SiExpress, SiFlutter, SiGooglemeet, SiFastapi, SiSqlalchemy, SiPostgresql, SiRedis, SiJsonwebtokens, SiRender } from 'react-icons/si'; // Added more language icons
 import { VscVscode } from 'react-icons/vsc';
 import cLogo from "../../../public/images/c-programming.png";
 import restAPILogo from "../../../public/images/restapi.png";
 import cSharpLogo from "../../../public/images/csharp-logo.png";
 import msAccessLogo from "../../../public/images/msaccess-logo.png";
+import websocketLogo from "../../../public/images/websocket-logo.png";
+import groqLogo from "../../../public/images/groq-logo.png";
+import aspNetLogo from "../../../public/images/aspNet-logo.png";
+import sqlServerLogo from "../../../public/images/sqlServer-logo.svg";
+import automapperLogo from "../../../public/images/automapper-logo.png";
 import Image from 'next/image';
 import { DiMysql, DiNodejsSmall, DiSwift } from 'react-icons/di';
-import { PiMicrosoftTeamsLogoFill } from 'react-icons/pi';
+import { PiMicrosoftTeamsLogoFill, PiOpenAiLogo } from 'react-icons/pi';
 import { GrGraphQl } from 'react-icons/gr';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -53,6 +58,18 @@ const skillSpecificIcons: Record<string, React.ReactNode> = {
   "GraphQL": <GrGraphQl size={72} className='text-pink-400' />,
   "MSAccess": <Image src={msAccessLogo} alt='MSAccess' height={72} width={72} unoptimized />,
   "MySQL": <DiMysql size={72} className='text-sky-400' />,
+  "FastAPI": <SiFastapi size={72} className='text-blue-500' />,
+  "SQLAlchemy": <SiSqlalchemy size={72} className='text-blue-500' />,
+  "PostgreSQL": <SiPostgresql size={72} className='text-blue-500' />,
+  "Redis": <SiRedis size={72} className='text-red-500' />,
+  "JWT Auth": <SiJsonwebtokens size={72} className='text-blue-500' />,
+  "WebSocket": <Image src={websocketLogo} alt="Websocket" width={72} height={72} unoptimized />,
+  "OpenAI API": <PiOpenAiLogo size={72} className="text-black mr-2 flex-shrink-0" />,
+  "Groq API": <Image src={groqLogo} alt='Groq' height={72} width={72} unoptimized />,
+  "Render": <SiRender size={72} className="text-black mr-2 flex-shrink-0" />,
+  "ASP.NET Core": <Image src={aspNetLogo} alt='ASP.NET Core' height={72} width={72} unoptimized />,
+  "SQL Server": <Image src={sqlServerLogo} alt='SQL Server' height={72} width={72} unoptimized />,
+  "AutoMapper": <Image src={automapperLogo} alt='Automapper' height={72} width={72} unoptimized />,
 };
 
 const filterButtons = [

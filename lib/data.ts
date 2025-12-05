@@ -87,14 +87,10 @@ export const skillsData: Skill[] = [
   // AI/ML Integration
   { name: "OpenAI API", filterCategories: ["all", "api/protocol", "backend", "cloud"], description: "LLM Integration" },
   { name: "Groq API", filterCategories: ["all", "api/protocol", "backend", "cloud"], description: "Fast AI Inference" },
-  { name: "Prompt Engineering", filterCategories: ["all", "backend", "tool"], description: "LLM Optimization" },
   // DevOps & Deployment
   { name: "Render", filterCategories: ["all", "cloud", "cloud/devops", "environment"], description: "Full-Stack Deployment" },
-  { name: "Sentry", filterCategories: ["all", "cloud", "tool", "environment"], description: "Error Tracking & Monitoring" },
   // ASP.NET Core Stack (from Book Buddi)
   { name: "ASP.NET Core", filterCategories: ["all", "core", "framework/library", "backend"], description: "C# Web Framework" },
-  { name: "Razor Pages", filterCategories: ["all", "framework/library", "frontend", "backend"], description: "Server-Side Rendering" },
-  { name: "Entity Framework Core", filterCategories: ["all", "core", "database", "backend"], description: "C# ORM" },
   { name: "SQL Server", filterCategories: ["all", "core", "database", "backend"], description: "Microsoft RDBMS" },
   { name: "AutoMapper", filterCategories: ["all", "tool", "backend"], description: "Object-to-Object Mapping" },
   // Add more skills
@@ -206,7 +202,7 @@ export const projectsData: Project[] = [
     slug: "book-buddi",
     title: "Book Buddi - Library Management System",
     shortDescription: "A comprehensive web-based Library Management and Book Catalogue System built with ASP.NET Core and Razor Pages, featuring clean 3-tier architecture.",
-    imageUrl: "/images/bookbuddi-thumbnail.jpg",
+    imageUrl: "/images/bookbuddi-thumbnail.png",
     carouselImages: [
       { src: "/images/bookbuddi_catalogue.png", alt: "Book Catalogue", caption: "Browse comprehensive book information with detailed metadata." },
       { src: "/images/bookbuddi_admin.png", alt: "Admin Panel", caption: "Secure admin panel for catalogue management." },
