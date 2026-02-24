@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu, X, CodeXml } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
+import ThemeToggle from '../ThemeToggle';
 
 // ============================================
 // TYPES
@@ -219,8 +220,8 @@ const Header = () => {
     <header
       ref={headerRef}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-          ? 'py-3 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.05)]'
-          : 'py-5 bg-transparent'
+        ? 'py-3 bg-white/70 dark:bg-[#0B1120]/70 backdrop-blur-xl border-b border-white/20 dark:border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.05)]'
+        : 'py-5 bg-transparent'
         }`}
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
@@ -238,12 +239,18 @@ const Header = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-6" aria-label="Main navigation">
-          {NAV_LINKS.map(link => renderNavLink(link, false))}
-        </nav>
+        <div className="hidden md:flex items-center space-x-6">
+          <nav className="flex space-x-6" aria-label="Main navigation">
+            {NAV_LINKS.map(link => renderNavLink(link, false))}
+          </nav>
+          <div className="pl-4 border-l border-gray-200 dark:border-white/10">
+            <ThemeToggle />
+          </div>
+        </div>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
+        {/* Mobile Menu Button + ThemeToggle */}
+        <div className="md:hidden flex items-center gap-3">
+          <ThemeToggle />
           <button
             onClick={() => setIsMobileMenuOpen(prev => !prev)}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
@@ -264,7 +271,7 @@ const Header = () => {
       {isMobileMenuOpen && (
         <div
           id="mobile-menu"
-          className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg rounded-b-md"
+          className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-[#0B1120] shadow-lg rounded-b-md border-t border-gray-100 dark:border-white/5"
         >
           <nav className="flex flex-col items-center space-y-1 p-4" aria-label="Mobile navigation">
             {NAV_LINKS.map(link => renderNavLink(link, true))}

@@ -1,12 +1,15 @@
 // src/app/components/sections/SkillsSection.tsx
 'use client';
 import React, { forwardRef, useMemo, useState } from 'react';
-import { skillsData } from '../../../lib/data';
 import { motion } from 'framer-motion';
 import { LayoutDashboard } from 'lucide-react';
 import { FaDiscord, FaDocker, FaFacebookMessenger, FaGithubSquare, FaJira } from 'react-icons/fa';
 import { SiAndroidstudio, SiFirebase, SiSupabase, SiTypescript, SiJavascript, SiPython, SiPhp, SiHtml5, SiCss3, SiDart, SiCplusplus, SiTailwindcss, SiReact, SiNextdotjs, SiExpress, SiFlutter, SiGooglemeet, SiFastapi, SiSqlalchemy, SiPostgresql, SiRedis, SiJsonwebtokens, SiRender } from 'react-icons/si'; // Added more language icons
 import { VscVscode } from 'react-icons/vsc';
+import Image from 'next/image';
+import { DiMysql, DiNodejsSmall, DiSwift } from 'react-icons/di';
+import { PiMicrosoftTeamsLogoFill, PiOpenAiLogo } from 'react-icons/pi';
+import { GrGraphQl } from 'react-icons/gr';
 import cLogo from "../../../public/images/c-programming.png";
 import restAPILogo from "../../../public/images/restapi.png";
 import cSharpLogo from "../../../public/images/csharp-logo.png";
@@ -16,10 +19,7 @@ import groqLogo from "../../../public/images/groq-logo.png";
 import aspNetLogo from "../../../public/images/aspNet-logo.png";
 import sqlServerLogo from "../../../public/images/sqlServer-logo.svg";
 import automapperLogo from "../../../public/images/automapper-logo.png";
-import Image from 'next/image';
-import { DiMysql, DiNodejsSmall, DiSwift } from 'react-icons/di';
-import { PiMicrosoftTeamsLogoFill, PiOpenAiLogo } from 'react-icons/pi';
-import { GrGraphQl } from 'react-icons/gr';
+import { skillsData } from '../../../lib/data';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface SkillsSectionProps { }
@@ -30,8 +30,8 @@ const skillSpecificIcons: Record<string, React.ReactNode> = {
   "Python": <SiPython size={72} className="text-blue-400" />,
   "Tailwind CSS": <SiTailwindcss size={72} className='text-sky-300' />,
   "React": <SiReact size={72} className='text-blue-500' />,
-  "Next.js": <SiNextdotjs size={72} className='text-black' />,
-  "Express.js": <SiExpress size={72} className='text-black' />,
+  "Next.js": <SiNextdotjs size={72} className='text-black dark:text-white' />,
+  "Express.js": <SiExpress size={72} className='text-black dark:text-white' />,
   "Flutter": <SiFlutter size={72} className='text-blue-400' />,
   "C": <Image src={cLogo} alt="C" width={72} height={72} unoptimized />,
   "C#": <Image src={cSharpLogo} alt='C#' width={64} height={64} unoptimized />,
@@ -46,7 +46,7 @@ const skillSpecificIcons: Record<string, React.ReactNode> = {
   "Node.js": <DiNodejsSmall size={72} className='text-blue-950' />,
   "Firebase": <SiFirebase size={72} className="text-yellow-500 mr-2 flex-shrink-0" />,
   "Supabase": <SiSupabase size={72} className="text-green-500 mr-2 flex-shrink-0" />,
-  "Git & GitHub": <FaGithubSquare size={72} className="text-gray-700 mr-2 flex-shrink-0" />,
+  "Git & GitHub": <FaGithubSquare size={72} className="text-gray-700 dark:text-gray-300 mr-2 flex-shrink-0" />,
   "Jira": <FaJira size={72} className="text-blue-600 mr-2 flex-shrink-0" />,
   "VS Code": <VscVscode size={72} className="text-blue-500 mr-2 flex-shrink-0" />,
   "Android Studio": <SiAndroidstudio size={72} className="text-green-600 mr-2 flex-shrink-0" />,
@@ -64,9 +64,9 @@ const skillSpecificIcons: Record<string, React.ReactNode> = {
   "Redis": <SiRedis size={72} className='text-red-500' />,
   "JWT Auth": <SiJsonwebtokens size={72} className='text-blue-500' />,
   "WebSocket": <Image src={websocketLogo} alt="Websocket" width={72} height={72} unoptimized />,
-  "OpenAI API": <PiOpenAiLogo size={72} className="text-black mr-2 flex-shrink-0" />,
+  "OpenAI API": <PiOpenAiLogo size={72} className="text-black dark:text-white mr-2 flex-shrink-0" />,
   "Groq API": <Image src={groqLogo} alt='Groq' height={72} width={72} unoptimized />,
-  "Render": <SiRender size={72} className="text-black mr-2 flex-shrink-0" />,
+  "Render": <SiRender size={72} className="text-black dark:text-white mr-2 flex-shrink-0" />,
   "ASP.NET Core": <Image src={aspNetLogo} alt='ASP.NET Core' height={72} width={72} unoptimized />,
   "SQL Server": <Image src={sqlServerLogo} alt='SQL Server' height={72} width={72} unoptimized />,
   "AutoMapper": <Image src={automapperLogo} alt='Automapper' height={72} width={72} unoptimized />,
@@ -96,12 +96,12 @@ const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((props, ref) =
     <section
       ref={ref}
       id="skills"
-      className="py-16 md:py-24 bg-gradient-to-b from-[#F0F4F8] to-white relative overflow-hidden"
+      className="py-16 md:py-24 bg-gradient-to-b from-[#F0F4F8] to-white dark:from-[#0B1120] dark:to-[#030712] relative overflow-hidden transition-colors duration-300"
     >
       {/* Decorative background elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#00C6C6] opacity-[0.03] rounded-full blur-[100px]"></div>
-        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-[#0A4DDE] opacity-[0.03] rounded-full blur-[100px]"></div>
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#00C6C6] opacity-[0.03] rounded-full blur-[100px]" />
+        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-[#0A4DDE] opacity-[0.03] rounded-full blur-[100px]" />
       </div>
       <div className="container mx-auto px-6">
         <motion.div
@@ -114,7 +114,7 @@ const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((props, ref) =
           <h2 className='text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] mb-4 tracking-tight'>
             Tech Stack
           </h2>
-          <p className='text-lg text-gray-600 max-w-xl mx-auto font-light'>
+          <p className='text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto font-light'>
             A collection of technologies, tools, and platforms I leverage to build and manage projects effectively.
           </p>
         </motion.div>
@@ -133,7 +133,7 @@ const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((props, ref) =
               className={`px-4 py-2 md:px-6 md:py-3 text-sm md:text-base rounded-full font-semibold transition-all duration-300 ease-in-out flex items-center justify-center text-center min-h-[40px] sm:min-h-[44px] backdrop-blur-sm
                 ${activeFilter === filter.id
                   ? 'bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] text-white shadow-[0_0_20px_rgba(10,77,222,0.4)] scale-105 border-none'
-                  : 'bg-white/50 text-gray-700 hover:bg-white/80 border border-gray-200/50 hover:shadow-md'
+                  : 'bg-white/50 dark:bg-[#0B1120]/50 text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-[#0B1120]/80 border border-gray-200/50 dark:border-white/10 hover:shadow-md'
                 }`}
               style={{ flexBasis: 'auto' }}
             >
@@ -156,14 +156,14 @@ const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((props, ref) =
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.4, delay: index * 0.05, ease: "backOut" }}
               whileHover={{ y: -8, scale: 1.05 }}
-              className='flex flex-col items-center justify-center w-full max-w-[110px] text-center group bg-white/40 backdrop-blur-lg rounded-2xl p-4 shadow-sm border border-white/60 hover:shadow-[0_10px_30px_rgba(0,198,198,0.15)] hover:border-[#00C6C6]/30 transition-all duration-300'
+              className='flex flex-col items-center justify-center w-full max-w-[110px] text-center group bg-white/40 dark:bg-[#0B1120]/40 backdrop-blur-lg rounded-2xl p-4 shadow-sm border border-white/60 dark:border-white/10 hover:shadow-[0_10px_30px_rgba(0,198,198,0.15)] hover:border-[#00C6C6]/30 transition-all duration-300'
             >
               <div className='mb-3 transition-transform duration-300 group-hover:scale-110 drop-shadow-sm group-hover:drop-shadow-md flex items-center justify-center h-[72px]'>
                 {skillSpecificIcons[skill.name] || (
                   <LayoutDashboard size={40} className='text-gray-400' />
                 )}
               </div>
-              <span className='text-xs sm:text-sm text-gray-800 font-semibold leading-tight group-hover:text-[#0A4DDE] transition-colors'>
+              <span className='text-xs sm:text-sm text-gray-800 dark:text-gray-200 font-semibold leading-tight group-hover:text-[#0A4DDE] transition-colors'>
                 {skill.name}
               </span>
             </motion.div>
@@ -185,10 +185,10 @@ const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((props, ref) =
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.8 }} // Adjusted delay based on number of categories
+          transition={{ duration: 0.6, delay: 0.8 }}
           className="text-center mt-16"
         >
-          <p className="text-md text-[#575454] italic">
+          <p className="text-md text-[#575454] dark:text-gray-400 italic">
             ...and I&apos;m always learning and adapting to new technologies!
           </p>
         </motion.div>

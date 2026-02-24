@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { UserCircle, Briefcase, Lightbulb, Download, Award, BadgeCheck } from 'lucide-react';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface AboutSectionProps { }
 
 const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => {
@@ -12,10 +13,10 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
     <section
       ref={ref}
       id="about"
-      className="py-16 md:py-28 bg-white relative overflow-hidden"
+      className="py-16 md:py-28 bg-white dark:bg-[#030712] relative overflow-hidden transition-colors duration-300"
     >
       {/* Decorative Blur */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00C6C6]/5 rounded-full blur-3xl -z-10 pointer-events-none transform translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00C6C6]/5 rounded-full blur-3xl -z-10 pointer-events-none transform translate-x-1/2 -translate-y-1/2" />
 
       <div className="container mx-auto px-6">
         <motion.div
@@ -28,7 +29,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
           <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] mb-4 tracking-tight">
             About Me
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto font-light">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-light">
             A brief introduction to who I am, my journey as a software engineer, and my technical approach.
           </p>
         </motion.div>
@@ -42,7 +43,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
             transition={{ duration: 0.8, ease: "backOut" }}
             className="md:col-span-2 flex justify-center relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#00C6C6] to-[#0A4DDE] rounded-full blur-2xl opacity-20 transform scale-110"></div>
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#00C6C6] to-[#0A4DDE] rounded-full blur-2xl opacity-20 transform scale-110" />
             <div className="relative w-56 h-56 md:w-80 md:h-80 rounded-full overflow-hidden shadow-2xl border-4 border-white z-10">
               <Image
                 src="/images/profile.jpg"
@@ -61,10 +62,10 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="md:col-span-3 space-y-8 text-gray-600 leading-relaxed"
+            className="md:col-span-3 space-y-8 text-gray-600 dark:text-gray-400 leading-relaxed"
           >
             <div>
-              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] mb-3">
+              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-3">
                 <UserCircle size={28} className="mr-3 text-[#00C6C6]" /> Who I Am
               </h3>
               <p className="text-[15px] md:text-base">
@@ -73,7 +74,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
             </div>
 
             <div>
-              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] mb-3">
+              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-3">
                 <Briefcase size={28} className="mr-3 text-[#00C6C6]" /> My Journey & Experience
               </h3>
               <p className="text-[15px] md:text-base">
@@ -82,7 +83,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
             </div>
 
             <div>
-              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] mb-3">
+              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-3">
                 <Lightbulb size={28} className="mr-3 text-[#00C6C6]" /> Technical Philosophy
               </h3>
               <p className="text-[15px] md:text-base">
@@ -91,33 +92,33 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
             </div>
 
             <div>
-              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] mb-4">
+              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-4">
                 <Award size={28} className="mr-3 text-[#00C6C6]" /> Achievements & Certifications
               </h3>
               <div className="space-y-4">
                 <motion.div
                   whileHover={{ x: 5 }}
-                  className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100"
+                  className="flex items-start gap-4 p-4 bg-white dark:bg-[#0B1120]/60 rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 dark:border-white/10"
                 >
                   <div className="p-2 bg-[#0A4DDE]/10 rounded-lg">
                     <Award size={24} className="text-[#0A4DDE] flex-shrink-0" />
                   </div>
                   <div>
-                    <p className="font-bold text-[#0B1120]">2nd Prize — Huawei ICT Competition</p>
-                    <p className="text-sm text-gray-500 mt-1">Network Track, Philippines (2025–2026)</p>
+                    <p className="font-bold text-[#0B1120] dark:text-[#f8fafc]">2nd Prize — Huawei ICT Competition</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Network Track, Philippines (2025–2026)</p>
                   </div>
                 </motion.div>
 
                 <motion.div
                   whileHover={{ x: 5 }}
-                  className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100"
+                  className="flex items-start gap-4 p-4 bg-white dark:bg-[#0B1120]/60 rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 dark:border-white/10"
                 >
                   <div className="p-2 bg-[#00C6C6]/10 rounded-lg">
                     <BadgeCheck size={24} className="text-[#00C6C6] flex-shrink-0" />
                   </div>
                   <div>
-                    <p className="font-bold text-[#0B1120]">SEO Certification — HubSpot Academy</p>
-                    <p className="text-sm text-gray-500 mt-1">Valid: Dec 2025 – Jan 2027</p>
+                    <p className="font-bold text-[#0B1120] dark:text-[#f8fafc]">SEO Certification — HubSpot Academy</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Valid: Dec 2025 – Jan 2027</p>
                   </div>
                 </motion.div>
               </div>
@@ -129,7 +130,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
                 download
                 className="group relative inline-flex items-center gap-2 px-8 py-4 bg-[#0A4DDE] text-white rounded-full font-semibold overflow-hidden shadow-[0_0_30px_rgba(10,77,222,0.3)] hover:shadow-[0_0_50px_rgba(10,77,222,0.5)] transition-all duration-300 transform hover:-translate-y-1"
               >
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                 <Download size={20} className="relative z-10 group-hover:scale-110 transition-transform" />
                 <span className="relative z-10">Download My Resume</span>
               </a>

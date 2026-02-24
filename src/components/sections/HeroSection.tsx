@@ -84,10 +84,10 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((props, ref) => {
           className="flex flex-col sm:flex-row justify-center items-center gap-6"
         >
           <Link href="/projects"
-            className="group relative px-8 py-4 bg-white text-[#0A4DDE] rounded-full font-semibold text-lg overflow-hidden shadow-[0_0_40px_rgba(10,77,222,0.4)] hover:shadow-[0_0_60px_rgba(10,77,222,0.6)] transition-all duration-300 w-full sm:w-auto"
+            className="group relative px-8 py-4 bg-white text-[#0A4DDE] rounded-full font-semibold text-lg overflow-hidden shadow-[0_0_40px_rgba(10,77,222,0.4)] hover:shadow-[0_0_60px_rgba(10,77,222,0.6)] transition-all duration-300 w-full sm:w-auto text-center"
           >
             <span className="relative z-10">View My Work</span>
-            <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-gray-100 to-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+            <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-gray-100 to-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
           </Link>
 
           <Link href="/contact"

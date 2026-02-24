@@ -66,7 +66,7 @@ const ContactForm = () => {
         />
       </div>
       <div>
-        <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+        <label htmlFor="name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
         <input
           type="text"
           name="name"
@@ -74,12 +74,12 @@ const ContactForm = () => {
           value={formData.name}
           onChange={handleChange}
           required
-          className="w-full px-5 py-3 bg-white/50 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white transition-all duration-300 text-sm text-[#0B1120] placeholder-gray-400"
+          className="w-full px-5 py-3 bg-white/50 dark:bg-[#0B1120]/50 border border-gray-200 dark:border-white/10 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white dark:focus:bg-[#0B1120]/80 transition-all duration-300 text-sm text-[#0B1120] dark:text-[#f8fafc] placeholder-gray-400 dark:placeholder-gray-500"
           placeholder="John Doe"
         />
       </div>
       <div>
-        <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+        <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
         <input
           type="email"
           name="email"
@@ -87,24 +87,24 @@ const ContactForm = () => {
           value={formData.email}
           onChange={handleChange}
           required
-          className="w-full px-5 py-3 bg-white/50 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white transition-all duration-300 text-sm text-[#0B1120] placeholder-gray-400"
+          className="w-full px-5 py-3 bg-white/50 dark:bg-[#0B1120]/50 border border-gray-200 dark:border-white/10 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white dark:focus:bg-[#0B1120]/80 transition-all duration-300 text-sm text-[#0B1120] dark:text-[#f8fafc] placeholder-gray-400 dark:placeholder-gray-500"
           placeholder="john@example.com"
         />
       </div>
       <div>
-        <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">Subject (Optional)</label>
+        <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Subject (Optional)</label>
         <input
           type="text"
           name="subject"
           id="subject"
           value={formData.subject}
           onChange={handleChange}
-          className="w-full px-5 py-3 bg-white/50 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white transition-all duration-300 text-sm text-[#0B1120] placeholder-gray-400"
+          className="w-full px-5 py-3 bg-white/50 dark:bg-[#0B1120]/50 border border-gray-200 dark:border-white/10 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white dark:focus:bg-[#0B1120]/80 transition-all duration-300 text-sm text-[#0B1120] dark:text-[#f8fafc] placeholder-gray-400 dark:placeholder-gray-500"
           placeholder="Project Inquiry"
         />
       </div>
       <div>
-        <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">Message</label>
+        <label htmlFor="message" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Message</label>
         <textarea
           name="message"
           id="message"
@@ -112,7 +112,7 @@ const ContactForm = () => {
           value={formData.message}
           onChange={handleChange}
           required
-          className="w-full px-5 py-3 bg-white/50 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white transition-all duration-300 text-sm resize-none text-[#0B1120] placeholder-gray-400"
+          className="w-full px-5 py-3 bg-white/50 dark:bg-[#0B1120]/50 border border-gray-200 dark:border-white/10 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white dark:focus:bg-[#0B1120]/80 transition-all duration-300 text-sm resize-none text-[#0B1120] dark:text-[#f8fafc] placeholder-gray-400 dark:placeholder-gray-500"
           placeholder="How can I help you?"
         />
       </div>
@@ -122,7 +122,7 @@ const ContactForm = () => {
           disabled={status === 'sending'}
           className="w-full flex items-center justify-center gap-2 bg-[#0A4DDE] text-white px-6 py-4 rounded-xl font-semibold shadow-[0_0_20px_rgba(10,77,222,0.3)] hover:shadow-[0_0_40px_rgba(10,77,222,0.5)] transition-all duration-300 transform hover:-translate-y-1 text-base disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none group overflow-hidden relative"
         >
-          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
           <span className="relative z-10">{status === 'sending' ? 'Sending...' : 'Send Message'}</span>
           <Send size={18} className="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
         </button>
