@@ -93,10 +93,59 @@ export const skillsData: Skill[] = [
   { name: "ASP.NET Core", filterCategories: ["all", "core", "framework/library", "backend"], description: "C# Web Framework" },
   { name: "SQL Server", filterCategories: ["all", "core", "database", "backend"], description: "Microsoft RDBMS" },
   { name: "AutoMapper", filterCategories: ["all", "tool", "backend"], description: "Object-to-Object Mapping" },
-  // Add more skills
+  // Additional Skills (AI.pollo)
+  { name: "Vite", filterCategories: ["all", "tool", "frontend"], description: "Next Generation Frontend Tooling" },
+  { name: "Framer Motion", filterCategories: ["all", "framework/library", "frontend"], description: "Production-ready Animation Library" },
+  { name: "Spotipy", filterCategories: ["all", "framework/library", "backend"], description: "Python library for the Spotify Web API" },
+  { name: "Spotify API", filterCategories: ["all", "api/protocol", "backend"], description: "Music Data & OAuth" },
 ];
 
 export const projectsData: Project[] = [
+  {
+    id: "0",
+    slug: "ai-pollo-mood-playlist",
+    title: "AI.pollo - AI Mood Playlist Recommender",
+    shortDescription: "An AI-powered mood-based music playlist recommender using the Spotify API. Built with a React/Vite frontend and a FastAPI backend.",
+    imageUrl: "/images/apollo_login.jpg",
+    carouselImages: [
+      { src: "/images/apollo_login.jpg", alt: "Spotify Login", caption: "Secure OAuth 2.0 flow with Spotify integration." },
+      { src: "/images/apollo_dashboard.jpg", alt: "User Dashboard", caption: "Personalized tracks based on mood and audio features." },
+      { src: "/images/apollo_mood_detection.jpg", alt: "Mood Detection Interface", caption: "Text-based sentiment analysis or manual emotion selection." },
+    ],
+    tags: ["React", "FastAPI", "Python", "Spotify API", "Tailwind CSS"],
+    longDescription: "AI.pollo is an AI-powered mood-based music playlist recommender that analyzes user moods manually or via text input and generates personalized Spotify recommendations based on listening history and mood profiles. It uses a curated scoring algorithm on tracks' audio features (valence, energy, tempo, danceability) to ensure optimal song matching.",
+    myRole: "Full-Stack Developer",
+    techStack: ["React", "Vite", "TypeScript", "Tailwind CSS", "Framer Motion", "Python", "FastAPI", "Spotipy", "Spotify OAuth 2.0"],
+    backendFeatures: [
+      "Spotify OAuth 2.0 flow for secure access and refresh token management.",
+      "Integration with Spotify API to fetch a user's profile, top tracks, and audio features.",
+      "Recommendation engine mapping moods to specific Spotify audio feature constraints (valence, energy, tempo).",
+      "Dynamic scoring algorithm that sorts and filters a user's top tracks against the detected mood profile.",
+      "Text-based sentiment analysis endpoint for mood detection from user prompts."
+    ],
+    frontendFeatures: [
+      "Rich interactive dashboard using a premium, responsive glassmorphic design.",
+      "Smooth micro-animations and page transitions using Framer Motion.",
+      "Manual mood selector mapped to specific colors and an intuitive text input interface for sentiment analysis.",
+      "Global state management for handling asynchronous Spotify API calls and authentication status."
+    ],
+    challengesAndSolutions: [
+      {
+        challenge: "Mapping abstract moods securely to concrete Spotify audio features.",
+        solution: "Developed scoring logic that dynamically weighs variables like valence, energy, tempo, and danceability to accurately represent different emotional profiles."
+      },
+      {
+        challenge: "Managing Spotify's strict OAuth 2.0 token refreshes securely.",
+        solution: "Handled the authentication flow entirely in the FastAPI backend, storing tokens securely via cookies and bridging them to the frontend context."
+      },
+      {
+        challenge: "Creating a visually cohesive music platform theme.",
+        solution: "Implemented a fully dynamic glassmorphic interface with vibrant neon accents and Framer Motion micro-interactions that elevate the perceived brand quality."
+      }
+    ],
+    githubUrl: "https://github.com/Erudi787/apollo",
+    liveDemoUrl: "https://ai-pollo.vercel.app",
+  },
   {
     id: "1",
     slug: "futurethink-edge",

@@ -4,7 +4,7 @@ import React, { forwardRef, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { LayoutDashboard } from 'lucide-react';
 import { FaDiscord, FaDocker, FaFacebookMessenger, FaGithubSquare, FaJira } from 'react-icons/fa';
-import { SiAndroidstudio, SiFirebase, SiSupabase, SiTypescript, SiJavascript, SiPython, SiPhp, SiHtml5, SiCss3, SiDart, SiCplusplus, SiTailwindcss, SiReact, SiNextdotjs, SiExpress, SiFlutter, SiGooglemeet, SiFastapi, SiSqlalchemy, SiPostgresql, SiRedis, SiJsonwebtokens, SiRender } from 'react-icons/si'; // Added more language icons
+import { SiAndroidstudio, SiFirebase, SiSupabase, SiTypescript, SiJavascript, SiPython, SiPhp, SiHtml5, SiCss3, SiDart, SiCplusplus, SiTailwindcss, SiReact, SiNextdotjs, SiExpress, SiFlutter, SiGooglemeet, SiFastapi, SiSqlalchemy, SiPostgresql, SiRedis, SiJsonwebtokens, SiRender, SiVite, SiFramer, SiSpotify } from 'react-icons/si'; // Added more language icons
 import { VscVscode } from 'react-icons/vsc';
 import Image from 'next/image';
 import { DiMysql, DiNodejsSmall, DiSwift } from 'react-icons/di';
@@ -70,6 +70,10 @@ const skillSpecificIcons: Record<string, React.ReactNode> = {
   "ASP.NET Core": <Image src={aspNetLogo} alt='ASP.NET Core' height={72} width={72} unoptimized />,
   "SQL Server": <Image src={sqlServerLogo} alt='SQL Server' height={72} width={72} unoptimized />,
   "AutoMapper": <Image src={automapperLogo} alt='Automapper' height={72} width={72} unoptimized />,
+  "Vite": <SiVite size={72} className='text-[#646CFF]' />,
+  "Framer Motion": <SiFramer size={72} className='text-black dark:text-white' />,
+  "Spotipy": <SiSpotify size={72} className='text-[#1DB954]' />,
+  "Spotify API": <SiSpotify size={72} className='text-[#1DB954]' />,
 };
 
 const filterButtons = [
