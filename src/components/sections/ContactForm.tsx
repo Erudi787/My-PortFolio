@@ -9,6 +9,7 @@ const ContactForm = () => {
     email: '',
     subject: '',
     message: '',
+    website: '', // Honeypot field - should remain empty
   });
   const [status, setStatus] = useState(''); // '', 'sending', 'success', 'error'
   const [error, setError] = useState('');
@@ -36,7 +37,7 @@ const ContactForm = () => {
       }
 
       setStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' }); // Reset form
+      setFormData({ name: '', email: '', subject: '', message: '', website: '' }); // Reset form
     } catch (err) {
       setStatus('error');
       setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
@@ -49,10 +50,23 @@ const ContactForm = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       onSubmit={handleSubmit}
-      className="space-y-6"
+      className="space-y-6 relative"
     >
+      {/* Honeypot field - hidden from users, catches bots */}
+      <div className="absolute left-[-9999px]" aria-hidden="true">
+        <label htmlFor="website">Website</label>
+        <input
+          type="text"
+          name="website"
+          id="website"
+          value={formData.website}
+          onChange={handleChange}
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-[#070B0C] mb-1">Full Name</label>
+        <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
         <input
           type="text"
           name="name"
@@ -60,11 +74,12 @@ const ContactForm = () => {
           value={formData.name}
           onChange={handleChange}
           required
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#043CAA]/50 focus:border-[#043CAA] transition-colors text-sm text-[#070B0C]"
+          className="w-full px-5 py-3 bg-white/50 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white transition-all duration-300 text-sm text-[#0B1120] placeholder-gray-400"
+          placeholder="John Doe"
         />
       </div>
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-[#070B0C] mb-1">Email Address</label>
+        <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
         <input
           type="email"
           name="email"
@@ -72,22 +87,24 @@ const ContactForm = () => {
           value={formData.email}
           onChange={handleChange}
           required
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#043CAA]/50 focus:border-[#043CAA] transition-colors text-sm text-[#070B0C]"
+          className="w-full px-5 py-3 bg-white/50 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white transition-all duration-300 text-sm text-[#0B1120] placeholder-gray-400"
+          placeholder="john@example.com"
         />
       </div>
       <div>
-        <label htmlFor="subject" className="block text-sm font-medium text-[#070B0C] mb-1">Subject (Optional)</label>
+        <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">Subject (Optional)</label>
         <input
           type="text"
           name="subject"
           id="subject"
           value={formData.subject}
           onChange={handleChange}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#043CAA]/50 focus:border-[#043CAA] transition-colors text-sm text-[#070B0C]"
+          className="w-full px-5 py-3 bg-white/50 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white transition-all duration-300 text-sm text-[#0B1120] placeholder-gray-400"
+          placeholder="Project Inquiry"
         />
       </div>
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-[#070B0C] mb-1">Message</label>
+        <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">Message</label>
         <textarea
           name="message"
           id="message"
@@ -95,16 +112,19 @@ const ContactForm = () => {
           value={formData.message}
           onChange={handleChange}
           required
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#043CAA]/50 focus:border-[#043CAA] transition-colors text-sm resize-none text-[#070B0C]"
+          className="w-full px-5 py-3 bg-white/50 border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#00C6C6]/50 focus:border-[#00C6C6] focus:bg-white transition-all duration-300 text-sm resize-none text-[#0B1120] placeholder-gray-400"
+          placeholder="How can I help you?"
         />
       </div>
       <div>
         <button
           type="submit"
           disabled={status === 'sending'}
-          className="w-full flex items-center justify-center gap-2 bg-[#043CAA] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#043CAA]/90 transition-colors text-base shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 bg-[#0A4DDE] text-white px-6 py-4 rounded-xl font-semibold shadow-[0_0_20px_rgba(10,77,222,0.3)] hover:shadow-[0_0_40px_rgba(10,77,222,0.5)] transition-all duration-300 transform hover:-translate-y-1 text-base disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none group overflow-hidden relative"
         >
-          {status === 'sending' ? 'Sending...' : 'Send Message'} <Send size={18} />
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+          <span className="relative z-10">{status === 'sending' ? 'Sending...' : 'Send Message'}</span>
+          <Send size={18} className="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
         </button>
       </div>
       {status === 'success' && <p className="text-green-600 text-sm text-center">Message sent successfully! I&apos;ll get back to you soon.</p>}

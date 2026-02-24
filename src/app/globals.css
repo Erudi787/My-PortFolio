@@ -13,28 +13,34 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Your Portfolio Theme Colors (as CSS variables - for direct CSS use if needed) */
-  --color-primary: #043CAA;
-  --color-secondary: #62B6B8;
-  --color-accent: #FFD580;
-  --color-light-bg: #F8F9FA;
-  --color-dark-text: #070B0C;
-  --color-light-text: #575454;
+  /* Premium Portfolio Theme Colors */
+  --color-primary: #0A4DDE; /* A richer, more vibrant blue */
+  --color-secondary: #00C6C6; /* A more vibrant teal */
+  --color-accent: #FFB347; /* A warmer, richer accent */
+  --color-light-bg: #F0F4F8; /* A softer, cooler light background */
+  --color-dark-bg: #030712; /* Sleek dark mode background */
+  --color-dark-text: #0B1120;
+  --color-light-text: #64748B;
 
-  --font-rubik: 'Rubik', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-outfit: 'Outfit', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #030712;
+    --foreground: #f8fafc;
   }
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-rubik), Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-outfit), sans-serif;
 }
 
 html {

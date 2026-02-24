@@ -96,8 +96,13 @@ const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((props, ref) =
     <section
       ref={ref}
       id="skills"
-      className="py-16 md:py-24 bg-[#F8F9FA]"
+      className="py-16 md:py-24 bg-gradient-to-b from-[#F0F4F8] to-white relative overflow-hidden"
     >
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#00C6C6] opacity-[0.03] rounded-full blur-[100px]"></div>
+        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-[#0A4DDE] opacity-[0.03] rounded-full blur-[100px]"></div>
+      </div>
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -106,10 +111,10 @@ const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((props, ref) =
           transition={{ duration: 0.6 }}
           className='text-center mb-12 md:mb-16'
         >
-          <h2 className='text-3xl md:text-4xl font-bold text-[#070b0c] mb-3'>
+          <h2 className='text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] mb-4 tracking-tight'>
             Tech Stack
           </h2>
-          <p className='text-lg text-[#575454] max-w-xl mx-auto'>
+          <p className='text-lg text-gray-600 max-w-xl mx-auto font-light'>
             A collection of technologies, tools, and platforms I leverage to build and manage projects effectively.
           </p>
         </motion.div>
@@ -125,10 +130,10 @@ const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((props, ref) =
             <button
               key={filter.id}
               onClick={() => setActiveFilter(filter.id)}
-              className={`px-4 py-2 md:px-5 md:py-2.5 text-sm md:text-base text-black rounded-lg font-medium transition-all duration-200 ease-in-out flex items-center justify-center text-center min-h-[40px] sm:min-h-[44px]
+              className={`px-4 py-2 md:px-6 md:py-3 text-sm md:text-base rounded-full font-semibold transition-all duration-300 ease-in-out flex items-center justify-center text-center min-h-[40px] sm:min-h-[44px] backdrop-blur-sm
                 ${activeFilter === filter.id
-                  ? 'bg-[#043caa] text-white shadow-md scale-105'
-                  : 'bg-white text-[#70b0c] hover:bg-gray-200 border border-gray-200 hover:shadow-sm'
+                  ? 'bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] text-white shadow-[0_0_20px_rgba(10,77,222,0.4)] scale-105 border-none'
+                  : 'bg-white/50 text-gray-700 hover:bg-white/80 border border-gray-200/50 hover:shadow-md'
                 }`}
               style={{ flexBasis: 'auto' }}
             >
@@ -149,15 +154,16 @@ const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((props, ref) =
               key={skill.name}
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
-              className='flex flex-col items-center justify-start w-full max-w-[100px] text-center group'
+              transition={{ duration: 0.4, delay: index * 0.05, ease: "backOut" }}
+              whileHover={{ y: -8, scale: 1.05 }}
+              className='flex flex-col items-center justify-center w-full max-w-[110px] text-center group bg-white/40 backdrop-blur-lg rounded-2xl p-4 shadow-sm border border-white/60 hover:shadow-[0_10px_30px_rgba(0,198,198,0.15)] hover:border-[#00C6C6]/30 transition-all duration-300'
             >
-              <div className='p-2 mb-1.5 transition-transform duration-200 group-hover:scale-110'>
+              <div className='mb-3 transition-transform duration-300 group-hover:scale-110 drop-shadow-sm group-hover:drop-shadow-md flex items-center justify-center h-[72px]'>
                 {skillSpecificIcons[skill.name] || (
                   <LayoutDashboard size={40} className='text-gray-400' />
                 )}
               </div>
-              <span className='text-xs sm:text-sm text-[#070b0c] font-medium leading-tight'>
+              <span className='text-xs sm:text-sm text-gray-800 font-semibold leading-tight group-hover:text-[#0A4DDE] transition-colors'>
                 {skill.name}
               </span>
             </motion.div>

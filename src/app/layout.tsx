@@ -1,24 +1,62 @@
 import type { Metadata } from "next";
-import { Rubik } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import 'swiper/css';
-import 'swiper/css/navigation'; // if you use navigation
-import 'swiper/css/pagination'; // if you use pagination
 import "yet-another-react-lightbox/styles.css";
 import { Analytics } from "@vercel/analytics/next";
 
-const rubik = Rubik({
+const inter = Inter({
   subsets: ["latin"],
-  variable: '--font-rubik' // Define CSS variable
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: '--font-outfit',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Erudi's Developer Portfolio",
-  description: "Showcasing backend projects and expertise.",
+  title: {
+    default: "Elwison Denampo | Software Engineer Portfolio",
+    template: "%s | Elwison Denampo",
+  },
+  description: "Software Engineer specializing in backend development, system design, and scalable APIs. Experienced with FastAPI, Next.js, PostgreSQL, and AI integration.",
+  keywords: [
+    "Software Engineer",
+    "Backend Developer",
+    "Full Stack Developer",
+    "FastAPI",
+    "Next.js",
+    "React",
+    "TypeScript",
+    "PostgreSQL",
+    "Python",
+    "Cebu",
+    "Philippines",
+  ],
+  authors: [{ name: "Elwison Denampo" }],
+  creator: "Elwison Denampo",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Elwison Denampo Portfolio",
+    title: "Elwison Denampo | Software Engineer",
+    description: "Software Engineer specializing in backend development and scalable systems.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Elwison Denampo | Software Engineer",
+    description: "Software Engineer specializing in backend development and scalable systems.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -28,11 +66,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${rubik.variable} bg-[#F8F9FA] text-[#070B0C] antialiased`}>
+      <body className={`${inter.variable} ${outfit.variable} font-sans bg-[#F8F9FA] text-[#070B0C] antialiased`}>
+        {/* Skip to main content link for accessibility */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#043CAA] focus:text-white focus:rounded-md focus:outline-none"
+        >
+          Skip to main content
+        </a>
+
         <Header />
-        <main className="min-h-screen pt-20"> {/* Adjust pt if header height changes */}
+        <main id="main-content" className="min-h-screen pt-20" role="main">
           {children}
-          <Analytics/>
+          <Analytics />
         </main>
         <Footer />
       </body>

@@ -1,10 +1,13 @@
 // src/app/components/layout/Header.tsx
 'use client';
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu, X, CodeXml } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
+// ============================================
+// TYPES
+// ============================================
 interface NavLink {
   href: string;
   label: string;
@@ -12,250 +15,259 @@ interface NavLink {
   targetId?: string;
 }
 
-const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState<string>('/');
-  const pathname = usePathname();
-  const router = useRouter();
-  const headerRef = useRef<HTMLElement | null>(null);
-  const [scrolled, setScrolled] = useState(false);
-  const observerRef = useRef<IntersectionObserver | null>(null); // Ref for the observer instance
-  const observedElementsRef = useRef<HTMLElement[]>([]); // Refs for elements being observed
+// ============================================
+// CONSTANTS
+// ============================================
+const NAV_LINKS: NavLink[] = [
+  { href: '/', label: 'Home', type: 'scroll', targetId: 'home' },
+  { href: '/#about', label: 'About', type: 'scroll', targetId: 'about' },
+  { href: '/#skills', label: 'Skills', type: 'scroll', targetId: 'skills' },
+  { href: '/#projects-preview', label: 'Projects', type: 'scroll', targetId: 'projects-preview' },
+  { href: '/contact', label: 'Contact', type: 'page', targetId: '/contact' },
+];
 
-  const navLinks: NavLink[] = [
-    { href: '/', label: 'Home', type: 'scroll', targetId: 'home' },
-    { href: '/#about', label: 'About', type: 'scroll', targetId: 'about' },
-    { href: '/#skills', label: 'Skills', type: 'scroll', targetId: 'skills' },
-    { href: '/#projects-preview', label: 'Projects', type: 'scroll', targetId: 'projects-preview' },
-    { href: '/contact', label: 'Contact', type: 'page', targetId: '/contact' },
-  ];
+const HEADER_HEIGHT = 70;
+const SCROLL_THRESHOLD = 20;
+
+// ============================================
+// CUSTOM HOOK: useScrollState
+// ============================================
+function useScrollState() {
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScrollVisuals = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScrollVisuals);
-    handleScrollVisuals();
-    return () => window.removeEventListener('scroll', handleScrollVisuals);
+    const handleScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Effect to set active link based on pathname and initial hash (when page loads or pathname changes)
-  useEffect(() => {
-    const currentHash = window.location.hash.substring(1);
-    let newActive = '';
+  return scrolled;
+}
 
+// ============================================
+// CUSTOM HOOK: useActiveSection
+// ============================================
+function useActiveSection(pathname: string) {
+  const [activeLink, setActiveLink] = useState<string>('/');
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  // Set initial active link based on pathname
+  useEffect(() => {
     if (pathname === '/') {
-      newActive = currentHash ? `/#${currentHash}` : '/';
+      const hash = window.location.hash.substring(1);
+      setActiveLink(hash ? `/#${hash}` : '/');
     } else {
-      const currentPageLink = navLinks.find(link => link.type === 'page' && pathname.startsWith(link.href));
-      newActive = currentPageLink ? currentPageLink.href : '';
+      const pageLink = NAV_LINKS.find(link => link.type === 'page' && pathname.startsWith(link.href));
+      setActiveLink(pageLink?.href || '');
     }
-    // console.log(`Pathname/Hash Effect: Setting activeLink to ${newActive}`);
-    setActiveLink(newActive);
-  }, [pathname]); // Only depends on pathname to set initial state for the page
+  }, [pathname]);
 
-
-  // Intersection Observer for homepage sections
+  // Setup intersection observer for homepage sections
   useEffect(() => {
-    // Cleanup previous observer if pathname changes or component unmounts
-    if (observerRef.current) {
-      observedElementsRef.current.forEach(el => observerRef.current?.unobserve(el));
-      observerRef.current.disconnect();
-    }
-    observedElementsRef.current = []; // Clear observed elements
+    // Cleanup previous observer
+    observerRef.current?.disconnect();
 
-    if (pathname !== '/') { // Only run observer on the homepage
-      return;
-    }
+    if (pathname !== '/') return;
 
-    const headerHeight = headerRef.current?.offsetHeight || 70;
-    // More precise rootMargin:
-    // Top: Makes section active when its top is just below the header.
-    // Bottom: -X% from the bottom. A smaller negative value (e.g., -20%) means the section stays active longer.
-    // Let's try to make it active when it's in the top ~70% of the viewport below the header.
-    const topMargin = -(headerHeight + 20); // 20px buffer below header
-    const bottomMargin = -(window.innerHeight - (headerHeight + 20) - 150); // Try to make a 150px "active" strip at the top of viewport
-                                                                            // This is tricky, adjust 150px.
+    const topMargin = -(HEADER_HEIGHT + 20);
+    const bottomMargin = -(window.innerHeight - HEADER_HEIGHT - 170);
 
-    const observerOptions = {
-      root: null,
-      rootMargin: `${topMargin}px 0px ${bottomMargin}px 0px`,
-      threshold: 0.1, // How much of the target is visible
-    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const intersecting = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
-    navLinks.forEach(link => {
+        if (intersecting.length > 0) {
+          const targetId = intersecting[0].target.id;
+          const newHref = targetId === 'home' ? '/' : `/#${targetId}`;
+          setActiveLink(newHref);
+        } else if (window.scrollY < HEADER_HEIGHT + 50) {
+          setActiveLink('/');
+        }
+      },
+      {
+        root: null,
+        rootMargin: `${topMargin}px 0px ${bottomMargin}px 0px`,
+        threshold: 0.1,
+      }
+    );
+
+    observerRef.current = observer;
+
+    // Observe all scroll sections
+    NAV_LINKS.forEach(link => {
       if (link.type === 'scroll' && link.targetId) {
         const element = document.getElementById(link.targetId);
-        if (element) {
-          observedElementsRef.current.push(element);
-        }
+        if (element) observer.observe(element);
       }
     });
 
-    if (observedElementsRef.current.length === 0) return;
+    return () => observer.disconnect();
+  }, [pathname]);
 
-    const callback = (entries: IntersectionObserverEntry[]) => {
-      const intersectingEntries = entries.filter(entry => entry.isIntersecting);
+  return { activeLink, setActiveLink };
+}
 
-      if (intersectingEntries.length > 0) {
-        // Find the entry that is "most" visible or highest on the page
-        // This simple version takes the first one that started intersecting
-        // or the one with the highest ratio if you prefer.
-        // Let's try the one whose top is closest to the top of the "active zone"
-        intersectingEntries.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        const mostRelevantEntry = intersectingEntries[0]; // The one highest up in the viewport
+// ============================================
+// COMPONENT
+// ============================================
+const Header = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  const headerRef = useRef<HTMLElement>(null);
 
-        if (mostRelevantEntry) {
-          const newActiveHref = `/#${mostRelevantEntry.target.id}`;
-          // console.log(`Observer: Intersecting ${mostRelevantEntry.target.id}, current active: ${activeLink}, new: ${newActiveHref}`);
-          if (activeLink !== newActiveHref) {
-            setActiveLink(newActiveHref);
-          }
-        }
-      } else if (window.scrollY < (headerHeight + 50) && pathname === '/') { // If nothing is intersecting and we are near the top
-        if (activeLink !== '/') {
-          // console.log("Observer: Scrolled to top, setting activeLink to /");
-          setActiveLink('/');
-        }
-      }
-    };
+  const scrolled = useScrollState();
+  const { activeLink, setActiveLink } = useActiveSection(pathname);
 
-    observerRef.current = new IntersectionObserver(callback, observerOptions);
-    observedElementsRef.current.forEach(element => observerRef.current?.observe(element));
+  const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
 
-    return () => {
-      if (observerRef.current) {
-        observedElementsRef.current.forEach(el => observerRef.current?.unobserve(el));
-        observerRef.current.disconnect();
-      }
-    };
-  }, [pathname, navLinks, activeLink]); // Rerun if pathname, links, or activeLink changes. activeLink can help re-evaluate if externally changed.
+  const handleScrollTo = useCallback((targetId: string, targetHref: string, e?: React.MouseEvent) => {
+    e?.preventDefault();
+    closeMobileMenu();
 
-  const handleScrollTo = (targetId: string, targetHref: string, e?: React.MouseEvent<HTMLAnchorElement | HTMLDivElement, MouseEvent>) => {
-    if (e) e.preventDefault();
-    setIsMobileMenuOpen(false);
-
-    // For "Home" link specifically, or any link that should go to the top of the page at '/'
+    // Home link - scroll to top or navigate to home
     if (targetHref === '/' && targetId === 'home') {
       if (pathname === '/') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        setActiveLink('/'); // Explicitly set Home as active
-        if (history.pushState) history.pushState(null, "", "/");
+        setActiveLink('/');
+        history.pushState?.(null, '', '/');
       } else {
-        router.push('/'); // Navigate to homepage, activeLink will be set by pathname useEffect
+        router.push('/');
       }
       return;
     }
 
-    // For other scroll links (e.g., /#about, /#skills)
+    // Hash links
     if (targetHref.startsWith('/#')) {
-      setActiveLink(targetHref); // Set active link immediately on click for responsiveness
+      setActiveLink(targetHref);
 
-      if (pathname === '/') { // Scrolling on homepage
+      if (pathname === '/') {
         const element = document.getElementById(targetId);
         if (element) {
-          const headerOffset = headerRef.current?.offsetHeight || 70;
+          const headerOffset = headerRef.current?.offsetHeight || HEADER_HEIGHT;
           const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-          const offsetPosition = elementPosition - headerOffset - 20;
-
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth',
-          });
-          if (history.pushState) {
-            history.pushState(null, "", `#${targetId}`);
-          } else {
-            window.location.hash = `#${targetId}`;
-          }
+          window.scrollTo({ top: elementPosition - headerOffset - 20, behavior: 'smooth' });
+          history.pushState?.(null, '', `#${targetId}`);
         }
-      } else { // Navigating to homepage section from another page
-        router.push(targetHref); // Navigate to homepage with hash, useEffect will set activeLink
-      }
-    }
-  };
-
-  const renderNavLink = (link: NavLink, isMobile: boolean) => {
-    const commonClasses = `pb-1 border-b-2 transition-all duration-300 relative group`;
-    const mobileCommonClasses = `w-full text-center py-3 rounded-md transition-colors`;
-
-    let isActive = false;
-    if (link.type === 'page') {
-      isActive = pathname === link.href;
-    } else { // type 'scroll'
-      if (link.targetId === 'home') { // Special handling for "Home" link
-        isActive = (activeLink === '/' || activeLink === '/#home');
       } else {
-        isActive = activeLink === link.href;
+        router.push(targetHref);
       }
     }
+  }, [pathname, router, setActiveLink, closeMobileMenu]);
 
-    const activeClasses = isMobile ? 'bg-[#043CAA]/10 text-[#043CAA] font-semibold' : 'border-[#043CAA] text-[#043CAA] font-semibold';
-    const inactiveClasses = isMobile ? 'text-[#575454] hover:bg-[#043CAA]/5 hover:text-[#043CAA]' : 'border-transparent text-[#575454] hover:text-[#043CAA] hover:border-[#043CAA]/50';
-    const underlineClass = "after:content-[''] after:absolute after:left-0 after:bottom-[-2px] after:w-0 after:h-[2px] after:bg-[#043CAA] after:transition-all after:duration-300 group-hover:after:w-full";
-    const activeUnderlineClass = "after:w-full";
+  const isLinkActive = useCallback((link: NavLink): boolean => {
+    if (link.type === 'page') return pathname === link.href;
+    if (link.targetId === 'home') return activeLink === '/' || activeLink === '/#home';
+    return activeLink === link.href;
+  }, [pathname, activeLink]);
 
-    // For "Home" link and other scroll links
+  const renderNavLink = useCallback((link: NavLink, isMobile: boolean) => {
+    const isActive = isLinkActive(link);
+
+    const baseStyles = isMobile
+      ? 'w-full text-center py-3 rounded-xl transition-all duration-300'
+      : 'pb-1 border-b-2 transition-all duration-300 relative group font-medium text-sm md:text-base tracking-wide';
+
+    const activeStyles = isMobile
+      ? 'bg-gradient-to-r from-[#0A4DDE]/10 to-[#00C6C6]/10 text-[#0A4DDE] font-semibold shadow-sm'
+      : 'border-transparent text-[#0A4DDE] font-semibold';
+
+    const inactiveStyles = isMobile
+      ? 'text-gray-600 hover:bg-gray-50'
+      : 'border-transparent text-gray-400 hover:text-[#00C6C6]';
+
+    const underlineStyles = !isMobile
+      ? isActive
+        ? "after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[3px] after:bg-gradient-to-r after:from-[#00C6C6] after:to-[#0A4DDE] after:rounded-full"
+        : "after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[3px] after:bg-gradient-to-r after:from-[#00C6C6] after:to-[#0A4DDE] after:rounded-full after:transition-all after:duration-300 group-hover:after:w-full"
+      : '';
+
+    const className = `${baseStyles} ${isActive ? activeStyles : inactiveStyles} ${underlineStyles}`.trim();
+
     if (link.type === 'scroll') {
       return (
         <a
           key={link.label}
           href={link.href}
-          onClick={(e) => handleScrollTo(link.targetId as string, link.href, e)}
-          className={/* ... classes ... */ isMobile
-            ? `${mobileCommonClasses} ${isActive ? activeClasses : inactiveClasses}`
-            : `${commonClasses} cursor-pointer ${isActive ? activeClasses : inactiveClasses} ${!isMobile ? (isActive ? activeUnderlineClass : underlineClass) : ''}`
-        }
+          onClick={(e) => handleScrollTo(link.targetId!, link.href, e)}
+          className={`${className} cursor-pointer`}
         >
           {link.label}
         </a>
       );
     }
 
-    // For regular page links (like Contact)
     return (
       <Link
         key={link.label}
         href={link.href}
         onClick={() => {
-          if (isMobile) setIsMobileMenuOpen(false);
+          closeMobileMenu();
           setActiveLink(link.href);
         }}
-        className={/* ... classes ... */ isMobile
-            ? `${mobileCommonClasses} ${isActive ? activeClasses : inactiveClasses}`
-            : `${commonClasses} ${isActive ? activeClasses : inactiveClasses} ${!isMobile ? (isActive ? activeUnderlineClass : underlineClass) : ''}`
-        }
+        className={className}
       >
         {link.label}
       </Link>
     );
-  };
+  }, [handleScrollTo, isLinkActive, closeMobileMenu, setActiveLink]);
 
-  // ... (Rest of the return JSX for header structure)
   return (
     <header
       ref={headerRef}
-      className={`bg-white/90 backdrop-blur-md shadow-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "py-3" : "py-4"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
+          ? 'py-3 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.05)]'
+          : 'py-5 bg-transparent'
+        }`}
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
-        <div onClick={(e) => handleScrollTo('home', '/', e)} className="text-2xl font-bold text-[#043CAA] hover:text-[#62B6B8] transition-colors cursor-pointer">
-          <div className="flex items-center gap-2">
-            <CodeXml size={28} />
-            <span>Erudi</span>
+        {/* Logo */}
+        <Link
+          href="/"
+          onClick={(e) => handleScrollTo('home', '/', e)}
+          className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00C6C6] to-[#0A4DDE] hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-2 group"
+          aria-label="Go to homepage"
+        >
+          <div className="p-1.5 bg-[#0A4DDE]/10 rounded-lg group-hover:scale-110 transition-transform">
+            <CodeXml size={28} className="text-[#0A4DDE]" aria-hidden="true" />
           </div>
-        </div>
-        <nav className="hidden md:flex space-x-6">
-          {navLinks.map(link => renderNavLink(link, false))}
+          <span className="tracking-tight">Erudi</span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex space-x-6" aria-label="Main navigation">
+          {NAV_LINKS.map(link => renderNavLink(link, false))}
         </nav>
+
+        {/* Mobile Menu Button */}
         <div className="md:hidden">
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Toggle menu">
-            {isMobileMenuOpen ? <X size={24} className="text-[#043CAA]" /> : <Menu size={24} className="text-[#043CAA]" />}
+          <button
+            onClick={() => setIsMobileMenuOpen(prev => !prev)}
+            aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
+            className="p-2 rounded-lg bg-[#0A4DDE]/10 hover:bg-[#0A4DDE]/20 transition-colors"
+          >
+            {isMobileMenuOpen ? (
+              <X size={24} className="text-[#0A4DDE]" aria-hidden="true" />
+            ) : (
+              <Menu size={24} className="text-[#0A4DDE]" aria-hidden="true" />
+            )}
           </button>
         </div>
       </div>
+
+      {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg rounded-b-md">
-          <nav className="flex flex-col items-center space-y-1 p-4">
-            {navLinks.map(link => renderNavLink(link, true))}
+        <div
+          id="mobile-menu"
+          className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg rounded-b-md"
+        >
+          <nav className="flex flex-col items-center space-y-1 p-4" aria-label="Mobile navigation">
+            {NAV_LINKS.map(link => renderNavLink(link, true))}
           </nav>
         </div>
       )}

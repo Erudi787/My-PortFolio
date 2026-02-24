@@ -126,7 +126,9 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
   const hasERD = project.erdUrl && project.erdUrl.length > 0;
 
   return (
-    <article className="bg-white p-6 md:p-10 rounded-xl shadow-xl border border-gray-200">
+    <article className="bg-white/70 backdrop-blur-2xl p-8 md:p-12 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/10 rounded-[2rem] pointer-events-none"></div>
+
       {/* Project Header */}
       <motion.header
         custom={0}
@@ -135,11 +137,11 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
         variants={sectionVariants}
         className="mb-8 pb-6 border-b border-gray-200"
       >
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#043CAA] mb-3">{project.title}</h1>
-        <p className="text-lg text-[#575454]">{project.shortDescription}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] mb-4 tracking-tight">{project.title}</h1>
+        <p className="text-xl text-gray-600 leading-relaxed font-light">{project.shortDescription}</p>
+        <div className="mt-6 flex flex-wrap gap-3">
           {project.techStack.map(tech => (
-            <span key={tech} className="bg-[#62B6B8]/10 text-[#62B6B8] text-xs font-medium px-3 py-1 rounded-full">{tech}</span>
+            <span key={tech} className="bg-gradient-to-r from-[#0A4DDE]/10 to-[#00C6C6]/10 text-[#0A4DDE] border border-[#0A4DDE]/20 shadow-sm text-sm font-semibold px-4 py-1.5 rounded-full">{tech}</span>
           ))}
         </div>
       </motion.header>
@@ -155,10 +157,10 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
         {hasCarouselImages ? (
           // Render Carousel
           <section> {/* Added section for consistent structure with h2 */}
-            <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
-              <ImageIcon size={24} className="mr-3 text-[#043CAA]" /> Project Preview
+            <h2 className="text-2xl font-bold text-[#0B1120] mb-6 flex items-center">
+              <ImageIcon size={26} className="mr-3 text-[#0A4DDE]" /> Project Preview
             </h2>
-            <span className="text-[#070B0C]/70 mb-4 flex items-center text-sm italic">Click the image for better quality</span>
+            <span className="text-[#070B0C]/70 mb-6 flex items-center text-sm italic">Click the image for better quality</span>
             <div className="bg-gray-100 p-2 sm:p-4 rounded-lg shadow-inner relative slick-container-custom">
               <Slider {...carouselSettings}>
                 {project.carouselImages!.map((image, index) => ( // Added non-null assertion '!' because of hasCarouselImages check
@@ -243,15 +245,15 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
       */}
       <div className="text-[#575454] leading-relaxed space-y-8">
         <motion.section custom={2} initial="hidden" animate="visible" variants={sectionVariants}>
-          <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
-            <FileText size={24} className="mr-3 text-[#043CAA]" /> Project Overview
+          <h2 className="text-2xl font-bold text-[#0B1120] mb-6 flex items-center">
+            <FileText size={26} className="mr-3 text-[#0A4DDE]" /> Project Overview
           </h2>
           <p>{project.longDescription}</p>
         </motion.section>
 
         <motion.section custom={3} initial="hidden" animate="visible" variants={sectionVariants}>
-          <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
-            <UserCircle size={24} className="mr-3 text-[#043CAA]" /> My Role & Responsibilities {/* Assuming UserCircle is imported or defined */}
+          <h2 className="text-2xl font-bold text-[#0B1120] mb-6 flex items-center">
+            <UserCircle size={26} className="mr-3 text-[#0A4DDE]" /> My Role & Responsibilities {/* Assuming UserCircle is imported or defined */}
           </h2>
           <p className="mb-2 text-[#070B0C]/90 font-semibold">Main Role: </p> <span className='mb-2 text-[#070B0C] pl-5.75'>{project.myRole}</span>
           {/* Check if myRoles array exists and has items, then display them */}
@@ -269,14 +271,14 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
 
         {hasFrontendFeatures ? (
           <motion.section custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
-            <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
-              <Zap size={24} className="mr-3 text-[#043CAA]" /> Key Frontend Features
+            <h2 className="text-2xl font-bold text-[#0B1120] mb-6 flex items-center">
+              <Zap size={26} className="mr-3 text-[#0A4DDE]" /> Key Frontend Features
             </h2>
             <ul className="list-none pl-0 space-y-2">
               {project.frontendFeatures?.map((feature, index) => (
                 <li key={index} className="flex items-start">
-                  <CheckCircle size={20} className="text-[#62B6B8] mr-3 mt-1 flex-shrink-0" />
-                  <span>{feature}</span>
+                  <CheckCircle size={20} className="text-[#00C6C6] mr-4 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -284,8 +286,8 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
         ) : null}
 
         <motion.section custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
-          <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
-            <Zap size={24} className="mr-3 text-[#043CAA]" /> Key Backend Features
+          <h2 className="text-2xl font-bold text-[#0B1120] mb-6 flex items-center">
+            <Zap size={26} className="mr-3 text-[#0A4DDE]" /> Key Backend Features
           </h2>
           <ul className="list-none pl-0 space-y-2">
             {project.backendFeatures.map((feature, index) => (
@@ -298,14 +300,14 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
         </motion.section>
 
         <motion.section custom={5} initial="hidden" animate="visible" variants={sectionVariants}>
-          <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
-            <AlertTriangle size={24} className="mr-3 text-[#043CAA]" /> Challenges & Solutions
+          <h2 className="text-2xl font-bold text-[#0B1120] mb-6 flex items-center">
+            <AlertTriangle size={26} className="mr-3 text-[#0A4DDE]" /> Challenges & Solutions
           </h2>
           <div className="space-y-4">
             {project.challengesAndSolutions.map((item, index) => (
-              <div key={index} className="bg-[#F8F9FA] p-4 rounded-lg border border-gray-200">
-                <h3 className="font-semibold text-[#070B0C]/90 mb-1">{item.challenge}</h3>
-                <p className="text-sm">{item.solution}</p>
+              <div key={index} className="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                <h3 className="font-bold text-[#0B1120] mb-2">{item.challenge}</h3>
+                <p className="text-gray-600 leading-relaxed">{item.solution}</p>
               </div>
             ))}
           </div>
@@ -313,8 +315,8 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
 
         {project.architectureDiagramUrl && (
           <motion.section custom={6} initial="hidden" animate="visible" variants={sectionVariants}>
-            <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
-              <Share2 size={24} className="mr-3 text-[#043CAA]" /> System Architecture
+            <h2 className="text-2xl font-bold text-[#0B1120] mb-6 flex items-center">
+              <Share2 size={26} className="mr-3 text-[#0A4DDE]" /> System Architecture
             </h2>
             <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
               <Image
@@ -331,8 +333,8 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
 
         {hasClassDiagram ? (
           <motion.section custom={6} initial="hidden" animate="visible" variants={sectionVariants}>
-            <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
-              <Share2 size={24} className="mr-3 text-[#043CAA]" /> Class Diagram
+            <h2 className="text-2xl font-bold text-[#0B1120] mb-6 flex items-center">
+              <Share2 size={26} className="mr-3 text-[#0A4DDE]" /> Class Diagram
             </h2>
             <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
               <Image
@@ -349,8 +351,8 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
 
         {hasERD ? (
           <motion.section custom={6} initial="hidden" animate="visible" variants={sectionVariants}>
-            <h2 className="text-2xl font-semibold text-[#070B0C] mb-4 flex items-center">
-              <Share2 size={24} className="mr-3 text-[#043CAA]" /> Entity Relationship Diagram
+            <h2 className="text-2xl font-bold text-[#0B1120] mb-6 flex items-center">
+              <Share2 size={26} className="mr-3 text-[#0A4DDE]" /> Entity Relationship Diagram
             </h2>
             <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
               <Image
@@ -379,7 +381,7 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
             href={project.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500"
+            className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-[#0B1120] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-300 transform hover:-translate-y-1"
           >
             <FaGithub size={18} /> View on GitHub
           </a>
@@ -389,9 +391,11 @@ const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) =>
             href={project.liveDemoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-[#043CAA] rounded-lg hover:bg-[#043CAA]/90 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#043CAA]/70"
+            className="relative overflow-hidden inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-[#0A4DDE] rounded-xl shadow-[0_0_20px_rgba(10,77,222,0.3)] hover:shadow-[0_0_40px_rgba(10,77,222,0.5)] transition-all duration-300 transform hover:-translate-y-1 group"
           >
-            <ExternalLink size={18} /> Deployed Website
+            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+            <ExternalLink size={18} className="relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+            <span className="relative z-10">Deployed Website</span>
           </a>
         )}
         {/* Add other links like "View Code Snippet" if applicable */}

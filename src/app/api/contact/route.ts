@@ -1,36 +1,95 @@
 import { NextRequest, NextResponse } from 'next/server';
-// For API routes, it's often better to use the admin client if you're not dealing with user-specific RLS for this table
-// Or create a dedicated service role client for such operations.
-// For simplicity here, we can use the regular client if your RLS allows anonymous inserts or if you handle auth.
-// For a public contact form, you might not need user auth here, but ensure RLS is set up on your Supabase table accordingly (e.g., allow public insert).
-
-// Using supabaseAdmin for inserting into a table like contact_submissions is a common pattern
-// to bypass RLS if you're handling validation server-side.
-// Ensure SUPABASE_SERVICE_ROLE_KEY is in your .env.local
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
+// ============================================
+// CONFIGURATION
+// ============================================
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY; // Use service role for direct DB operations
-
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const resendApiKey = process.env.RESEND_API_KEY;
-const personalEmailRecipient = process.env.PERSONAL_EMAIL; // Email to send TO
-const fromEmailAddress = process.env.CONTACT_FORM_SEND_FROM_EMAIL; // Email to send FROM
+const personalEmailRecipient = process.env.PERSONAL_EMAIL;
+const fromEmailAddress = process.env.CONTACT_FORM_SEND_FROM_EMAIL;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error("Supabase URL or Service Key is not defined. Check .env.local");
 }
 
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
-
-// Initialize Supabase client with service role for backend operations
-// This client bypasses RLS, use with caution and proper validation.
 const supabaseAdmin = supabaseUrl && supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : null;
 
+// ============================================
+// SECURITY: Rate Limiting (In-Memory Store)
+// ============================================
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 3; // Max 3 requests per minute per IP
 
+function getRateLimitKey(req: NextRequest): string {
+  const forwarded = req.headers.get('x-forwarded-for');
+  const ip = forwarded ? forwarded.split(',')[0].trim() : req.headers.get('x-real-ip') || 'unknown';
+  return ip;
+}
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const record = rateLimitStore.get(key);
+
+  if (!record || now > record.resetTime) {
+    rateLimitStore.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+
+  if (record.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return true;
+  }
+
+  record.count++;
+  return false;
+}
+
+// ============================================
+// SECURITY: Input Validation & Sanitization
+// ============================================
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
+function isValidEmail(email: string): boolean {
+  if (!email || typeof email !== 'string') return false;
+  if (email.length > 254) return false; // RFC 5321 max length
+  return EMAIL_REGEX.test(email);
+}
+
+function sanitizeHtml(str: string): string {
+  if (!str || typeof str !== 'string') return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
+function sanitizeInput(str: string, maxLength: number = 1000): string {
+  if (!str || typeof str !== 'string') return '';
+  return str.trim().slice(0, maxLength);
+}
+
+// ============================================
+// API HANDLER
+// ============================================
 export async function POST(req: NextRequest) {
+  // Check rate limit first
+  const rateLimitKey = getRateLimitKey(req);
+  if (isRateLimited(rateLimitKey)) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429 }
+    );
+  }
+
   if (!supabaseAdmin) {
-    return NextResponse.json({ error: 'Supabase client not initialized. Server configuration issue.' }, { status: 500 });
+    return NextResponse.json({ error: 'Server configuration issue.' }, { status: 500 });
   }
 
   const canSendEmail = resend && personalEmailRecipient && fromEmailAddress;
@@ -39,15 +98,30 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { name, email: submitterEmail, subject, message } = body; // Renamed 'email' to 'submitterEmail' for clarity
-    submissionData = body;
 
-    // Basic validation
-    if (!name || !submitterEmail || !message) {
-      return NextResponse.json({ error: 'Name, email, and message are required.' }, { status: 400 });
+    // Honeypot check - if filled, it's likely a bot
+    if (body.website && body.website.length > 0) {
+      // Silently accept but don't process (anti-spam)
+      return NextResponse.json({ message: 'Message sent successfully!' }, { status: 201 });
     }
-    if (!/\S+@\S+\.\S+/.test(submitterEmail)) {
-      return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
+
+    // Sanitize and validate inputs
+    const name = sanitizeInput(body.name, 100);
+    const submitterEmail = sanitizeInput(body.email, 254);
+    const subject = sanitizeInput(body.subject, 200);
+    const message = sanitizeInput(body.message, 5000);
+
+    submissionData = { name, email: submitterEmail, subject, message };
+
+    // Validation
+    if (!name || name.length < 2) {
+      return NextResponse.json({ error: 'Please provide a valid name (at least 2 characters).' }, { status: 400 });
+    }
+    if (!submitterEmail || !isValidEmail(submitterEmail)) {
+      return NextResponse.json({ error: 'Please provide a valid email address.' }, { status: 400 });
+    }
+    if (!message || message.length < 10) {
+      return NextResponse.json({ error: 'Please provide a message (at least 10 characters).' }, { status: 400 });
     }
 
     const { data, error: dbError } = await supabaseAdmin
@@ -57,26 +131,25 @@ export async function POST(req: NextRequest) {
     if (dbError) {
       console.error('Supabase error inserting contact submission:', dbError);
       return NextResponse.json({ error: 'Failed to save message.', details: dbError.message }, { status: 500 });
-    } else {
-        console.log('Contact form submission saved to database:', data);
     }
 
     // Optionally: Send an email notification to yourself here (e.g., using Supabase Edge Functions or a third-party service)
 
-    if (canSendEmail && submissionData) { // Use the canSendEmail flag
+    if (canSendEmail && submissionData) {
       try {
+        // Sanitize all content for HTML email to prevent injection
         const emailHtmlContent = `
           <h1>New Contact Form Submission</h1>
-          <p><strong>Name:</strong> ${submissionData.name}</p>
-          <p><strong>Email:</strong> ${submissionData.email}</p>
-          <p><strong>Subject:</strong> ${submissionData.subject ?? 'N/A'}</p>
+          <p><strong>Name:</strong> ${sanitizeHtml(submissionData.name)}</p>
+          <p><strong>Email:</strong> ${sanitizeHtml(submissionData.email)}</p>
+          <p><strong>Subject:</strong> ${sanitizeHtml(submissionData.subject || 'N/A')}</p>
           <p><strong>Message:</strong></p>
-          <div style="white-space: pre-wrap; padding: 10px; border: 1px solid #eee; background: #f9f9f9;">${submissionData.message}</div>
+          <div style="white-space: pre-wrap; padding: 10px; border: 1px solid #eee; background: #f9f9f9;">${sanitizeHtml(submissionData.message)}</div>
           <hr>
           <p><em>This email was sent from your portfolio contact form.</em></p>
         `;
 
-        const { data: emailData, error: emailError } = await resend.emails.send({
+        const { error: emailError } = await resend.emails.send({
           from: fromEmailAddress!, // Add '!' if canSendEmail guarantees it's not null
           to: [personalEmailRecipient!], // Add '!'
           subject: `❗ New Portfolio Contact: ${submissionData.subject ?? submissionData.name}`, // You can add an emoji too
@@ -93,9 +166,8 @@ export async function POST(req: NextRequest) {
 
         if (emailError) {
           console.error('API Contact - Resend email sending error:', emailError);
-        } else {
-          console.log('Email notification sent successfully via Resend:', emailData);
         }
+        // Email sent successfully - emailData contains the response
       } catch (resendError) {
         console.error('API Contact - Unexpected error during Resend email sending:', resendError);
       }
