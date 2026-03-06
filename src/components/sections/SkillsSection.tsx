@@ -4,10 +4,11 @@ import React, { forwardRef, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { LayoutDashboard } from 'lucide-react';
 import { FaDiscord, FaDocker, FaFacebookMessenger, FaGithubSquare, FaJira } from 'react-icons/fa';
-import { SiAndroidstudio, SiFirebase, SiSupabase, SiTypescript, SiJavascript, SiPython, SiPhp, SiHtml5, SiCss3, SiDart, SiCplusplus, SiTailwindcss, SiReact, SiNextdotjs, SiExpress, SiFlutter, SiGooglemeet, SiFastapi, SiSqlalchemy, SiPostgresql, SiRedis, SiJsonwebtokens, SiRender, SiVite, SiFramer, SiSpotify } from 'react-icons/si'; // Added more language icons
+import { SiAndroidstudio, SiFirebase, SiSupabase, SiTypescript, SiJavascript, SiPython, SiPhp, SiHtml5, SiCss3, SiDart, SiCplusplus, SiTailwindcss, SiReact, SiNextdotjs, SiExpress, SiFlutter, SiGooglemeet, SiFastapi, SiSqlalchemy, SiPostgresql, SiRedis, SiJsonwebtokens, SiRender, SiVite, SiFramer, SiSpotify, SiZod } from 'react-icons/si'; // Added more language icons
 import { VscVscode } from 'react-icons/vsc';
 import Image from 'next/image';
 import { DiMysql, DiNodejsSmall, DiSwift } from 'react-icons/di';
+import { GiBearFace } from 'react-icons/gi';
 import { PiMicrosoftTeamsLogoFill, PiOpenAiLogo } from 'react-icons/pi';
 import { GrGraphQl } from 'react-icons/gr';
 import cLogo from "../../../public/images/c-programming.png";
@@ -74,6 +75,9 @@ const skillSpecificIcons: Record<string, React.ReactNode> = {
   "Framer Motion": <SiFramer size={72} className='text-black dark:text-white' />,
   "Spotipy": <SiSpotify size={72} className='text-[#1DB954]' />,
   "Spotify API": <SiSpotify size={72} className='text-[#1DB954]' />,
+  "React Flow": <SiReact size={72} className='text-[#FF0072]' />,
+  "Zustand": <GiBearFace size={72} className='text-amber-700 dark:text-amber-500' />,
+  "Zod": <SiZod size={72} className='text-[#3068b7]' />,
 };
 
 const filterButtons = [

@@ -98,6 +98,10 @@ export const skillsData: Skill[] = [
   { name: "Framer Motion", filterCategories: ["all", "framework/library", "frontend"], description: "Production-ready Animation Library" },
   { name: "Spotipy", filterCategories: ["all", "framework/library", "backend"], description: "Python library for the Spotify Web API" },
   { name: "Spotify API", filterCategories: ["all", "api/protocol", "backend"], description: "Music Data & OAuth" },
+  // Additional Skills (SchemaFlow)
+  { name: "React Flow", filterCategories: ["all", "framework/library", "frontend"], description: "Node-based UI framework" },
+  { name: "Zustand", filterCategories: ["all", "framework/library", "frontend"], description: "Lightweight State Management" },
+  { name: "Zod", filterCategories: ["all", "tool", "frontend", "backend"], description: "TypeScript-first schema validation" },
 ];
 
 export const projectsData: Project[] = [
@@ -213,7 +217,7 @@ export const projectsData: Project[] = [
     slug: "bsdoc-health-platform",
     title: "BSDOC - Personal Health Management Platform",
     shortDescription: "A comprehensive platform for health record management, OTC suggestions, and doctor appointments.",
-    imageUrl: "/images/bsdoc-thumbnail.jpg", // Create a placeholder or actual image
+    imageUrl: "/images/bsdoc-thumbnail.jpg",
     tags: ["Next.js", "Supabase", "TypeScript", "Tailwind CSS", "API Design", "Auth"],
     longDescription: "BSDOC is a multifaceted health management system designed to empower users with tools for personal health tracking, symptom analysis for over-the-counter medication suggestions, and a seamless interface for scheduling and managing doctor appointments. The platform serves distinct roles for general users (patients), doctors, and administrators.",
     myRole: "Team Leader",
@@ -248,6 +252,47 @@ export const projectsData: Project[] = [
   },
   {
     id: "3",
+    slug: "schemaflow",
+    title: "SchemaFlow - Interactive Schema Visualizer",
+    shortDescription: "An interactive visualizer that turns SQL DDL and JSON payloads into live ERD diagrams using React Flow.",
+    imageUrl: "/images/schemaflow_thumbnail.png",
+    carouselImages: [
+      { src: "/images/schemaflow_editor.png", alt: "SchemaFlow Editor", caption: "SQL/JSON input editor with instant visualization." },
+      { src: "/images/schemaflow_canvas.png", alt: "Interactive Canvas", caption: "Interactive React Flow canvas with Dagre auto-layout." },
+      { src: "/images/schemaflow_customization.png", alt: "Node Customization", caption: "Custom color palettes and multi-theming engine." },
+    ],
+    tags: ["React", "TypeScript", "React Flow", "Tailwind CSS", "Zustand"],
+    longDescription: "SchemaFlow is an interactive schema visualizer that seamlessly turns SQL DDL statements and JSON payloads into live Entity Relationship Diagrams (ERD) and nested object structure diagrams. Powered by React Flow and Dagre, it dynamically lays out highly complex connections, drawing edges specifically from field-to-field rather than node-to-node, giving developers an instant visual map of their database schemas.",
+    myRole: "Frontend Developer",
+    techStack: ["React", "Vite", "TypeScript", "React Flow", "TailwindCSS", "CodeMirror 6", "Zustand", "Zod", "Dagre", "Lucide React"],
+    backendFeatures: [],
+    frontendFeatures: [
+      "Dynamic parsing of SQL `CREATE TABLE` / `ALTER TABLE` statements and complex JSON API responses.",
+      "Field-level edge connections perfectly mapping relationships such as foreign keys.",
+      "Robust Dagre layout physics gracefully handling self-referencing relationships.",
+      "Custom node palettes, multi-theming engine, and full undo/redo canvas history via Zustand.",
+      "Native bounding-box image export (PNG, JPEG, SVG) of the generated visual graph.",
+      "Drag & drop upload functionality for .sql and .json files with auto-mode switching.",
+    ],
+    challengesAndSolutions: [
+      {
+        challenge: "Silently failing edges due to mismatched Handle IDs in React Flow.",
+        solution: "Identified uppercase resolution issues in the SQL parser and ensured all dynamically generated target/source node handles corresponded perfectly with parsed edge references."
+      },
+      {
+        challenge: "Algorithm failures on Dagre when users established self-referential connections (Cyclic Graphs).",
+        solution: "Passed greedy acyclic modes into Dagre's physics engine to prevent layout crashes, allowing graph computations to proceed safely."
+      },
+      {
+        challenge: "Saving custom user configurations and non-standard graph states across sessions.",
+        solution: "Created derived data serialization in Zustand, binding user palettes and graph configurations safely into localStorage."
+      }
+    ],
+    githubUrl: "https://github.com/Erudi787/schemaflow",
+    liveDemoUrl: "https://schemaflow-pi.vercel.app"
+  },
+  {
+    id: "4",
     slug: "book-buddi",
     title: "Book Buddi - Library Management System",
     shortDescription: "A comprehensive web-based Library Management and Book Catalogue System built with ASP.NET Core and Razor Pages, featuring clean 3-tier architecture.",
@@ -306,7 +351,7 @@ export const projectsData: Project[] = [
     githubUrl: "https://github.com/Erudi787/book-buddi",
   },
   {
-    id: "4",
+    id: "5",
     slug: "sync-task-collaboration",
     title: "Sync() – Personal Task and Collaboration Web App",
     shortDescription: "A centralized web platform for managing personal tasks, collaborating with colleagues, and maintaining customizable user profiles.",
@@ -358,7 +403,7 @@ export const projectsData: Project[] = [
     githubUrl: "https://github.com/mantequilla45/Sync",
   },
   {
-    id: "5",
+    id: "6",
     slug: "wildchat-chatting-app",
     title: "Wildchat - Campus-Based Real-Time Chat Application",
     shortDescription: "A campus-exclusive desktop chat application built using Windows Forms in C#. It allows students to connect through real-time private messaging in a familiar and lightweight interface.",
@@ -415,5 +460,4 @@ export const projectsData: Project[] = [
     erdUrl: "/images/wildchat_erd.png",
     githubUrl: "https://github.com/Erudi787/WildChat---Campus-Based-Real-Time-Chat-Application--Unfinished",
   },
-  // Add more projects
 ];
