@@ -2,7 +2,7 @@ import AboutSection from "@/components/sections/AboutSection";
 
 export const metadata = {
   title: "About Me",
-  description: "Learn about Elwison Denampo's journey as a Software Engineer, technical experience with FastAPI, Next.js, and PostgreSQL, and philosophy on building scalable systems.",
+  description: "Learn about Elwison Denampo's journey as a Full-Stack Developer, technical experience with FastAPI, Next.js, and PostgreSQL, and philosophy on building scalable systems.",
 };
 
 export default function AboutPage() {

@@ -1,6 +1,6 @@
 <div align="center">
   <h2>Hey there, I'm Elwison. 👋</h2>
-  <p>Software Engineer | Backend Architect | Tech Enthusiast</p>
+  <p>Full-Stack Developer | Backend Architect | Tech Enthusiast</p>
   
   <a href="https://elwisondenampo.vercel.app/" target="_blank">Portfolio</a> • 
   <a href="https://www.linkedin.com/in/elwison-denampo" target="_blank">LinkedIn</a>
@@ -8,7 +8,7 @@
 
 <br/>
 
-I'm a backend-focused **Software Engineer** based in the Philippines, driven by a curiosity to understand complex systems and the desire to build solutions that actually matter.
+I'm a backend-focused **Full-Stack Developer** based in the Philippines, driven by a curiosity to understand complex systems and the desire to build solutions that actually matter.
 
 Whether it's designing highly concurrent APIs or optimizing database bottlenecks, I enjoy bringing order to chaotic codebases. Recently, I've been fascinated by integrating AI into robust applications.
 

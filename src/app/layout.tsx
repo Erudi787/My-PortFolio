@@ -23,12 +23,12 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: {
-    default: "Elwison Denampo | Software Engineer Portfolio",
+    default: "Elwison Denampo | Full-Stack Developer Portfolio",
     template: "%s | Elwison Denampo",
   },
-  description: "Software Engineer specializing in backend development, system design, and scalable APIs. Experienced with FastAPI, Next.js, PostgreSQL, and AI integration.",
+  description: "Full-Stack Developer specializing in backend development, system design, and scalable APIs. Experienced with FastAPI, Next.js, PostgreSQL, and AI integration.",
   keywords: [
-    "Software Engineer",
+    "Full-Stack Developer",
     "Backend Developer",
     "Full Stack Developer",
     "FastAPI",
@@ -46,13 +46,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Elwison Denampo Portfolio",
-    title: "Elwison Denampo | Software Engineer",
-    description: "Software Engineer specializing in backend development and scalable systems.",
+    title: "Elwison Denampo | Full-Stack Developer",
+    description: "Full-Stack Developer specializing in backend development and scalable systems.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Elwison Denampo | Software Engineer",
-    description: "Software Engineer specializing in backend development and scalable systems.",
+    title: "Elwison Denampo | Full-Stack Developer",
+    description: "Full-Stack Developer specializing in backend development and scalable systems.",
   },
   robots: {
     index: true,

@@ -64,7 +64,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((props, ref) => {
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
         >
           <p className="text-2xl sm:text-3xl font-light mb-6 text-gray-200">
-            Software Engineer
+            Full-Stack Developer
           </p>
         </motion.div>
 
