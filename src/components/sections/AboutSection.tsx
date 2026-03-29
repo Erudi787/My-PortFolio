@@ -30,7 +30,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
             About Me
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-light">
-            A brief introduction to who I am, my journey as a software engineer, and my technical approach.
+            A brief introduction to who I am, my journey as a full-stack developer, and my technical approach.
           </p>
         </motion.div>
 
@@ -47,7 +47,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
             <div className="relative w-56 h-56 md:w-80 md:h-80 rounded-full overflow-hidden shadow-2xl border-4 border-white z-10">
               <Image
                 src="/images/profile.jpg"
-                alt="Elwison Denampo - Software Engineer"
+                alt="Elwison Denampo - Full-Stack Developer"
                 fill
                 className="object-cover transform hover:scale-110 transition-transform duration-700"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -69,7 +69,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => 
                 <UserCircle size={28} className="mr-3 text-[#00C6C6]" /> Who I Am
               </h3>
               <p className="text-[15px] md:text-base">
-                Hello! I&apos;m Elwison Denampo, a Software Engineer with a strong focus on backend development and system design. I specialize in building scalable APIs, designing database architectures, and deploying production infrastructure. My journey into technology was driven by a curiosity to understand how complex systems work and a desire to build solutions that make a real impact.
+                Hello! I&apos;m Elwison Denampo, a Full-Stack Developer with a strong focus on backend development and system design. I specialize in building scalable APIs, designing database architectures, and deploying production infrastructure. My journey into technology was driven by a curiosity to understand how complex systems work and a desire to build solutions that make a real impact.
               </p>
             </div>
 
