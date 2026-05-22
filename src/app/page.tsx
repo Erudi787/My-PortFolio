@@ -1,61 +1,56 @@
 import Link from "next/link";
-import * as motion from "framer-motion/client";
 import HeroSection from "@/components/sections/HeroSection";
+import MetricsSection from "@/components/sections/MetricsSection";
 import AboutSection from "../components/sections/AboutSection";
 import SkillsSection from "../components/sections/SkillsSection";
-import ProjectCard from "../components/sections/ProjectCard"; // We'll make a preview section
-import { projectsData } from "../../lib/data"; // Your projects data
+import ProjectCard from "../components/sections/ProjectCard";
+import { projectsData } from "../../lib/data";
+
+const FEATURED_SLUGS = ["lachowos-property-management", "futurethink-edge"];
 
 export default function Home() {
-  const featuredProjects = projectsData.slice(0, 2); // Show first 2 projects as example
+  const featured = FEATURED_SLUGS
+    .map(slug => projectsData.find(p => p.slug === slug))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   return (
     <>
       <HeroSection />
+      <MetricsSection />
       <AboutSection />
       <SkillsSection />
 
-      {/* Featured Projects Section */}
-      <section id="projects-preview" className="py-16 md:py-28 bg-white dark:bg-[#030712] transition-colors duration-300 relative">
-        <div className="container mx-auto px-6 relative z-10">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-4xl md:text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] mb-12 mt-4"
-          >
-            Featured Projects
-          </motion.h2>
+      {/* Featured work */}
+      <section
+        id="projects-preview"
+        className="bg-bg text-fg py-28 md:py-40 border-t border-border"
+      >
+        <div className="container mx-auto px-6 md:px-10">
+          {/* Section tag */}
+          <p className="text-[12px] font-mono uppercase tracking-[0.18em] text-accent mb-8 flex items-center gap-2">
+            <span aria-hidden="true" className="h-1 w-1 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
+            Selected work
+          </p>
 
-          <div className="grid md:grid-cols-2 gap-10 lg:gap-14 max-w-6xl mx-auto">
-            {featuredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.6, delay: index * 0.2, ease: "easeOut" }}
-              >
-                <ProjectCard project={project} />
-              </motion.div>
-            ))}
+          {/* Headline */}
+          <div className="flex flex-wrap items-end justify-between gap-6 mb-16 md:mb-20">
+            <h2 className="font-display text-fg max-w-3xl text-4xl md:text-5xl lg:text-6xl">
+              Two builds I&apos;d walk through{' '}
+              <span className="font-serif text-fg-muted">in any interview</span>.
+            </h2>
+            <Link
+              href="/projects"
+              className="text-[13px] font-medium text-fg-muted hover:text-fg transition-colors link-underline"
+            >
+              View archive →
+            </Link>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-center mt-16"
-          >
-            <Link href="/projects"
-              className="group relative inline-flex items-center justify-center px-8 py-4 bg-[#0B1120] dark:bg-white text-white dark:text-[#0B1120] rounded-full font-semibold text-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow w-full sm:w-auto"
-            >
-              <span className="relative z-10">View All Projects</span>
-              <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-[#00C6C6] to-[#0A4DDE] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
-            </Link>
-          </motion.div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-6xl">
+            {featured.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
         </div>
       </section>
     </>
