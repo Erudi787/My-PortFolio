@@ -1,50 +1,109 @@
-/* src/app/globals.css — high-end v2 (Linear/Vercel/Cursor DNA, dark-first) */
+/* src/app/globals.css — hybrid with 5 named-theme presets */
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 @import "yet-another-react-lightbox/styles.css";
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
 /* ============================================================
- * Design tokens — DARK is canonical. Light is the alternate.
- * Iris/violet accent (Linear-adjacent). Cool tinted neutrals.
+ * 5 themes via [data-theme="..."]. :root defaults to iris so
+ * SSR + pre-hydration renders the canonical look.
+ *
+ *   iris    — electric violet on navy ink (dark, default)
+ *   emerald — deep forest on slate-green ink (dark)
+ *   copper  — warm copper on warm cream (light)
+ *   voltage — electric yellow on near-black (dark)
+ *   mono    — no color accent (light)
  * ============================================================ */
-:root {
-  /* Light defaults (alternate) */
-  --bg:           oklch(0.99 0.004 230);
-  --bg-elevated:  oklch(0.97 0.005 230);
-  --bg-deep:      oklch(0.95 0.006 230);
-  --fg:           oklch(0.16 0.012 245);
-  --fg-muted:     oklch(0.42 0.012 245);
-  --fg-subtle:    oklch(0.58 0.010 245);
-  --border:       oklch(0.16 0.012 245 / 0.10);
-  --border-strong:oklch(0.16 0.012 245 / 0.18);
-  --accent:       oklch(0.55 0.20 295);
-  --accent-hover: oklch(0.48 0.22 295);
-  --accent-fg:    oklch(0.99 0.004 230);
-  --signal-live:  oklch(0.65 0.16 145);
-
-  --glass-bg:     oklch(0.99 0.004 230 / 0.72);
-  --glass-border: oklch(0.16 0.012 245 / 0.08);
-}
-
-.dark {
-  --bg:           oklch(0.10 0.012 245);            /* near-black navy-ink */
-  --bg-elevated:  oklch(0.13 0.014 245);            /* card surface */
-  --bg-deep:      oklch(0.07 0.010 245);            /* footer */
-  --fg:           oklch(0.97 0.005 230);            /* warm white */
+:root,
+[data-theme="iris"] {
+  --bg:           oklch(0.10 0.012 245);
+  --bg-elevated:  oklch(0.13 0.014 245);
+  --bg-deep:      oklch(0.07 0.010 245);
+  --fg:           oklch(0.97 0.005 230);
   --fg-muted:     oklch(0.70 0.010 230);
   --fg-subtle:    oklch(0.48 0.012 240);
   --border:       oklch(0.97 0.005 230 / 0.08);
   --border-strong:oklch(0.97 0.005 230 / 0.16);
-  --accent:       oklch(0.72 0.22 295);             /* electric iris */
+  --accent:       oklch(0.72 0.22 295);
   --accent-hover: oklch(0.80 0.22 295);
   --accent-fg:    oklch(0.10 0.012 245);
   --signal-live:  oklch(0.78 0.16 145);
 
   --glass-bg:     oklch(0.10 0.012 245 / 0.55);
   --glass-border: oklch(0.97 0.005 230 / 0.06);
+}
+
+[data-theme="emerald"] {
+  --bg:           oklch(0.10 0.018 170);
+  --bg-elevated:  oklch(0.13 0.020 170);
+  --bg-deep:      oklch(0.07 0.015 170);
+  --fg:           oklch(0.96 0.008 130);
+  --fg-muted:     oklch(0.70 0.012 130);
+  --fg-subtle:    oklch(0.48 0.012 150);
+  --border:       oklch(0.96 0.008 130 / 0.08);
+  --border-strong:oklch(0.96 0.008 130 / 0.16);
+  --accent:       oklch(0.68 0.18 160);
+  --accent-hover: oklch(0.76 0.18 160);
+  --accent-fg:    oklch(0.10 0.018 170);
+  --signal-live:  oklch(0.78 0.16 145);
+
+  --glass-bg:     oklch(0.10 0.018 170 / 0.55);
+  --glass-border: oklch(0.96 0.008 130 / 0.06);
+}
+
+[data-theme="copper"] {
+  --bg:           oklch(0.97 0.012 75);
+  --bg-elevated:  oklch(0.94 0.014 75);
+  --bg-deep:      oklch(0.91 0.016 75);
+  --fg:           oklch(0.18 0.018 60);
+  --fg-muted:     oklch(0.45 0.012 60);
+  --fg-subtle:    oklch(0.62 0.010 60);
+  --border:       oklch(0.18 0.018 60 / 0.12);
+  --border-strong:oklch(0.18 0.018 60 / 0.22);
+  --accent:       oklch(0.58 0.16 45);
+  --accent-hover: oklch(0.50 0.18 45);
+  --accent-fg:    oklch(0.97 0.012 75);
+  --signal-live:  oklch(0.55 0.16 145);
+
+  --glass-bg:     oklch(0.97 0.012 75 / 0.7);
+  --glass-border: oklch(0.18 0.018 60 / 0.10);
+}
+
+[data-theme="voltage"] {
+  --bg:           oklch(0.10 0.006 95);
+  --bg-elevated:  oklch(0.14 0.008 95);
+  --bg-deep:      oklch(0.06 0.004 95);
+  --fg:           oklch(0.97 0.005 95);
+  --fg-muted:     oklch(0.70 0.006 95);
+  --fg-subtle:    oklch(0.50 0.008 95);
+  --border:       oklch(0.97 0.005 95 / 0.12);
+  --border-strong:oklch(0.97 0.005 95 / 0.22);
+  --accent:       oklch(0.92 0.21 100);
+  --accent-hover: oklch(0.95 0.21 100);
+  --accent-fg:    oklch(0.06 0.004 95);
+  --signal-live:  oklch(0.80 0.20 145);
+
+  --glass-bg:     oklch(0.10 0.006 95 / 0.6);
+  --glass-border: oklch(0.97 0.005 95 / 0.10);
+}
+
+[data-theme="mono"] {
+  --bg:           oklch(0.99 0 0);
+  --bg-elevated:  oklch(0.96 0 0);
+  --bg-deep:      oklch(0.94 0 0);
+  --fg:           oklch(0.12 0 0);
+  --fg-muted:     oklch(0.42 0 0);
+  --fg-subtle:    oklch(0.60 0 0);
+  --border:       oklch(0.12 0 0 / 0.12);
+  --border-strong:oklch(0.12 0 0 / 0.22);
+  /* No color accent — accent collapses into the foreground ink. */
+  --accent:       oklch(0.12 0 0);
+  --accent-hover: oklch(0.04 0 0);
+  --accent-fg:    oklch(0.99 0 0);
+  --signal-live:  oklch(0.55 0.16 145);
+
+  --glass-bg:     oklch(0.99 0 0 / 0.7);
+  --glass-border: oklch(0.12 0 0 / 0.10);
 }
 
 /* Bridge tokens to Tailwind utilities */
@@ -72,7 +131,19 @@
  * ============================================================ */
 html {
   scroll-behavior: smooth;
-  color-scheme: light dark;
+}
+
+/* Tell the browser whether each theme is dark or light so native
+ * scrollbars / form controls match. */
+:root,
+[data-theme="iris"],
+[data-theme="emerald"],
+[data-theme="voltage"] {
+  color-scheme: dark;
+}
+[data-theme="copper"],
+[data-theme="mono"] {
+  color-scheme: light;
 }
 
 body {

@@ -79,8 +79,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable} font-sans bg-bg text-fg antialiased`}
       >
-        {/* defaultTheme="dark" — dark is canonical for the high-end variant */}
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        {/* 5 named-theme presets, iris is the canonical default. */}
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="iris"
+          themes={['iris', 'emerald', 'copper', 'voltage', 'mono']}
+          enableSystem={false}
+        >
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-fg focus:text-bg focus:rounded-md focus:outline-none"

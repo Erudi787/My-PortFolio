@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import ThemeToggle from '../ThemeToggle';
+import ThemePicker from '../ThemePicker';
 
 interface NavLink {
   href: string;
@@ -188,13 +188,13 @@ const Header = () => {
             {NAV_LINKS.map(link => renderNavLink(link, false))}
           </nav>
           <div className="pl-6 border-l border-border">
-            <ThemeToggle />
+            <ThemePicker />
           </div>
         </div>
 
         {/* Mobile controls */}
         <div className="md:hidden flex items-center gap-4">
-          <ThemeToggle />
+          <ThemePicker />
           <button
             onClick={() => setIsMobileMenuOpen(prev => !prev)}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
