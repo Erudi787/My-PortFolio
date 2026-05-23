@@ -1,14 +1,10 @@
-// src/app/components/layout/Header.tsx
+// src/components/layout/Header.tsx — high-end v2 (glass nav, Linear/Vercel pattern)
 'use client';
 import Link from 'next/link';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Menu, X, CodeXml } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-import ThemeToggle from '../ThemeToggle';
+import ThemePicker from '../ThemePicker';
 
-// ============================================
-// TYPES
-// ============================================
 interface NavLink {
   href: string;
   label: string;
@@ -16,59 +12,31 @@ interface NavLink {
   targetId?: string;
 }
 
-// ============================================
-// CONSTANTS
-// ============================================
 const NAV_LINKS: NavLink[] = [
-  { href: '/', label: 'Home', type: 'scroll', targetId: 'home' },
   { href: '/#about', label: 'About', type: 'scroll', targetId: 'about' },
-  { href: '/#skills', label: 'Skills', type: 'scroll', targetId: 'skills' },
-  { href: '/#projects-preview', label: 'Projects', type: 'scroll', targetId: 'projects-preview' },
+  { href: '/#skills', label: 'Stack', type: 'scroll', targetId: 'skills' },
+  { href: '/#projects-preview', label: 'Work', type: 'scroll', targetId: 'projects-preview' },
   { href: '/contact', label: 'Contact', type: 'page', targetId: '/contact' },
 ];
 
-const HEADER_HEIGHT = 70;
-const SCROLL_THRESHOLD = 20;
+const HEADER_HEIGHT = 72;
 
-// ============================================
-// CUSTOM HOOK: useScrollState
-// ============================================
-function useScrollState() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  return scrolled;
-}
-
-// ============================================
-// CUSTOM HOOK: useActiveSection
-// ============================================
 function useActiveSection(pathname: string) {
   const [activeLink, setActiveLink] = useState<string>('/');
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Set initial active link based on pathname
   useEffect(() => {
     if (pathname === '/') {
       const hash = window.location.hash.substring(1);
       setActiveLink(hash ? `/#${hash}` : '/');
     } else {
-      const pageLink = NAV_LINKS.find(link => link.type === 'page' && pathname.startsWith(link.href));
-      setActiveLink(pageLink?.href || '');
+      const pageLink = NAV_LINKS.find(l => l.type === 'page' && pathname.startsWith(l.href));
+      setActiveLink(pageLink?.href || pathname);
     }
   }, [pathname]);
 
-  // Setup intersection observer for homepage sections
   useEffect(() => {
-    // Cleanup previous observer
     observerRef.current?.disconnect();
-
     if (pathname !== '/') return;
 
     const topMargin = -(HEADER_HEIGHT + 20);
@@ -76,32 +44,24 @@ function useActiveSection(pathname: string) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const intersecting = entries
-          .filter(entry => entry.isIntersecting)
+        const visible = entries
+          .filter(e => e.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-
-        if (intersecting.length > 0) {
-          const targetId = intersecting[0].target.id;
-          const newHref = targetId === 'home' ? '/' : `/#${targetId}`;
-          setActiveLink(newHref);
+        if (visible.length > 0) {
+          const id = visible[0].target.id;
+          setActiveLink(id === 'home' ? '/' : `/#${id}`);
         } else if (window.scrollY < HEADER_HEIGHT + 50) {
           setActiveLink('/');
         }
       },
-      {
-        root: null,
-        rootMargin: `${topMargin}px 0px ${bottomMargin}px 0px`,
-        threshold: 0.1,
-      }
+      { root: null, rootMargin: `${topMargin}px 0px ${bottomMargin}px 0px`, threshold: 0.1 },
     );
 
     observerRef.current = observer;
-
-    // Observe all scroll sections
     NAV_LINKS.forEach(link => {
       if (link.type === 'scroll' && link.targetId) {
-        const element = document.getElementById(link.targetId);
-        if (element) observer.observe(element);
+        const el = document.getElementById(link.targetId);
+        if (el) observer.observe(el);
       }
     });
 
@@ -111,16 +71,12 @@ function useActiveSection(pathname: string) {
   return { activeLink, setActiveLink };
 }
 
-// ============================================
-// COMPONENT
-// ============================================
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const headerRef = useRef<HTMLElement>(null);
 
-  const scrolled = useScrollState();
   const { activeLink, setActiveLink } = useActiveSection(pathname);
 
   const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
@@ -129,7 +85,6 @@ const Header = () => {
     e?.preventDefault();
     closeMobileMenu();
 
-    // Home link - scroll to top or navigate to home
     if (targetHref === '/' && targetId === 'home') {
       if (pathname === '/') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -141,16 +96,14 @@ const Header = () => {
       return;
     }
 
-    // Hash links
     if (targetHref.startsWith('/#')) {
       setActiveLink(targetHref);
-
       if (pathname === '/') {
-        const element = document.getElementById(targetId);
-        if (element) {
-          const headerOffset = headerRef.current?.offsetHeight || HEADER_HEIGHT;
-          const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-          window.scrollTo({ top: elementPosition - headerOffset - 20, behavior: 'smooth' });
+        const el = document.getElementById(targetId);
+        if (el) {
+          const offset = headerRef.current?.offsetHeight || HEADER_HEIGHT;
+          const top = el.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({ top: top - offset - 16, behavior: 'smooth' });
           history.pushState?.(null, '', `#${targetId}`);
         }
       } else {
@@ -161,32 +114,26 @@ const Header = () => {
 
   const isLinkActive = useCallback((link: NavLink): boolean => {
     if (link.type === 'page') return pathname === link.href;
-    if (link.targetId === 'home') return activeLink === '/' || activeLink === '/#home';
     return activeLink === link.href;
   }, [pathname, activeLink]);
 
-  const renderNavLink = useCallback((link: NavLink, isMobile: boolean) => {
-    const isActive = isLinkActive(link);
+  const renderNavLink = (link: NavLink, isMobile: boolean) => {
+    const active = isLinkActive(link);
+    const className = isMobile
+      ? `block w-full py-3 px-6 text-base transition-colors ${active ? 'text-fg' : 'text-fg-muted hover:text-fg'}`
+      : `relative text-[14px] font-medium transition-colors ${active ? 'text-fg' : 'text-fg-muted hover:text-fg'}`;
 
-    const baseStyles = isMobile
-      ? 'w-full text-center py-3 rounded-xl transition-all duration-300'
-      : 'pb-1 border-b-2 transition-all duration-300 relative group font-medium text-sm md:text-base tracking-wide';
-
-    const activeStyles = isMobile
-      ? 'bg-gradient-to-r from-[#0A4DDE]/10 to-[#00C6C6]/10 text-[#0A4DDE] font-semibold shadow-sm'
-      : 'border-transparent text-[#0A4DDE] font-semibold';
-
-    const inactiveStyles = isMobile
-      ? 'text-gray-600 hover:bg-gray-50'
-      : 'border-transparent text-gray-400 hover:text-[#00C6C6]';
-
-    const underlineStyles = !isMobile
-      ? isActive
-        ? "after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[3px] after:bg-gradient-to-r after:from-[#00C6C6] after:to-[#0A4DDE] after:rounded-full"
-        : "after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[3px] after:bg-gradient-to-r after:from-[#00C6C6] after:to-[#0A4DDE] after:rounded-full after:transition-all after:duration-300 group-hover:after:w-full"
-      : '';
-
-    const className = `${baseStyles} ${isActive ? activeStyles : inactiveStyles} ${underlineStyles}`.trim();
+    const inner = (
+      <>
+        {link.label}
+        {!isMobile && active && (
+          <span
+            aria-hidden="true"
+            className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[5px] w-[5px] rounded-full bg-accent shadow-[0_0_12px_var(--accent)]"
+          />
+        )}
+      </>
+    );
 
     if (link.type === 'scroll') {
       return (
@@ -194,9 +141,9 @@ const Header = () => {
           key={link.label}
           href={link.href}
           onClick={(e) => handleScrollTo(link.targetId!, link.href, e)}
-          className={`${className} cursor-pointer`}
+          className={className}
         >
-          {link.label}
+          {inner}
         </a>
       );
     }
@@ -205,75 +152,68 @@ const Header = () => {
       <Link
         key={link.label}
         href={link.href}
-        onClick={() => {
-          closeMobileMenu();
-          setActiveLink(link.href);
-        }}
+        onClick={() => { closeMobileMenu(); setActiveLink(link.href); }}
         className={className}
       >
-        {link.label}
+        {inner}
       </Link>
     );
-  }, [handleScrollTo, isLinkActive, closeMobileMenu, setActiveLink]);
+  };
 
   return (
     <header
       ref={headerRef}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-        ? 'py-3 bg-white/70 dark:bg-[#0B1120]/70 backdrop-blur-xl border-b border-white/20 dark:border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.05)]'
-        : 'py-5 bg-transparent'
-        }`}
+      className="fixed top-0 left-0 right-0 z-50 glass"
     >
-      <div className="container mx-auto px-6 flex justify-between items-center">
-        {/* Logo */}
+      <div className="container mx-auto px-6 md:px-10 py-4 flex justify-between items-center">
+        {/* Wordmark — sans, mid-weight, monogram dot */}
         <Link
           href="/"
           onClick={(e) => handleScrollTo('home', '/', e)}
-          className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00C6C6] to-[#0A4DDE] hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-2 group"
+          className="group flex items-center gap-2 text-fg hover:text-accent transition-colors"
           aria-label="Go to homepage"
         >
-          <div className="p-1.5 bg-[#0A4DDE]/10 rounded-lg group-hover:scale-110 transition-transform">
-            <CodeXml size={28} className="text-[#0A4DDE]" aria-hidden="true" />
-          </div>
-          <span className="tracking-tight">Erudi</span>
+          <span
+            aria-hidden="true"
+            className="inline-block h-1.5 w-1.5 rounded-full bg-accent group-hover:shadow-[0_0_12px_var(--accent)] transition-shadow"
+          />
+          <span className="text-[15px] font-semibold tracking-[-0.01em]">
+            Elwison Denampo
+          </span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
-          <nav className="flex space-x-6" aria-label="Main navigation">
+        {/* Desktop nav */}
+        <div className="hidden md:flex items-center gap-9">
+          <nav className="flex items-center gap-8" aria-label="Main navigation">
             {NAV_LINKS.map(link => renderNavLink(link, false))}
           </nav>
-          <div className="pl-4 border-l border-gray-200 dark:border-white/10">
-            <ThemeToggle />
+          <div className="pl-6 border-l border-border">
+            <ThemePicker />
           </div>
         </div>
 
-        {/* Mobile Menu Button + ThemeToggle */}
-        <div className="md:hidden flex items-center gap-3">
-          <ThemeToggle />
+        {/* Mobile controls */}
+        <div className="md:hidden flex items-center gap-4">
+          <ThemePicker />
           <button
             onClick={() => setIsMobileMenuOpen(prev => !prev)}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-menu"
-            className="p-2 rounded-lg bg-[#0A4DDE]/10 hover:bg-[#0A4DDE]/20 transition-colors"
+            className="text-[14px] font-medium text-fg-muted hover:text-fg transition-colors px-2 py-1"
           >
-            {isMobileMenuOpen ? (
-              <X size={24} className="text-[#0A4DDE]" aria-hidden="true" />
-            ) : (
-              <Menu size={24} className="text-[#0A4DDE]" aria-hidden="true" />
-            )}
+            {isMobileMenuOpen ? 'Close' : 'Menu'}
           </button>
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile drawer */}
       {isMobileMenuOpen && (
         <div
           id="mobile-menu"
-          className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-[#0B1120] shadow-lg rounded-b-md border-t border-gray-100 dark:border-white/5"
+          className="md:hidden absolute top-full left-0 right-0 glass border-t border-border"
         >
-          <nav className="flex flex-col items-center space-y-1 p-4" aria-label="Mobile navigation">
+          <nav className="flex flex-col py-2" aria-label="Mobile navigation">
             {NAV_LINKS.map(link => renderNavLink(link, true))}
           </nav>
         </div>

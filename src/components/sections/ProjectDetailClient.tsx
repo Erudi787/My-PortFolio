@@ -1,22 +1,23 @@
-// src/app/components/sections/ProjectDetailClient.tsx
-'use client'; // This marks the component as a Client Component
+// src/components/sections/ProjectDetailClient.tsx — high-end v2 (product case-study layout)
+'use client';
 
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { ExternalLink, FileText, Share2, CheckCircle, AlertTriangle, Zap, UserCircle, ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react'; // Example icons
+import Link from 'next/link';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import Lightbox from 'yet-another-react-lightbox';
-import { Project } from '../../../lib/data';// Assuming your Project type is here
+import { Project } from '../../../lib/data';
 
 interface ProjectDetailClientProps {
   project: Project;
 }
 
 const Slider = dynamic(() => import('react-slick'), {
-  ssr: false, // This is the key part
-  loading: () => <div className="text-center p-4">Loading carousel...</div> // Optional loading state
+  ssr: false,
+  loading: () => <div className="aspect-video w-full bg-bg-elevated animate-pulse" />,
 });
 
 interface ArrowProps {
@@ -25,381 +26,466 @@ interface ArrowProps {
   onClick?: () => void;
 }
 
-const SampleNextArrow: React.FC<ArrowProps> = (props) => {
-  const { className, style, onClick } = props;
-  // Remove slick-arrow default conflicting classes if they cause issues with Tailwind
-  const baseClassName = className?.includes('slick-disabled') ? 'slick-disabled' : '';
+const PrevArrow: React.FC<ArrowProps> = ({ className, onClick }) => (
+  <button
+    className={`${className?.includes('slick-disabled') ? 'opacity-30 cursor-not-allowed' : ''} absolute top-1/2 -translate-y-1/2 left-4 z-10 p-2 rounded-full glass border border-border text-fg hover:bg-bg-elevated transition-colors`}
+    onClick={onClick}
+    aria-label="Previous slide"
+    disabled={className?.includes('slick-disabled')}
+  >
+    <ChevronLeft size={18} />
+  </button>
+);
 
-  return (
-    <button
-      className={`${baseClassName} absolute top-1/2 -translate-y-1/2 right-0 z-10 transform
-                 p-2 md:p-3 rounded-full bg-black/30 hover:bg-black/60 
-                 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200
-                 text-white disabled:opacity-30 disabled:cursor-not-allowed`}
-      style={{ ...style }} // Pass through style for positioning if react-slick provides it
-      onClick={onClick}
-      aria-label="Next slide"
-      disabled={className?.includes('slick-disabled')}
-    >
-      <ChevronRight size={24} className="w-5 h-5 md:w-6 md:h-6" /> {/* Increased size */}
-    </button>
-  );
+const NextArrow: React.FC<ArrowProps> = ({ className, onClick }) => (
+  <button
+    className={`${className?.includes('slick-disabled') ? 'opacity-30 cursor-not-allowed' : ''} absolute top-1/2 -translate-y-1/2 right-4 z-10 p-2 rounded-full glass border border-border text-fg hover:bg-bg-elevated transition-colors`}
+    onClick={onClick}
+    aria-label="Next slide"
+    disabled={className?.includes('slick-disabled')}
+  >
+    <ChevronRight size={18} />
+  </button>
+);
+
+function shortTitle(title: string): string {
+  for (const sep of [' — ', ' – ', ' - ']) {
+    const idx = title.indexOf(sep);
+    if (idx > 0) return title.slice(0, idx);
+  }
+  return title;
 }
 
-// Custom Previous Arrow Component
-const SamplePrevArrow: React.FC<ArrowProps> = (props) => {
-  const { className, style, onClick } = props;
-  const baseClassName = className?.includes('slick-disabled') ? 'slick-disabled' : '';
+function subtitle(title: string): string {
+  for (const sep of [' — ', ' – ', ' - ']) {
+    const idx = title.indexOf(sep);
+    if (idx > 0) return title.slice(idx + sep.length);
+  }
+  return '';
+}
 
+function SectionTag({ children }: { children: React.ReactNode }) {
   return (
-    <button
-      className={`${baseClassName} absolute top-1/2 -translate-y-1/2 left-0 z-10 transform
-                 p-2 md:p-3 rounded-full bg-black/30 hover:bg-black/60 
-                 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200
-                 text-white disabled:opacity-30 disabled:cursor-not-allowed`}
-      style={{ ...style }}
-      onClick={onClick}
-      aria-label="Previous slide"
-      disabled={className?.includes('slick-disabled')}
-    >
-      <ChevronLeft size={24} className="w-5 h-5 md:w-6 md:h-6" /> {/* Increased size */}
-    </button>
+    <p className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-6 inline-flex items-baseline gap-1.5">
+      <span aria-hidden="true">[</span>
+      <span>{children}</span>
+      <span aria-hidden="true">]</span>
+    </p>
   );
 }
 
 const ProjectDetailClient: React.FC<ProjectDetailClientProps> = ({ project }) => {
-  // You can add client-side state and effects here if needed later
-  // For example, for an image carousel:
-  // const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const reduce = useReducedMotion();
+  const spring = { type: 'spring' as const, stiffness: 160, damping: 28, mass: 0.9 };
+  const fade = (delay = 0) =>
+    reduce
+      ? { initial: { opacity: 1 }, animate: { opacity: 1 } }
+      : {
+          initial: { opacity: 0, y: 14 },
+          animate: { opacity: 1, y: 0 },
+          transition: { ...spring, delay },
+        };
 
-  const sectionVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.15, // Stagger animation
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    })
-  };
-
-  // Settings for react-slick carousel
   const carouselSettings = {
-    dots: true,              // react-slick expects boolean
-    infinite: true,          // react-slick expects boolean
+    dots: true,
+    infinite: true,
     speed: 500,
-    slidesToShow: 1,         // react-slick expects number
-    slidesToScroll: 1,       // react-slick expects number
-    autoPlay: true,          // Corrected: react-slick expects boolean, camelCased for JSX
-    autoplaySpeed: 3000,     // react-slick expects number
-    pauseOnHover: true,      // react-slick expects boolean
-    adaptiveHeight: true,    // react-slick expects boolean
-    arrow: true,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
-    dotsClass: "slick-dots custom-dots-styling",
-    // Add more settings as needed: arrows, responsive breakpoints, etc.
-    // Example for custom arrows (you'd need to style these)
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: false,
+    pauseOnHover: true,
+    adaptiveHeight: true,
+    arrows: true,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    dotsClass: 'slick-dots custom-dots-styling',
   };
 
-  // State for Lightbox
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  const openLightbox = (index: number) => {
-    setLightboxIndex(index);
+  const openLightbox = (i: number) => {
+    setLightboxIndex(i);
     setLightboxOpen(true);
   };
 
-  // Prepare slides for the lightbox
   const lightboxSlides = project.carouselImages?.map(img => ({
     src: img.src,
     alt: img.alt,
-    title: img.caption, // Optional: Show caption as title in lightbox
-  })) || [];
+    title: img.caption,
+  })) ?? [];
 
-  const hasCarouselImages = project.carouselImages && project.carouselImages.length > 0;
-  const hasFrontendFeatures = project.frontendFeatures && project.frontendFeatures.length > 0;
-  const hasClassDiagram = project.classDiagramUrl && project.classDiagramUrl.length > 0;
-  const hasERD = project.erdUrl && project.erdUrl.length > 0;
+  const hasCarousel = !!project.carouselImages && project.carouselImages.length > 0;
+  const hasFrontend = !!project.frontendFeatures?.length;
+  const hasBackend = !!project.backendFeatures?.length;
+  const hasClassDiagram = !!project.classDiagramUrl;
+  const hasERD = !!project.erdUrl;
+
+  const title = shortTitle(project.title);
+  const sub = subtitle(project.title);
 
   return (
-    <article className="bg-white/70 dark:bg-[#0B1120]/70 backdrop-blur-2xl p-8 md:p-12 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-white/50 dark:border-white/10 relative transition-colors duration-300">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/10 dark:from-white/5 dark:to-transparent rounded-[2rem] pointer-events-none" />
+    <article className="bg-bg text-fg min-h-screen pt-20 pb-32">
+      {/* Hero — title block above the image */}
+      <div className="container mx-auto px-6 md:px-10">
+        <motion.nav {...fade(0)} className="mb-12" aria-label="Breadcrumb">
+          <Link
+            href="/projects"
+            className="group inline-flex items-baseline gap-2 text-[13px] text-fg-muted hover:text-fg transition-colors"
+          >
+            <span aria-hidden="true" className="transition-transform motion-safe:group-hover:-translate-x-0.5">←</span>
+            <span className="link-underline">Back to work</span>
+          </Link>
+        </motion.nav>
 
-      {/* Project Header */}
-      <motion.header
-        custom={0}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-        className="mb-8 pb-6 border-b border-gray-200 dark:border-white/10"
-      >
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] mb-4 tracking-tight">{project.title}</h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400 leading-relaxed font-light">{project.shortDescription}</p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          {project.techStack.map(tech => (
-            <span key={tech} className="bg-gradient-to-r from-[#0A4DDE]/10 to-[#00C6C6]/10 text-[#0A4DDE] border border-[#0A4DDE]/20 shadow-sm text-sm font-semibold px-4 py-1.5 rounded-full">{tech}</span>
-          ))}
-        </div>
-      </motion.header>
+        <motion.header {...fade(0.05)} className="max-w-5xl mb-16 md:mb-20">
+          {/* Top meta row */}
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[12px] font-mono uppercase tracking-[0.18em] text-fg-subtle mb-8">
+            {project.year && (
+              <span>
+                <span className="text-fg-muted">{project.year}</span>
+              </span>
+            )}
+            <span className="text-border-strong" aria-hidden="true">·</span>
+            <span>{project.myRole}</span>
+            {project.liveDemoUrl && (
+              <>
+                <span className="text-border-strong" aria-hidden="true">·</span>
+                <span className="inline-flex items-baseline gap-1.5">
+                  <span aria-hidden="true" className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--signal-live)] translate-y-[1px]">
+                    <span className="absolute inset-0 rounded-full bg-[color:var(--signal-live)] motion-safe:animate-ping opacity-70" />
+                  </span>
+                  <span className="text-fg-muted">Live</span>
+                </span>
+              </>
+            )}
+          </div>
 
-      {/* Main Image (if any) */}
-      <motion.div
-        custom={1}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-        className="my-8"
-      >
-        {hasCarouselImages ? (
-          // Render Carousel
-          <section> {/* Added section for consistent structure with h2 */}
-            <h2 className="text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-6 flex items-center">
-              <ImageIcon size={26} className="mr-3 text-[#0A4DDE]" /> Project Preview
-            </h2>
-            <span className="text-[#070B0C]/70 dark:text-[#f8fafc]/70 mb-6 flex items-center text-sm italic">Click the image for better quality</span>
-            <div className="bg-gray-100 dark:bg-[#030712] p-2 sm:p-4 rounded-lg shadow-inner relative slick-container-custom">
+          {/* Title */}
+          <h1 className="font-display text-fg text-5xl md:text-7xl lg:text-[6rem]">
+            {title}
+          </h1>
+          {sub && (
+            <p className="mt-4 text-xl md:text-2xl text-fg-muted leading-tight max-w-3xl">
+              {sub}
+            </p>
+          )}
+
+          {/* Lede */}
+          <p className="mt-10 text-base md:text-lg text-fg-muted leading-relaxed max-w-3xl">
+            {project.shortDescription}
+          </p>
+
+          {/* CTAs */}
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            {project.liveDemoUrl && (
+              <a
+                href={project.liveDemoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bloom inline-flex items-center gap-2 px-5 py-3 rounded-full bg-accent text-accent-fg hover:bg-accent-hover transition-colors text-[14px] font-semibold"
+              >
+                Visit live <span aria-hidden="true">↗</span>
+              </a>
+            )}
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-strong text-fg hover:bg-bg-elevated transition-colors text-[14px] font-semibold"
+              >
+                <FaGithub size={16} aria-hidden="true" /> Source
+              </a>
+            )}
+          </div>
+        </motion.header>
+      </div>
+
+      {/* Hero image — full-bleed carousel */}
+      {hasCarousel ? (
+        <motion.div {...fade(0.1)} className="mb-24 md:mb-32">
+          <div className="container mx-auto px-6 md:px-10">
+            <div className="relative slick-container-custom rounded-2xl overflow-hidden border border-border bg-bg-elevated">
               <Slider {...carouselSettings}>
-                {project.carouselImages!.map((image, index) => ( // Added non-null assertion '!' because of hasCarouselImages check
+                {project.carouselImages!.map((image, i) => (
                   <div
-                    key={index}
-                    className="outline-none focus:outline-none px-1 sm:px-2"
-                    onClick={() => openLightbox(index)} // Open lightbox on image click
+                    key={i}
+                    className="outline-none"
+                    onClick={() => openLightbox(i)}
                     title="Click to enlarge"
                   >
-                    <div className="relative aspect-video w-full overflow-hidden rounded-md bg-gray-200 dark:bg-[#0B1120]">
+                    <div className="relative aspect-video w-full bg-bg-deep cursor-zoom-in">
                       <Image
                         src={image.src}
                         alt={image.alt}
                         fill
                         className="object-contain"
-                        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 600px, 800px"
+                        sizes="(max-width: 1024px) 100vw, 1100px"
                         quality={90}
-                        priority={index === 0}
+                        priority={i === 0}
                         unoptimized
                       />
                     </div>
                     {image.caption && (
-                      <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-2 italic px-2">{image.caption}</p>
-                    )}
-                    {!image.caption && (
-                      <div className="mt-3 mb-8 h-5" /> // Adjust h-5 as needed
+                      <p className="text-center text-sm text-fg-subtle py-4">
+                        {image.caption}
+                      </p>
                     )}
                   </div>
                 ))}
               </Slider>
             </div>
-          </section>
-        ) : project.imageUrl ? (
-          // Render Single Main Image if no carousel but imageUrl exists
-          <section> {/* Added section for consistent structure with h2 */}
-            <h2 className="text-2xl font-semibold text-[#070B0C] dark:text-[#f8fafc] mb-4 flex items-center">
-              <ImageIcon size={24} className="mr-3 text-[#043CAA]" /> Project Preview
-            </h2>
-            <span className="text-[#070B0C]/70 dark:text-[#f8fafc]/70 mb-4 flex items-center text-sm italic">Click the image for better quality</span>
+          </div>
+        </motion.div>
+      ) : project.imageUrl ? (
+        <motion.div {...fade(0.1)} className="mb-24 md:mb-32">
+          <div className="container mx-auto px-6 md:px-10">
             <div
-              className="rounded-lg overflow-hidden shadow-md border border-gray-200 dark:border-white/10"
-              onClick={() => { // Make single image open in lightbox too
-                if (project.imageUrl) {
-                  setLightboxIndex(0); // Only one image
-                  setLightboxOpen(true);
-                }
-              }}
-              title="Click to enlarge"
+              className="relative aspect-video w-full rounded-2xl overflow-hidden border border-border bg-bg-elevated cursor-zoom-in"
+              onClick={() => { setLightboxIndex(0); setLightboxOpen(true); }}
             >
-              <div className="relative aspect-video w-full bg-gray-100 dark:bg-[#030712]">
-                <Image
-                  src={project.imageUrl}
-                  alt={`${project.title} main image`}
-                  fill
-                  className="object-contain" // Use object-contain to see the whole image
-                  sizes="(max-width: 640px) 90vw, (max-width: 1024px) 600px, 800px"
-                  priority // Consider if this is LCP
-                  unoptimized
-                />
-              </div>
+              <Image
+                src={project.imageUrl}
+                alt={`${title} preview`}
+                fill
+                className="object-contain"
+                sizes="(max-width: 1024px) 100vw, 1100px"
+                priority
+                unoptimized
+              />
             </div>
-          </section>
-        ) : null} {/* Optionally render nothing or a placeholder if no images at all */}
-      </motion.div>
+          </div>
+        </motion.div>
+      ) : (
+        <div className="mb-24 md:mb-32">
+          <div className="container mx-auto px-6 md:px-10">
+            <div className="relative aspect-[16/7] w-full rounded-2xl overflow-hidden border border-border flex items-center justify-center"
+              style={{ background: 'radial-gradient(ellipse at top, color-mix(in oklch, var(--accent) 22%, var(--bg-elevated)) 0%, var(--bg-deep) 70%)' }}
+            >
+              <span className="font-display text-fg/40 text-[12rem] leading-none select-none" style={{ letterSpacing: '-0.06em' }}>
+                {title.split(' ').map(w => w.charAt(0)).slice(0, 2).join('')}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Lightbox Component */}
+      {/* Lightbox */}
       {lightboxOpen && (
         <Lightbox
           open={lightboxOpen}
           close={() => setLightboxOpen(false)}
-          slides={hasCarouselImages ? lightboxSlides : (project.imageUrl ? [{ src: project.imageUrl, alt: project.title }] : [])}
+          slides={hasCarousel ? lightboxSlides : project.imageUrl ? [{ src: project.imageUrl, alt: title }] : []}
           index={lightboxIndex}
-        // Optional plugins:
-        // plugins={[Thumbnails, Counter, Zoom]}
-        // styles={{ container: { backgroundColor: "rgba(0, 0, 0, .8)" } }} // Example custom style
         />
       )}
 
-      {/* Using Tailwind Typography for rich text if longDescription contains Markdown-like content
-          Otherwise, just use regular Tailwind classes.
-          For now, assuming simple text.
-      */}
-      <div className="text-[#575454] dark:text-gray-400 leading-relaxed space-y-8">
-        <motion.section custom={2} initial="hidden" animate="visible" variants={sectionVariants}>
-          <h2 className="text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-6 flex items-center">
-            <FileText size={26} className="mr-3 text-[#0A4DDE]" /> Project Overview
-          </h2>
-          <p>{project.longDescription}</p>
-        </motion.section>
-
-        <motion.section custom={3} initial="hidden" animate="visible" variants={sectionVariants}>
-          <h2 className="text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-6 flex items-center">
-            <UserCircle size={26} className="mr-3 text-[#0A4DDE]" /> My Role & Responsibilities {/* Assuming UserCircle is imported or defined */}
-          </h2>
-          <p className="mb-2 text-[#070B0C]/90 dark:text-gray-300 font-semibold">Main Role: </p> <span className='mb-2 text-[#070B0C] dark:text-gray-400 pl-5.75'>{project.myRole}</span>
-          {/* Check if myRoles array exists and has items, then display them */}
-          {project.myRoles && project.myRoles.length > 0 && (
-            <div className="mt-3">
-              <h4 className="font-semibold text-[#070B0C]/90 dark:text-gray-300 mb-1 flex items-center">
-                Key Responsibilities/Focus Areas:
-              </h4>
-              <p className="text-sm text-[#070B0C] dark:text-gray-400 pl-6"> {/* Adjust pl-6 to pl-4, pl-8 etc. as needed */}
-                {project.myRoles.join(', ')}
-              </p>
-            </div>
-          )}
-        </motion.section>
-
-        {hasFrontendFeatures ? (
-          <motion.section custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
-            <h2 className="text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-6 flex items-center">
-              <Zap size={26} className="mr-3 text-[#0A4DDE]" /> Key Frontend Features
-            </h2>
-            <ul className="list-none pl-0 space-y-2">
-              {project.frontendFeatures?.map((feature, index) => (
-                <li key={index} className="flex items-start">
-                  <CheckCircle size={20} className="text-[#00C6C6] mr-4 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">{feature}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.section>
-        ) : null}
-
-        <motion.section custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
-          <h2 className="text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-6 flex items-center">
-            <Zap size={26} className="mr-3 text-[#0A4DDE]" /> Key Backend Features
-          </h2>
-          <ul className="list-none pl-0 space-y-2">
-            {project.backendFeatures.map((feature, index) => (
-              <li key={index} className="flex items-start">
-                <CheckCircle size={20} className="text-[#62B6B8] mr-3 mt-1 flex-shrink-0" />
-                <span className="text-gray-700 dark:text-gray-300">{feature}</span>
-              </li>
-            ))}
-          </ul>
-        </motion.section>
-
-        <motion.section custom={5} initial="hidden" animate="visible" variants={sectionVariants}>
-          <h2 className="text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-6 flex items-center">
-            <AlertTriangle size={26} className="mr-3 text-[#0A4DDE]" /> Challenges & Solutions
-          </h2>
-          <div className="space-y-4">
-            {project.challengesAndSolutions.map((item, index) => (
-              <div key={index} className="bg-white/60 dark:bg-[#0B1120]/60 backdrop-blur-sm p-6 rounded-2xl border border-gray-100 dark:border-white/10 shadow-sm hover:shadow-md transition-shadow">
-                <h3 className="font-bold text-[#0B1120] dark:text-[#f8fafc] mb-2">{item.challenge}</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.solution}</p>
+      {/* Body — sticky sidebar + prose */}
+      <div className="container mx-auto px-6 md:px-10">
+        <div className="grid grid-cols-12 gap-x-8 md:gap-x-16 gap-y-12">
+          {/* Sidebar */}
+          <aside className="col-span-12 md:col-span-4 lg:col-span-3">
+            <div className="md:sticky md:top-28 space-y-8">
+              <div>
+                <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-fg-subtle mb-3">Year</p>
+                <p className="text-fg">{project.year ?? '—'}</p>
               </div>
-            ))}
+              <div>
+                <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-fg-subtle mb-3">Role</p>
+                <p className="text-fg">{project.myRole}</p>
+              </div>
+              {project.myRoles && project.myRoles.length > 0 && (
+                <div>
+                  <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-fg-subtle mb-3">Wearing</p>
+                  <ul className="space-y-2 text-sm text-fg-muted">
+                    {project.myRoles.map((r, i) => (
+                      <li key={i}>{r}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div>
+                <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-fg-subtle mb-3">Stack</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {project.techStack.map((t) => (
+                    <span
+                      key={t}
+                      className="inline-flex items-center px-2 py-1 rounded-md border border-border bg-bg-elevated/40 text-[11px] text-fg"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col gap-3 pt-4 border-t border-border">
+                {project.liveDemoUrl && (
+                  <a
+                    href={project.liveDemoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[13px] text-fg hover:text-accent transition-colors link-underline inline-flex items-center gap-1.5"
+                  >
+                    Visit live <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[13px] text-fg-muted hover:text-fg transition-colors inline-flex items-center gap-1.5"
+                  >
+                    <FaGithub size={12} aria-hidden="true" /> Source on GitHub
+                  </a>
+                )}
+              </div>
+            </div>
+          </aside>
+
+          {/* Prose */}
+          <div className="col-span-12 md:col-span-8 lg:col-span-9 space-y-20 md:space-y-24">
+            {/* Overview */}
+            <motion.section {...fade(0.05)}>
+              <SectionTag>Overview</SectionTag>
+              <p className="text-fg-muted text-base md:text-lg leading-relaxed max-w-3xl">
+                {project.longDescription}
+              </p>
+            </motion.section>
+
+            {/* Pull-quote — sans, large, accent dot */}
+            {project.pullQuote && (
+              <motion.blockquote {...fade(0.08)} className="max-w-3xl">
+                <span aria-hidden="true" className="block h-1 w-1 rounded-full bg-accent shadow-[0_0_8px_var(--accent)] mb-6" />
+                <p className="font-display text-fg text-2xl md:text-3xl lg:text-4xl leading-[1.2] text-balance">
+                  &ldquo;{project.pullQuote}&rdquo;
+                </p>
+              </motion.blockquote>
+            )}
+
+            {/* Features */}
+            {(hasBackend || hasFrontend) && (
+              <motion.section {...fade(0.1)} className="grid md:grid-cols-2 gap-x-10 gap-y-12">
+                {hasBackend && (
+                  <div>
+                    <SectionTag>Backend</SectionTag>
+                    <ul className="space-y-3">
+                      {project.backendFeatures!.map((f, i) => (
+                        <li key={i} className="text-fg-muted leading-relaxed flex items-baseline gap-2.5 text-[15px]">
+                          <span aria-hidden="true" className="text-accent text-xs translate-y-[-1px]">●</span>
+                          <span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {hasFrontend && (
+                  <div>
+                    <SectionTag>Frontend</SectionTag>
+                    <ul className="space-y-3">
+                      {project.frontendFeatures!.map((f, i) => (
+                        <li key={i} className="text-fg-muted leading-relaxed flex items-baseline gap-2.5 text-[15px]">
+                          <span aria-hidden="true" className="text-accent text-xs translate-y-[-1px]">●</span>
+                          <span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </motion.section>
+            )}
+
+            {/* Challenges */}
+            {project.challengesAndSolutions?.length > 0 && (
+              <motion.section {...fade(0.1)}>
+                <SectionTag>Challenges & decisions</SectionTag>
+                <ol className="space-y-12 max-w-3xl">
+                  {project.challengesAndSolutions.map((item, i) => (
+                    <li key={i} className="grid grid-cols-12 gap-4">
+                      <span className="col-span-2 md:col-span-1 text-[12px] font-mono text-accent pt-1">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <div className="col-span-10 md:col-span-11">
+                        <h3 className="font-display text-fg text-xl md:text-2xl mb-3 leading-tight">
+                          {item.challenge}
+                        </h3>
+                        <p className="text-fg-muted leading-relaxed">{item.solution}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </motion.section>
+            )}
+
+            {/* Diagrams */}
+            {project.architectureDiagramUrl && (
+              <motion.figure {...fade(0.1)}>
+                <SectionTag>System architecture</SectionTag>
+                <div className="relative w-full rounded-xl overflow-hidden border border-border bg-bg-elevated">
+                  <Image
+                    src={project.architectureDiagramUrl}
+                    alt={`${title} architecture diagram`}
+                    width={1200}
+                    height={675}
+                    className="w-full h-auto"
+                    unoptimized
+                  />
+                </div>
+              </motion.figure>
+            )}
+
+            {hasClassDiagram && (
+              <motion.figure {...fade(0.1)}>
+                <SectionTag>Class diagram</SectionTag>
+                <div className="relative w-full rounded-xl overflow-hidden border border-border bg-bg-elevated">
+                  <Image
+                    src={project.classDiagramUrl!}
+                    alt={`${title} class diagram`}
+                    width={1200}
+                    height={675}
+                    className="w-full h-auto"
+                    unoptimized
+                  />
+                </div>
+              </motion.figure>
+            )}
+
+            {hasERD && (
+              <motion.figure {...fade(0.1)}>
+                <SectionTag>Entity relationship diagram</SectionTag>
+                <div className="relative w-full rounded-xl overflow-hidden border border-border bg-bg-elevated">
+                  <Image
+                    src={project.erdUrl!}
+                    alt={`${title} ERD`}
+                    width={1200}
+                    height={675}
+                    className="w-full h-auto"
+                    unoptimized
+                  />
+                </div>
+              </motion.figure>
+            )}
+
+            {/* Footer nav */}
+            <motion.div {...fade(0.1)} className="pt-12 border-t border-border flex flex-wrap items-center justify-between gap-6">
+              <Link
+                href="/projects"
+                className="text-[13px] text-fg-muted hover:text-fg transition-colors inline-flex items-baseline gap-2"
+              >
+                <span aria-hidden="true">←</span>
+                <span className="link-underline">All projects</span>
+              </Link>
+              <Link
+                href="/contact"
+                className="text-[13px] text-fg hover:text-accent transition-colors inline-flex items-baseline gap-2"
+              >
+                <span className="link-underline">Get in touch</span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            </motion.div>
           </div>
-        </motion.section>
-
-        {project.architectureDiagramUrl && (
-          <motion.section custom={6} initial="hidden" animate="visible" variants={sectionVariants}>
-            <h2 className="text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-6 flex items-center">
-              <Share2 size={26} className="mr-3 text-[#0A4DDE]" /> System Architecture
-            </h2>
-            <div className="my-6 p-4 border border-gray-200 dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#030712] text-center">
-              <Image
-                src={project.architectureDiagramUrl}
-                alt={`${project.title} Architecture Diagram`}
-                width={800}
-                height={450} // Adjust aspect ratio as needed
-                className="max-w-full h-auto rounded-md shadow-sm mx-auto"
-              />
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 italic">High-level architecture diagram.</p>
-            </div>
-          </motion.section>
-        )}
-
-        {hasClassDiagram ? (
-          <motion.section custom={6} initial="hidden" animate="visible" variants={sectionVariants}>
-            <h2 className="text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-6 flex items-center">
-              <Share2 size={26} className="mr-3 text-[#0A4DDE]" /> Class Diagram
-            </h2>
-            <div className="my-6 p-4 border border-gray-200 dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#030712] text-center">
-              <Image
-                src={project.classDiagramUrl ?? ''}
-                alt={`${project.title} Architecture Diagram`}
-                width={800}
-                height={450} // Adjust aspect ratio as needed
-                className="max-w-full h-auto rounded-md shadow-sm mx-auto"
-              />
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 italic">Project class diagram.</p>
-            </div>
-          </motion.section>
-        ) : null}
-
-        {hasERD ? (
-          <motion.section custom={6} initial="hidden" animate="visible" variants={sectionVariants}>
-            <h2 className="text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-6 flex items-center">
-              <Share2 size={26} className="mr-3 text-[#0A4DDE]" /> Entity Relationship Diagram
-            </h2>
-            <div className="my-6 p-4 border border-gray-200 dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#030712] text-center">
-              <Image
-                src={project.erdUrl ?? ''}
-                alt={`${project.title} Entity Relationship Diagram`}
-                width={800}
-                height={450} // Adjust aspect ratio as needed
-                className="max-w-full h-auto rounded-md shadow-sm mx-auto"
-              />
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 italic">Project entity relationship diagram.</p>
-            </div>
-          </motion.section>
-        ) : null}
+        </div>
       </div>
-
-      {/* Links Section */}
-      <motion.div
-        custom={7}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-        className="mt-10 pt-8 border-t border-gray-200 dark:border-white/10 flex flex-wrap gap-4 items-center"
-      >
-        {project.githubUrl && (
-          <a
-            href={project.githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-[#0B1120] dark:text-[#f8fafc] bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/20 rounded-xl shadow-sm hover:shadow-md hover:border-gray-300 dark:hover:border-white/40 transition-all duration-300 transform hover:-translate-y-1"
-          >
-            <FaGithub size={18} /> View on GitHub
-          </a>
-        )}
-        {project.liveDemoUrl && (
-          <a
-            href={project.liveDemoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="relative overflow-hidden inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-[#0A4DDE] rounded-xl shadow-[0_0_20px_rgba(10,77,222,0.3)] hover:shadow-[0_0_40px_rgba(10,77,222,0.5)] transition-all duration-300 transform hover:-translate-y-1 group"
-          >
-            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-            <ExternalLink size={18} className="relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-            <span className="relative z-10">Deployed Website</span>
-          </a>
-        )}
-        {/* Add other links like "View Code Snippet" if applicable */}
-      </motion.div>
     </article>
   );
 };

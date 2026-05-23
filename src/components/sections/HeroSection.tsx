@@ -1,102 +1,188 @@
-// src/app/components/sections/HeroSection.tsx
+// src/components/sections/HeroSection.tsx — high-end v2 (Linear/Vercel DNA)
 'use client';
-import React, { forwardRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { forwardRef, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface HeroSectionProps { }
+interface HeroSectionProps {}
 
-const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((props, ref) => {
+const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((_props, ref) => {
+  const reduce = useReducedMotion();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Parallax on the product mockup — moves slower than scroll, scales down
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end start'],
+  });
+  const mockupY = useTransform(scrollYProgress, [0, 1], ['0%', reduce ? '0%' : '-12%']);
+  const mockupRotate = useTransform(scrollYProgress, [0, 1], [3, reduce ? 3 : 0]);
+  const mockupScale = useTransform(scrollYProgress, [0, 1], [1, reduce ? 1 : 0.94]);
+  const mockupOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0.4]);
+
+  // Smoother spring than editorial — Linear's signature easing
+  const spring = { type: 'spring' as const, stiffness: 160, damping: 28, mass: 0.9 };
+
+  const fade = (delay = 0) =>
+    reduce
+      ? { initial: { opacity: 1 }, animate: { opacity: 1 } }
+      : {
+          initial: { opacity: 0, y: 12 },
+          animate: { opacity: 1, y: 0 },
+          transition: { ...spring, delay },
+        };
+
   return (
     <section
       ref={ref}
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#030712] text-white py-20 px-6"
+      className="relative bg-bg text-fg overflow-hidden"
     >
-      {/* Animated Aurora Background Effects */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-            x: [0, 100, 0],
-            y: [0, 50, 0]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-[#0A4DDE] blur-[120px]"
+      <div ref={containerRef} className="relative min-h-screen flex flex-col items-center justify-center pt-32 pb-16">
+        {/* Background — subtle iris glow + dot grid */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-dots opacity-40"
         />
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.3, 0.6, 0.3],
-            x: [0, -100, 0],
-            y: [0, -50, 0]
+        <div
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] max-w-[1100px] rounded-full pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse, color-mix(in oklch, var(--accent) 18%, transparent) 0%, transparent 55%)',
+            filter: 'blur(80px)',
           }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute top-[20%] -right-[10%] w-[40%] h-[60%] rounded-full bg-[#00C6C6] blur-[120px]"
         />
-        <motion.div
-          animate={{
-            scale: [1, 1.4, 1],
-            opacity: [0.2, 0.4, 0.2]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-[10%] left-[20%] w-[60%] h-[40%] rounded-full bg-[#FFB347] blur-[120px]"
-        />
-      </div>
 
-      <div className="relative z-10 text-center max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 tracking-tight">
-            Hi, I&apos;m <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00C6C6] to-[#0A4DDE]">Elwison Denampo</span>
-          </h1>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-        >
-          <p className="text-2xl sm:text-3xl font-light mb-6 text-gray-200">
-            Full-Stack Developer
-          </p>
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-          className="text-lg md:text-xl text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto"
-        >
-          I specialize in building robust, scalable, and efficient server-side applications and APIs. Passionate about clean code, system design, and leveraging technology to solve complex problems.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }}
-          className="flex flex-col sm:flex-row justify-center items-center gap-6"
-        >
-          <Link href="/projects"
-            className="group relative px-8 py-4 bg-white text-[#0A4DDE] rounded-full font-semibold text-lg overflow-hidden shadow-[0_0_40px_rgba(10,77,222,0.4)] hover:shadow-[0_0_60px_rgba(10,77,222,0.6)] transition-all duration-300 w-full sm:w-auto text-center"
+        <div className="container mx-auto px-6 md:px-10 relative z-10 flex flex-col items-center text-center">
+          {/* Availability pill */}
+          <motion.div
+            {...fade(0)}
+            className="inline-flex items-center gap-2.5 mb-10 px-3.5 py-1.5 rounded-full border border-border bg-bg-elevated/60 backdrop-blur-md text-[12px] font-medium text-fg-muted"
           >
-            <span className="relative z-10">View My Work</span>
-            <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-gray-100 to-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
-          </Link>
+            <span aria-hidden="true" className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[color:var(--signal-live)]">
+              <span className="absolute inset-0 rounded-full bg-[color:var(--signal-live)] motion-safe:animate-ping opacity-70" />
+            </span>
+            Available for remote roles
+            <span className="text-fg-subtle">·</span>
+            <span className="text-fg-subtle">Cebu, GMT+8</span>
+          </motion.div>
 
-          <Link href="/contact"
-            className="group relative px-8 py-4 bg-transparent border border-white/30 text-white rounded-full font-semibold text-lg hover:bg-white/10 hover:border-white transition-all duration-300 backdrop-blur-sm w-full sm:w-auto flex items-center justify-center gap-2"
+          {/* Warmth greeting — small italic above the outlined name */}
+          <motion.p
+            {...fade(0.03)}
+            className="font-serif text-fg-muted text-lg md:text-xl mb-2 md:mb-3"
           >
-            <span>Get In Touch</span>
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </motion.div>
+            Hi — I&apos;m
+          </motion.p>
+
+          {/* Outlined-stroke byline — bold-flavored typographic signature */}
+          <motion.p
+            {...fade(0.05)}
+            aria-label="Elwison Denampo"
+            className="font-display text-outlined text-fg text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] tracking-[-0.04em] uppercase mb-6 md:mb-8"
+          >
+            Elwison Denampo.
+          </motion.p>
+
+          {/* Massive sans headline */}
+          <motion.h1
+            {...fade(0.08)}
+            className="font-display text-fg max-w-5xl text-[3.25rem] sm:text-7xl md:text-[5.5rem] lg:text-[7rem]"
+          >
+            Software companies stake their
+            {' '}
+            <span className="font-serif text-fg-muted">reputation</span>
+            {' '}
+            on.
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            {...fade(0.18)}
+            className="mt-8 max-w-2xl text-base md:text-lg text-fg-muted leading-relaxed"
+          >
+            Full-stack engineer specialising in backend architecture and the
+            systems that hold up when no one is watching.
+          </motion.p>
+
+          {/* Twin CTAs */}
+          <motion.div
+            {...fade(0.28)}
+            className="mt-12 flex flex-wrap items-center justify-center gap-3"
+          >
+            <Link
+              href="/projects"
+              className="bloom inline-flex items-center gap-2 px-5 py-3 rounded-full bg-accent text-accent-fg hover:bg-accent-hover transition-colors text-[14px] font-semibold"
+            >
+              See selected work
+              <span aria-hidden="true" className="text-base">→</span>
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-strong text-fg hover:bg-bg-elevated transition-colors text-[14px] font-semibold"
+            >
+              Get in touch
+            </Link>
+          </motion.div>
+
+          {/* Product mockup — tilted browser window with parallax */}
+          <motion.div
+            style={{
+              y: mockupY,
+              scale: mockupScale,
+              rotate: mockupRotate,
+              opacity: mockupOpacity,
+            }}
+            {...fade(0.4)}
+            className="mt-20 md:mt-28 w-full max-w-[1100px] origin-center"
+          >
+            <div className="relative">
+              {/* Glow underneath */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-6 rounded-3xl pointer-events-none"
+                style={{
+                  background:
+                    'radial-gradient(ellipse at bottom, color-mix(in oklch, var(--accent) 35%, transparent) 0%, transparent 60%)',
+                  filter: 'blur(40px)',
+                }}
+              />
+              {/* Browser window */}
+              <div className="relative rounded-2xl overflow-hidden border border-border-strong bg-bg-elevated shadow-2xl">
+                {/* Chrome bar */}
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-bg-deep">
+                  <div className="flex gap-1.5">
+                    <span className="h-3 w-3 rounded-full bg-fg-subtle/30" />
+                    <span className="h-3 w-3 rounded-full bg-fg-subtle/30" />
+                    <span className="h-3 w-3 rounded-full bg-fg-subtle/30" />
+                  </div>
+                  <div className="flex-1 mx-4 px-3 py-1 rounded-md bg-bg-elevated border border-border text-[11px] font-mono text-fg-subtle truncate">
+                    portal.thelachow.com / admin
+                  </div>
+                  <span className="text-[10px] font-mono text-fg-subtle hidden sm:inline">
+                    PREVIEW
+                  </span>
+                </div>
+                {/* Screenshot */}
+                <div className="relative aspect-[16/9.5] bg-bg-deep">
+                  <Image
+                    src="/images/lachow-thumbnail.png"
+                    alt="LaChowOS admin dashboard"
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 1024px) 100vw, 1100px"
+                    priority
+                    unoptimized
+                  />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
       </div>
     </section>
   );

@@ -1,203 +1,175 @@
-// src/app/components/sections/SkillsSection.tsx
+// src/components/sections/SkillsSection.tsx — high-end v2 (hierarchy grid)
 'use client';
-import React, { forwardRef, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import { LayoutDashboard } from 'lucide-react';
-import { FaDiscord, FaDocker, FaFacebookMessenger, FaGithubSquare, FaJira } from 'react-icons/fa';
-import { SiAndroidstudio, SiFirebase, SiSupabase, SiTypescript, SiJavascript, SiPython, SiPhp, SiHtml5, SiCss3, SiDart, SiCplusplus, SiTailwindcss, SiReact, SiNextdotjs, SiExpress, SiFlutter, SiGooglemeet, SiFastapi, SiSqlalchemy, SiPostgresql, SiRedis, SiJsonwebtokens, SiRender, SiVite, SiFramer, SiSpotify, SiZod } from 'react-icons/si'; // Added more language icons
-import { VscVscode } from 'react-icons/vsc';
-import Image from 'next/image';
-import { DiMysql, DiNodejsSmall, DiSwift } from 'react-icons/di';
-import { GiBearFace } from 'react-icons/gi';
-import { PiMicrosoftTeamsLogoFill, PiOpenAiLogo } from 'react-icons/pi';
-import { GrGraphQl } from 'react-icons/gr';
-import cLogo from "../../../public/images/c-programming.png";
-import restAPILogo from "../../../public/images/restapi.png";
-import cSharpLogo from "../../../public/images/csharp-logo.png";
-import msAccessLogo from "../../../public/images/msaccess-logo.png";
-import websocketLogo from "../../../public/images/websocket-logo.png";
-import groqLogo from "../../../public/images/groq-logo.png";
-import aspNetLogo from "../../../public/images/aspNet-logo.png";
-import sqlServerLogo from "../../../public/images/sqlServer-logo.svg";
-import automapperLogo from "../../../public/images/automapper-logo.png";
+import React, { forwardRef, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { skillsData } from '../../../lib/data';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface SkillsSectionProps { }
+interface SkillsSectionProps {}
 
-// Enhanced skillSpecificIcons with more languages
-const skillSpecificIcons: Record<string, React.ReactNode> = {
-  "JavaScript": <SiJavascript size={72} className="text-yellow-400" />,
-  "Python": <SiPython size={72} className="text-blue-400" />,
-  "Tailwind CSS": <SiTailwindcss size={72} className='text-sky-300' />,
-  "React": <SiReact size={72} className='text-blue-500' />,
-  "Next.js": <SiNextdotjs size={72} className='text-black dark:text-white' />,
-  "Express.js": <SiExpress size={72} className='text-black dark:text-white' />,
-  "Flutter": <SiFlutter size={72} className='text-blue-400' />,
-  "C": <Image src={cLogo} alt="C" width={72} height={72} unoptimized />,
-  "C#": <Image src={cSharpLogo} alt='C#' width={64} height={64} unoptimized />,
-  "REST APIs": <Image src={restAPILogo} alt='REST APIs' width={200} height={200} unoptimized />,
-  "C++": <SiCplusplus size={72} className='text-blue-500' />,
-  "PHP": <SiPhp size={72} className="text-indigo-400" />,
-  "HTML5": <SiHtml5 size={72} className="text-orange-500" />,
-  "CSS3": <SiCss3 size={72} className="text-blue-500" />,
-  "Dart": <SiDart size={72} className="text-sky-400" />,
-  "Swift": <DiSwift size={72} className="text-sky-400" />,
-  "TypeScript": <SiTypescript size={72} className="text-blue-600" />, // Made icon larger for consistency
-  "Node.js": <DiNodejsSmall size={72} className='text-blue-950' />,
-  "Firebase": <SiFirebase size={72} className="text-yellow-500 mr-2 flex-shrink-0" />,
-  "Supabase": <SiSupabase size={72} className="text-green-500 mr-2 flex-shrink-0" />,
-  "Git & GitHub": <FaGithubSquare size={72} className="text-gray-700 dark:text-gray-300 mr-2 flex-shrink-0" />,
-  "Jira": <FaJira size={72} className="text-blue-600 mr-2 flex-shrink-0" />,
-  "VS Code": <VscVscode size={72} className="text-blue-500 mr-2 flex-shrink-0" />,
-  "Android Studio": <SiAndroidstudio size={72} className="text-green-600 mr-2 flex-shrink-0" />,
-  "Discord": <FaDiscord size={72} className="text-indigo-500 mr-2 flex-shrink-0" />,
-  "Google Meet": <SiGooglemeet size={72} className="text-green-600 mr-2 flex-shrink-0" />,
-  "Microsoft Teams": <PiMicrosoftTeamsLogoFill size={72} className="text-blue-500 mr-2 flex-shrink-0" />,
-  "Facebook Messenger": <FaFacebookMessenger size={72} className="text-blue-500 mr-2 flex-shrink-0" />,
-  "Docker": <FaDocker size={72} className='text-blue-500' />,
-  "GraphQL": <GrGraphQl size={72} className='text-pink-400' />,
-  "MSAccess": <Image src={msAccessLogo} alt='MSAccess' height={72} width={72} unoptimized />,
-  "MySQL": <DiMysql size={72} className='text-sky-400' />,
-  "FastAPI": <SiFastapi size={72} className='text-blue-500' />,
-  "SQLAlchemy": <SiSqlalchemy size={72} className='text-blue-500' />,
-  "PostgreSQL": <SiPostgresql size={72} className='text-blue-500' />,
-  "Redis": <SiRedis size={72} className='text-red-500' />,
-  "JWT Auth": <SiJsonwebtokens size={72} className='text-blue-500' />,
-  "WebSocket": <Image src={websocketLogo} alt="Websocket" width={72} height={72} unoptimized />,
-  "OpenAI API": <PiOpenAiLogo size={72} className="text-black dark:text-white mr-2 flex-shrink-0" />,
-  "Groq API": <Image src={groqLogo} alt='Groq' height={72} width={72} unoptimized />,
-  "Render": <SiRender size={72} className="text-black dark:text-white mr-2 flex-shrink-0" />,
-  "ASP.NET Core": <Image src={aspNetLogo} alt='ASP.NET Core' height={72} width={72} unoptimized />,
-  "SQL Server": <Image src={sqlServerLogo} alt='SQL Server' height={72} width={72} unoptimized />,
-  "AutoMapper": <Image src={automapperLogo} alt='Automapper' height={72} width={72} unoptimized />,
-  "Vite": <SiVite size={72} className='text-[#646CFF]' />,
-  "Framer Motion": <SiFramer size={72} className='text-black dark:text-white' />,
-  "Spotipy": <SiSpotify size={72} className='text-[#1DB954]' />,
-  "Spotify API": <SiSpotify size={72} className='text-[#1DB954]' />,
-  "React Flow": <SiReact size={72} className='text-[#FF0072]' />,
-  "Zustand": <GiBearFace size={72} className='text-amber-700 dark:text-amber-500' />,
-  "Zod": <SiZod size={72} className='text-[#3068b7]' />,
-};
+interface PrimarySkill {
+  name: string;
+  blurb: string;
+}
 
-const filterButtons = [
-  { id: 'all', label: 'All Tools' },
-  { id: 'core', label: 'Core Stack' },
-  { id: 'language', label: 'Languages' },
-  { id: 'framework/library', label: 'Frameworks / Libraries' }, // Tech I use most often / proficient with
-  { id: 'frontend', label: 'Frontend' },
-  { id: 'backend', label: 'Backend' },
-  { id: 'database', label: 'Databases' },
-  { id: 'tool', label: 'Dev Tools' }, // Broader tools, IDEs, version control etc.
-  { id: 'environment', label: 'Platforms & Environments' } // OS, Deployment etc.
+/** The eight tools I'd build a production system with tomorrow. */
+const PRIMARY: PrimarySkill[] = [
+  { name: 'TypeScript',  blurb: 'End-to-end type safety, every project' },
+  { name: 'Next.js',     blurb: 'App router, RSC, edge-aware deployments' },
+  { name: 'NestJS',      blurb: 'Modular monolith done right' },
+  { name: 'FastAPI',     blurb: 'Lean Python services that actually scale' },
+  { name: 'PostgreSQL',  blurb: 'Exclusion constraints, partial indexes, GiST' },
+  { name: 'Prisma',      blurb: 'Type-safe data access, migrations as code' },
+  { name: 'React',       blurb: 'Server components, suspense, react-query' },
+  { name: 'Stripe',      blurb: 'Payments + webhooks + reconciliation' },
 ];
 
-const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((props, ref) => {
-  const [activeFilter, setActiveFilter] = useState('all');
+const PRIMARY_SET = new Set(PRIMARY.map(p => p.name));
 
-  const filteredSkills = useMemo(() => {
-    if (activeFilter === 'all') return skillsData;
-    return skillsData.filter(skill => skill.filterCategories.includes(activeFilter));
-  }, [activeFilter])
+const SECONDARY_GROUPS: { label: string; names: string[] }[] = [
+  { label: 'Languages',     names: ['JavaScript', 'Python', 'C#', 'Dart', 'Swift', 'C', 'C++', 'HTML5', 'CSS3'] },
+  { label: 'Frameworks',    names: ['ASP.NET Core', 'Express.js', 'Node.js', 'Flutter', 'Vite', 'React Query', 'React Flow', 'Framer Motion', 'shadcn/ui', 'Zustand', 'Tailwind CSS'] },
+  { label: 'Data',          names: ['Supabase', 'SQL Server', 'MySQL', 'Firebase', 'Redis', 'SQLAlchemy', 'AutoMapper', 'MSAccess'] },
+  { label: 'Infra & tools', names: ['AWS S3', 'Render', 'Docker', 'Turborepo', 'pnpm', 'Sentry', 'Git & GitHub', 'Jira', 'VS Code'] },
+  { label: 'Integrations',  names: ['DocuSign', 'SendGrid', 'Clerk', 'OpenAI API', 'Groq API', 'Socket.IO', 'WebSocket', 'Zod', 'GraphQL', 'REST APIs', 'JWT Auth', 'Spotify API', 'Spotipy', 'FullCalendar', 'Recharts'] },
+];
+
+const knownNames = new Set(skillsData.map(s => s.name));
+
+/** Filter options derived from the SECONDARY_GROUPS labels, plus an "all" default. */
+const FILTERS = ['all', ...SECONDARY_GROUPS.map(g => g.label)] as const;
+type Filter = (typeof FILTERS)[number];
+
+const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((_props, ref) => {
+  const reduce = useReducedMotion();
+  const [activeFilter, setActiveFilter] = useState<Filter>('all');
+
+  const visibleGroups =
+    activeFilter === 'all'
+      ? SECONDARY_GROUPS
+      : SECONDARY_GROUPS.filter(g => g.label === activeFilter);
+  const spring = { type: 'spring' as const, stiffness: 160, damping: 28, mass: 0.9 };
+  const fade = (delay = 0) =>
+    reduce
+      ? { initial: { opacity: 1 }, whileInView: { opacity: 1 }, viewport: { once: true } }
+      : {
+          initial: { opacity: 0, y: 14 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, amount: 0.1 },
+          transition: { ...spring, delay },
+        };
 
   return (
     <section
       ref={ref}
       id="skills"
-      className="py-16 md:py-24 bg-gradient-to-b from-[#F0F4F8] to-white dark:from-[#0B1120] dark:to-[#030712] relative overflow-hidden transition-colors duration-300"
+      className="bg-bg text-fg py-28 md:py-40 border-t border-border relative"
     >
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#00C6C6] opacity-[0.03] rounded-full blur-[100px]" />
-        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-[#0A4DDE] opacity-[0.03] rounded-full blur-[100px]" />
-      </div>
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className='text-center mb-12 md:mb-16'
+      <div className="container mx-auto px-6 md:px-10">
+        {/* Section tag — bracketed mono with section number */}
+        <motion.p
+          {...fade(0)}
+          className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-8 inline-flex items-baseline gap-1.5"
         >
-          <h2 className='text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] mb-4 tracking-tight'>
-            Tech Stack
-          </h2>
-          <p className='text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto font-light'>
-            A collection of technologies, tools, and platforms I leverage to build and manage projects effectively.
-          </p>
-        </motion.div>
+          <span aria-hidden="true">[</span>
+          <span className="text-fg-muted">§ 03</span>
+          <span aria-hidden="true" className="text-fg-subtle">·</span>
+          <span>Stack</span>
+          <span aria-hidden="true">]</span>
+        </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className='flex flex-wrap justify-center items-stretch gap-2 md:gap-3 mb-10 md:mb-12'
+        {/* Headline */}
+        <motion.h2
+          {...fade(0.05)}
+          className="font-display text-fg max-w-4xl text-4xl md:text-5xl lg:text-6xl mb-6"
         >
-          {filterButtons.map((filter) => (
-            <button
-              key={filter.id}
-              onClick={() => setActiveFilter(filter.id)}
-              className={`px-4 py-2 md:px-6 md:py-3 text-sm md:text-base rounded-full font-semibold transition-all duration-300 ease-in-out flex items-center justify-center text-center min-h-[40px] sm:min-h-[44px] backdrop-blur-sm
-                ${activeFilter === filter.id
-                  ? 'bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] text-white shadow-[0_0_20px_rgba(10,77,222,0.4)] scale-105 border-none'
-                  : 'bg-white/50 dark:bg-[#0B1120]/50 text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-[#0B1120]/80 border border-gray-200/50 dark:border-white/10 hover:shadow-md'
-                }`}
-              style={{ flexBasis: 'auto' }}
-            >
-              {filter.label}
-            </button>
-          ))}
-        </motion.div>
+          The eight I&apos;d build with{' '}
+          <span className="font-serif text-fg-muted">tomorrow</span>.
+        </motion.h2>
+        <motion.p {...fade(0.1)} className="text-fg-muted text-base md:text-lg max-w-xl mb-16 md:mb-20">
+          Tools I&apos;ve shipped production with — not the full list, just the
+          shortlist for picking up a clean slate.
+        </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-x-4 gap-y-8 md:gap-y-10 justify-items-center'
-        >
-          {filteredSkills.map((skill, index) => (
+        {/* Primary tier — large hierarchical cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-20">
+          {PRIMARY.map((tool, i) => (
             <motion.div
-              key={skill.name}
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.4, delay: index * 0.05, ease: "backOut" }}
-              whileHover={{ y: -8, scale: 1.05 }}
-              className='flex flex-col items-center justify-center w-full max-w-[110px] text-center group bg-white/40 dark:bg-[#0B1120]/40 backdrop-blur-lg rounded-2xl p-4 shadow-sm border border-white/60 dark:border-white/10 hover:shadow-[0_10px_30px_rgba(0,198,198,0.15)] hover:border-[#00C6C6]/30 transition-all duration-300'
+              key={tool.name}
+              {...fade(0.1 + i * 0.03)}
+              className="group relative p-6 rounded-xl border border-border bg-bg-elevated/40 hover:bg-bg-elevated hover:border-border-strong transition-colors overflow-hidden"
             >
-              <div className='mb-3 transition-transform duration-300 group-hover:scale-110 drop-shadow-sm group-hover:drop-shadow-md flex items-center justify-center h-[72px]'>
-                {skillSpecificIcons[skill.name] || (
-                  <LayoutDashboard size={40} className='text-gray-400' />
-                )}
-              </div>
-              <span className='text-xs sm:text-sm text-gray-800 dark:text-gray-200 font-semibold leading-tight group-hover:text-[#0A4DDE] transition-colors'>
-                {skill.name}
-              </span>
+              {/* Accent line that lights up on hover */}
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              />
+              <p className="font-display text-fg text-2xl md:text-[1.75rem] tracking-[-0.02em] leading-none">
+                {tool.name}
+              </p>
+              <p className="mt-4 text-[13px] text-fg-muted leading-snug">
+                {tool.blurb}
+              </p>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
-        {filteredSkills.length === 0 && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className='text-center text-[#575454] mt-10'
-          >
-            No tools match the selected filter.
-          </motion.p>
-        )}
+        {/* Secondary tier — quieter compact grid with restrained filter */}
+        <motion.div {...fade(0.3)} className="border-t border-border pt-12 md:pt-16">
+          <div className="flex flex-wrap items-baseline justify-between gap-4 mb-8">
+            <p className="text-[12px] font-mono uppercase tracking-[0.18em] text-fg-subtle">
+              Also fluent in
+            </p>
+            {/* Filter pills — text-only chips, no logos */}
+            <div role="tablist" aria-label="Filter skill categories" className="flex flex-wrap items-center gap-1.5">
+              {FILTERS.map((f) => {
+                const active = activeFilter === f;
+                return (
+                  <button
+                    key={f}
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setActiveFilter(f)}
+                    className={`px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-[0.18em] border transition-colors ${
+                      active
+                        ? 'bg-accent text-accent-fg border-accent'
+                        : 'border-border text-fg-muted hover:border-border-strong hover:text-fg'
+                    }`}
+                  >
+                    {f}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-16"
-        >
-          <p className="text-md text-[#575454] dark:text-gray-400 italic">
-            ...and I&apos;m always learning and adapting to new technologies!
+          <div className="space-y-8">
+            {visibleGroups.map((group) => {
+              const items = group.names.filter(n => knownNames.has(n) && !PRIMARY_SET.has(n));
+              if (items.length === 0) return null;
+              return (
+                <div key={group.label} className="grid grid-cols-12 gap-4 md:gap-6">
+                  <p className="col-span-12 md:col-span-3 text-[13px] text-fg-subtle">
+                    {group.label}
+                  </p>
+                  <div className="col-span-12 md:col-span-9 flex flex-wrap gap-2">
+                    {items.map((name) => (
+                      <span
+                        key={name}
+                        className="inline-flex items-center px-3 py-1.5 rounded-full border border-border bg-bg-elevated/30 text-[13px] text-fg hover:border-border-strong transition-colors"
+                      >
+                        {name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="mt-12 text-sm text-fg-subtle">
+            Always picking up the next thing — currently studying edge runtimes
+            and DX-first build tooling.
           </p>
         </motion.div>
       </div>

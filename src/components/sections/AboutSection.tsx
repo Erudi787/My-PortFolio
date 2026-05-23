@@ -1,142 +1,173 @@
-// src/app/components/sections/AboutSection.tsx
+// src/components/sections/AboutSection.tsx — hybrid v3 (right-column sidebar)
 'use client';
 import React, { forwardRef } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { UserCircle, Briefcase, Lightbulb, Download, Award, BadgeCheck } from 'lucide-react';
+import Link from 'next/link';
+import { motion, useReducedMotion } from 'framer-motion';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface AboutSectionProps { }
+interface AboutSectionProps {}
 
-const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((props, ref) => {
+const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((_props, ref) => {
+  const reduce = useReducedMotion();
+  const spring = { type: 'spring' as const, stiffness: 160, damping: 28, mass: 0.9 };
+  const fade = (delay = 0) =>
+    reduce
+      ? { initial: { opacity: 1 }, whileInView: { opacity: 1 }, viewport: { once: true } }
+      : {
+          initial: { opacity: 0, y: 14 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, amount: 0.15 },
+          transition: { ...spring, delay },
+        };
+
   return (
     <section
       ref={ref}
       id="about"
-      className="py-16 md:py-28 bg-white dark:bg-[#030712] relative overflow-hidden transition-colors duration-300"
+      className="bg-bg text-fg py-28 md:py-40 relative"
     >
-      {/* Decorative Blur */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00C6C6]/5 rounded-full blur-3xl -z-10 pointer-events-none transform translate-x-1/2 -translate-y-1/2" />
-
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-center mb-16 md:mb-20"
+      <div className="container mx-auto px-6 md:px-10">
+        {/* Section tag — bracketed mono with section number */}
+        <motion.p
+          {...fade(0)}
+          className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-8 inline-flex items-baseline gap-1.5"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] mb-4 tracking-tight">
-            About Me
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-light">
-            A brief introduction to who I am, my journey as a full-stack developer, and my technical approach.
-          </p>
-        </motion.div>
+          <span aria-hidden="true">[</span>
+          <span className="text-fg-muted">§ 02</span>
+          <span aria-hidden="true" className="text-fg-subtle">·</span>
+          <span>About</span>
+          <span aria-hidden="true">]</span>
+        </motion.p>
 
-        <div className="grid md:grid-cols-5 gap-12 md:gap-20 items-center">
-          {/* Profile Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-            whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: "backOut" }}
-            className="md:col-span-2 flex justify-center relative"
+        {/* Headline — spans the left 8 cols of the grid below */}
+        <motion.h2
+          {...fade(0.05)}
+          className="font-display text-fg text-4xl md:text-6xl lg:text-7xl mb-12 md:mb-16 max-w-4xl"
+        >
+          The kind of engineer who reads the migration script before agreeing to the deadline.
+        </motion.h2>
+
+        {/* Body — bio prose left, sticky sidebar right (portrait + metadata + résumé) */}
+        <div className="grid grid-cols-12 gap-x-8 md:gap-x-12 gap-y-14 items-start">
+          {/* LEFT: 8 / 12 — bio paragraphs in a 2-col internal grid */}
+          <div className="col-span-12 md:col-span-8">
+            <div className="grid sm:grid-cols-2 gap-x-10 gap-y-8 text-fg-muted text-base md:text-lg leading-relaxed">
+              <motion.p {...fade(0.1)}>
+                I&apos;m a full-stack engineer based in Cebu, Philippines. Most
+                of my work lives on the backend — database schemas, service
+                architecture, the API contracts that the frontend team
+                eventually has to render. I learned by shipping things that
+                real people use, which has the useful side-effect of making me
+                allergic to half-finished work.
+              </motion.p>
+
+              <motion.p {...fade(0.15)}>
+                Right now I&apos;m shipping{' '}
+                <span className="text-fg font-medium">LaChowOS</span> — a
+                property-management platform for culinary innovation
+                facilities. Before that I built the backend for{' '}
+                <Link href="/projects/futurethink-edge" className="text-fg link-underline">
+                  FutureThink Edge
+                </Link>
+                , an AI-powered adaptive learning platform engineered for
+                3,000+ concurrent users with FastAPI, Postgres, and Redis
+                pooled to the gills.
+              </motion.p>
+
+              <motion.p {...fade(0.2)}>
+                I lean toward boring, durable choices — exclusion constraints
+                over application-layer locks, audit trails before they&apos;re
+                asked for, idempotent imports so re-runs don&apos;t become
+                incidents.
+              </motion.p>
+
+              <motion.p {...fade(0.25)}>
+                I&apos;ll spend an afternoon getting the seed data right
+                because I&apos;ve been on the wrong side of a 3am page enough
+                times to know it pays back.
+              </motion.p>
+            </div>
+          </div>
+
+          {/* RIGHT: 4 / 12 — sticky sidebar with portrait, metadata table, résumé */}
+          <motion.aside
+            {...fade(0.12)}
+            className="col-span-12 md:col-span-4 md:pl-4"
           >
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#00C6C6] to-[#0A4DDE] rounded-full blur-2xl opacity-20 transform scale-110" />
-            <div className="relative w-56 h-56 md:w-80 md:h-80 rounded-full overflow-hidden shadow-2xl border-4 border-white z-10">
-              <Image
-                src="/images/profile.jpg"
-                alt="Elwison Denampo - Full-Stack Developer"
-                fill
-                className="object-cover transform hover:scale-110 transition-transform duration-700"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority
-              />
-            </div>
-          </motion.div>
+            <div className="space-y-8">
+              {/* Portrait + caption */}
+              <figure>
+                <div className="relative aspect-[4/5] w-full max-w-[280px] overflow-hidden border border-border-strong bg-bg-elevated">
+                  <Image
+                    src="/images/profile.jpg"
+                    alt="Portrait of Elwison Denampo"
+                    fill
+                    className="object-cover grayscale-[15%] saturate-[0.95]"
+                    sizes="(max-width: 768px) 60vw, 280px"
+                    priority
+                  />
+                  <div aria-hidden="true" className="absolute inset-1.5 border border-bg/15 pointer-events-none" />
+                </div>
+                <figcaption className="mt-3 font-mono text-[11px] tracking-[0.22em] uppercase text-fg-subtle inline-flex items-baseline gap-1.5">
+                  <span aria-hidden="true">[</span>
+                  <span className="text-fg-muted">Plate I</span>
+                  <span aria-hidden="true" className="text-fg-subtle">·</span>
+                  <span>Cebu, 2026</span>
+                  <span aria-hidden="true">]</span>
+                </figcaption>
+              </figure>
 
-          {/* Text Content */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="md:col-span-3 space-y-8 text-gray-600 dark:text-gray-400 leading-relaxed"
-          >
-            <div>
-              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-3">
-                <UserCircle size={28} className="mr-3 text-[#00C6C6]" /> Who I Am
-              </h3>
-              <p className="text-[15px] md:text-base">
-                Hello! I&apos;m Elwison Denampo, a Full-Stack Developer with a strong focus on backend development and system design. I specialize in building scalable APIs, designing database architectures, and deploying production infrastructure. My journey into technology was driven by a curiosity to understand how complex systems work and a desire to build solutions that make a real impact.
-              </p>
-            </div>
+              {/* At-a-glance metadata */}
+              <dl className="grid grid-cols-3 gap-y-3 gap-x-4 text-sm pt-6 border-t border-border max-w-[280px]">
+                <dt className="text-fg-subtle">Role</dt>
+                <dd className="col-span-2 text-fg">Full-stack engineer</dd>
 
-            <div>
-              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-3">
-                <Briefcase size={28} className="mr-3 text-[#00C6C6]" /> My Journey & Experience
-              </h3>
-              <p className="text-[15px] md:text-base">
-                I recently contributed to FutureThink Edge, a production AI-powered learning platform deployed on Render, where I built 40+ API endpoints, designed 42+ database models, and integrated multiple AI providers. I&apos;ve also led team projects like Book Buddi (ASP.NET Core library system) and BSDOC (health management platform). This experience has equipped me with strong skills in Python/FastAPI, C#/ASP.NET Core, Node.js, and multiple database systems including PostgreSQL, SQL Server, and Firebase.
-              </p>
-            </div>
+                <dt className="text-fg-subtle">Based</dt>
+                <dd className="col-span-2 text-fg">Naga, Cebu · PH</dd>
 
-            <div>
-              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-3">
-                <Lightbulb size={28} className="mr-3 text-[#00C6C6]" /> Technical Philosophy
-              </h3>
-              <p className="text-[15px] md:text-base">
-                I believe in clean architecture, thorough testing, and continuous learning. My approach emphasizes security (implementing RBAC, JWT auth, audit logging), maintainability (Repository and Unit of Work patterns), and scalability (Redis caching, connection pooling). I&apos;m comfortable working across multiple tech stacks and always eager to explore new technologies to solve real-world problems.
-              </p>
-            </div>
+                <dt className="text-fg-subtle">Status</dt>
+                <dd className="col-span-2 text-fg">
+                  <span className="inline-flex items-baseline gap-2">
+                    <span aria-hidden="true" className="relative inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--signal-live)] translate-y-[1px]">
+                      <span className="absolute inset-0 rounded-full bg-[color:var(--signal-live)] motion-safe:animate-ping opacity-70" />
+                    </span>
+                    Open to remote
+                  </span>
+                </dd>
 
-            <div>
-              <h3 className="flex items-center text-2xl font-bold text-[#0B1120] dark:text-[#f8fafc] mb-4">
-                <Award size={28} className="mr-3 text-[#00C6C6]" /> Achievements & Certifications
-              </h3>
-              <div className="space-y-4">
-                <motion.div
-                  whileHover={{ x: 5 }}
-                  className="flex items-start gap-4 p-4 bg-white dark:bg-[#0B1120]/60 rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 dark:border-white/10"
-                >
-                  <div className="p-2 bg-[#0A4DDE]/10 rounded-lg">
-                    <Award size={24} className="text-[#0A4DDE] flex-shrink-0" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-[#0B1120] dark:text-[#f8fafc]">2nd Prize — Huawei ICT Competition</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Network Track, Philippines (2025–2026)</p>
-                  </div>
-                </motion.div>
+                <dt className="text-fg-subtle">Awards</dt>
+                <dd className="col-span-2 text-fg-muted leading-relaxed">
+                  2nd Prize, Huawei ICT (PH, 2025–26)
+                  <br />
+                  SEO Cert., HubSpot (2025)
+                </dd>
+              </dl>
 
-                <motion.div
-                  whileHover={{ x: 5 }}
-                  className="flex items-start gap-4 p-4 bg-white dark:bg-[#0B1120]/60 rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 dark:border-white/10"
-                >
-                  <div className="p-2 bg-[#00C6C6]/10 rounded-lg">
-                    <BadgeCheck size={24} className="text-[#00C6C6] flex-shrink-0" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-[#0B1120] dark:text-[#f8fafc]">SEO Certification — HubSpot Academy</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Valid: Dec 2025 – Jan 2027</p>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-
-            <div className="pt-8">
+              {/* Résumé CTA */}
               <a
                 href="/resume/ElwisonDenampo_SoftwareEngineer_Resume.pdf"
                 download
-                className="group relative inline-flex items-center gap-2 px-8 py-4 bg-[#0A4DDE] text-white rounded-full font-semibold overflow-hidden shadow-[0_0_30px_rgba(10,77,222,0.3)] hover:shadow-[0_0_50px_rgba(10,77,222,0.5)] transition-all duration-300 transform hover:-translate-y-1"
+                className="bloom inline-flex items-center gap-2.5 px-4 py-3 rounded-full border border-border-strong text-fg hover:bg-bg-elevated transition-colors text-[13px] font-semibold"
               >
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-                <Download size={20} className="relative z-10 group-hover:scale-110 transition-transform" />
-                <span className="relative z-10">Download My Resume</span>
+                Download résumé
+                <span className="text-[11px] font-mono text-fg-subtle">PDF</span>
+                <span aria-hidden="true">↓</span>
               </a>
             </div>
-          </motion.div>
+          </motion.aside>
         </div>
+
+        {/* The single serif italic moment — page's emotional centre */}
+        <motion.blockquote
+          {...fade(0.3)}
+          className="mt-24 md:mt-32 max-w-4xl"
+        >
+          <p className="font-serif text-fg text-3xl md:text-5xl lg:text-6xl leading-[1.15] text-balance">
+            &ldquo;The boring choice — chosen on purpose, twice — beats the
+            clever choice almost every time.&rdquo;
+          </p>
+        </motion.blockquote>
       </div>
     </section>
   );

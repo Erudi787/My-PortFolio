@@ -2,32 +2,65 @@ import ProjectCard from "@/components/sections/ProjectCard";
 import { projectsData } from "../../../../lib/data";
 
 export const metadata = {
-  title: "Projects",
-  description: "A showcase of backend development projects including AI-powered platforms, health management systems, and library management applications.",
+  title: "Work",
+  description:
+    "Selected projects — production builds in EdTech, property management, music recommendation, and developer tooling.",
 };
 
 export default function ProjectsPage() {
-  return (
-    <section id="projects" className="py-16 md:py-28 bg-gradient-to-b from-[#F0F4F8] to-white dark:from-[#0B1120] dark:to-[#030712] transition-colors duration-300 relative overflow-hidden min-h-screen">
-      {/* Decorative Blobs */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#0A4DDE]/5 rounded-full blur-[100px] -z-10 pointer-events-none transform -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#00C6C6]/5 rounded-full blur-[100px] -z-10 pointer-events-none transform translate-x-1/3 translate-y-1/3" />
+  // Sort newest first
+  const sorted = [...projectsData].sort((a, b) => {
+    const ay = a.year ? parseInt(a.year, 10) : 0;
+    const by = b.year ? parseInt(b.year, 10) : 0;
+    return by - ay;
+  });
 
-      <div className="container mx-auto px-6 relative z-10">
-        <h2 className="text-4xl md:text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-[#0A4DDE] to-[#00C6C6] mb-16 tracking-tight">
-          My Projects
-        </h2>
-        {projectsData.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projectsData.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-[#575454] dark:text-gray-400 text-lg">
-            Projects are being added. Please check back soon!
+  return (
+    <section
+      id="projects"
+      className="bg-bg text-fg pt-32 pb-32 md:pt-40 md:pb-40 min-h-screen"
+    >
+      <div className="container mx-auto px-6 md:px-10">
+        {/* Tag — bracketed mono */}
+        <p className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-8 inline-flex items-baseline gap-1.5">
+          <span aria-hidden="true">[</span>
+          <span className="text-fg-muted">archive</span>
+          <span aria-hidden="true" className="text-fg-subtle">·</span>
+          <span>Selected work</span>
+          <span aria-hidden="true">]</span>
+        </p>
+
+        <header className="max-w-4xl mb-20 md:mb-24">
+          <h1 className="font-display text-fg text-5xl md:text-7xl lg:text-[6rem]">
+            Things I&apos;ve shipped,{' '}
+            <span className="font-serif text-fg-muted">chronological</span>.
+          </h1>
+          <p className="mt-10 text-fg-muted text-base md:text-lg leading-relaxed max-w-2xl">
+            From a campus chat app in WinForms to a production
+            property-management platform with ten third-party integrations.
+            Click any tile for the full case study.
           </p>
-        )}
+        </header>
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sorted.map((project, i) => (
+            <ProjectCard key={project.id} project={project} index={i} />
+          ))}
+        </div>
+
+        <p className="mt-20 text-sm text-fg-subtle">
+          More on{" "}
+          <a
+            href="https://github.com/Erudi787"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-fg link-underline"
+          >
+            GitHub
+          </a>
+          .
+        </p>
       </div>
     </section>
   );
