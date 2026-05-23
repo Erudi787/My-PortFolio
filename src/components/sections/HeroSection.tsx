@@ -152,7 +152,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((_props, ref) => {
                     <span className="h-3 w-3 rounded-full bg-fg-subtle/30" />
                   </div>
                   <div className="flex-1 mx-4 px-3 py-1 rounded-md bg-bg-elevated border border-border text-[11px] font-mono text-fg-subtle truncate">
-                    futurethinkedge.org / dashboard
+                    portal.thelachow.com / admin
                   </div>
                   <span className="text-[10px] font-mono text-fg-subtle hidden sm:inline">
                     PREVIEW
@@ -161,8 +161,8 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((_props, ref) => {
                 {/* Screenshot */}
                 <div className="relative aspect-[16/9.5] bg-bg-deep">
                   <Image
-                    src="/images/futurethink_dashboard.png"
-                    alt="FutureThink Edge dashboard"
+                    src="/images/lachow-thumbnail.png"
+                    alt="LaChowOS admin dashboard"
                     fill
                     className="object-cover object-top"
                     sizes="(max-width: 1024px) 100vw, 1100px"

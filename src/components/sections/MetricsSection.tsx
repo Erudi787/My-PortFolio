@@ -79,17 +79,17 @@ export default function MetricsSection() {
           Last twelve months — at a glance
         </motion.p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-14 md:gap-x-12 max-w-6xl mx-auto">
           {METRICS.map((m, i) => (
             <motion.div
               key={m.label}
               {...fade(0.06 + i * 0.08)}
-              className="text-center md:text-left md:border-l md:border-border md:pl-8 md:first:border-l-0 md:first:pl-0"
+              className="text-center md:text-left md:border-l md:border-border md:pl-10 md:first:border-l-0 md:first:pl-0 min-w-0"
             >
-              <p className="font-metric text-outlined text-fg text-[6rem] sm:text-[8rem] md:text-[7.5rem] lg:text-[9rem]">
+              <p className="font-metric text-outlined text-fg text-[clamp(3.5rem,8vw,6rem)] whitespace-nowrap">
                 <CountUp to={m.value} suffix={m.suffix} />
               </p>
-              <p className="mt-4 max-w-xs mx-auto md:mx-0 text-sm md:text-base text-fg-muted leading-snug">
+              <p className="mt-5 max-w-xs mx-auto md:mx-0 text-sm md:text-base text-fg-muted leading-snug">
                 {m.label}
               </p>
             </motion.div>

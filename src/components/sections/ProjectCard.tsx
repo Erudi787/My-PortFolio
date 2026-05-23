@@ -32,7 +32,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
     <motion.article {...reveal} className="group">
       <Link
         href={href}
-        className="relative block rounded-2xl overflow-hidden border border-border bg-bg-elevated aspect-[4/5] md:aspect-[3/4]"
+        className="relative block rounded-2xl overflow-hidden border border-border bg-bg-elevated aspect-[4/5] md:aspect-[16/11]"
       >
         {/* Image or graphic fallback */}
         {project.imageUrl ? (
@@ -82,12 +82,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
           )}
         </div>
 
-        {/* Bottom overlay — gradient + title + tags */}
-        <div className="absolute inset-x-0 bottom-0 p-6 z-10 bg-gradient-to-t from-bg-deep via-bg-deep/85 to-transparent">
-          <h3 className="font-display text-fg text-2xl md:text-[1.75rem] leading-[1.05] tracking-[-0.025em] mb-3">
+        {/* Bottom overlay — lighter gradient so more of the image stays visible */}
+        <div className="absolute inset-x-0 bottom-0 px-5 pt-16 pb-5 z-10 bg-gradient-to-t from-bg-deep/95 via-bg-deep/55 to-transparent">
+          <h3 className="font-display text-fg text-[1.75rem] md:text-[2rem] leading-[1.02] tracking-[-0.03em] mb-2">
             {title}
           </h3>
-          <p className="text-sm text-fg-muted leading-snug mb-4 line-clamp-2 max-w-md">
+          <p className="text-[13px] text-fg-muted leading-snug mb-3 line-clamp-2 max-w-md">
             {project.shortDescription}
           </p>
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-mono text-fg-subtle">
