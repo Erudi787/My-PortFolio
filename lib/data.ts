@@ -173,7 +173,7 @@ export const projectsData: Project[] = [
     id: "1",
     slug: "futurethink-edge",
     year: "2025",
-    pullQuote: "Built for students whose attention isn't always available — adaptive AI across three providers, 3,000+ concurrent users, FERPA-grade audit logs.",
+    pullQuote: "Built for students whose attention isn't always available — adaptive AI across three providers, engineered for 3,000+ concurrent users, FERPA-grade audit logs.",
     title: "FutureThink Edge - AI-Powered Adaptive Learning Platform",
     shortDescription: "A production EdTech platform for students with ADHD and learning differences, featuring AI-powered adaptive learning, multi-role portals, and real-time collaboration.",
     imageUrl: "/images/futurethink-thumbnail.png",
@@ -183,7 +183,7 @@ export const projectsData: Project[] = [
       { src: "/images/futurethink_braingym.png", alt: "Brain Gym", caption: "Gamified brain training exercises." },
     ],
     tags: ["FastAPI", "Next.js", "PostgreSQL", "Redis", "OpenAI API", "WebSocket", "TypeScript", "Python"],
-    longDescription: "FutureThink Edge is a comprehensive AI-powered adaptive learning platform specifically designed for students with ADHD and learning differences. The platform serves 3,000+ concurrent users across multiple roles (Students, Teachers, Parents, Admins, Organizations) with features including AI-powered tutoring, real-time collaboration, gamification, mental health monitoring, and advanced analytics. Fully deployed on Render with PostgreSQL database and Redis caching.",
+    longDescription: "FutureThink Edge is a comprehensive AI-powered adaptive learning platform specifically designed for students with ADHD and learning differences. The platform is engineered for 3,000+ concurrent users across multiple roles (Students, Teachers, Parents, Admins, Organizations) with features including AI-powered tutoring, real-time collaboration, gamification, mental health monitoring, and advanced analytics. Fully deployed on Render with PostgreSQL database and Redis caching.",
     myRole: "Junior Full-Stack Developer",
     myRoles: [
       "Backend Developer",
@@ -196,7 +196,7 @@ export const projectsData: Project[] = [
       "Built 40+ RESTful API endpoints using FastAPI handling authentication, learning sessions, analytics, and admin functions.",
       "Designed and implemented 42+ database models with SQLAlchemy ORM supporting complex role-based relationships.",
       "Developed JWT authentication system with role-based access control (RBAC) for 5 user types (Student, Teacher, Parent, Admin, Organization).",
-      "Implemented Redis caching strategy with connection pooling (pool size: 20, max overflow: 40) supporting 3,000+ concurrent users.",
+      "Implemented Redis caching strategy with connection pooling (pool size: 20, max overflow: 40) sized for 3,000+ concurrent users.",
       "Created WebSocket server with room-based broadcasting for real-time collaboration and notifications.",
       "Built 25+ database migration scripts ensuring zero-downtime production deployments.",
       "Integrated 3 AI providers (OpenAI, Groq, Google Gemini) with orchestration layer for optimal performance.",
@@ -211,7 +211,7 @@ export const projectsData: Project[] = [
     ],
     challengesAndSolutions: [
       {
-        challenge: "Supporting 3,000+ concurrent users without performance degradation.",
+        challenge: "Engineering for 3,000+ concurrent users without performance degradation.",
         solution: "Implemented Redis caching with multiple cache layers (SmartCache, AnalyticsCache, AICache), configured database connection pooling with pool size of 20 and max overflow of 40, and optimized database queries."
       },
       {

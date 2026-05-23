@@ -12,7 +12,7 @@ interface Metric {
 }
 
 const METRICS: Metric[] = [
-  { value: 3000, suffix: '+', label: 'Concurrent users on FutureThink Edge' },
+  { value: 3000, suffix: '+', label: 'Concurrent-user capacity on FutureThink Edge' },
   { value: 45,   suffix: '+', label: 'NestJS modules in LaChowOS' },
   { value: 10,   suffix: '+', label: 'Third-party integrations wired' },
 ];

@@ -63,7 +63,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((_props, ref) =>
             <Link href="/projects/futurethink-edge" className="text-fg link-underline">
               FutureThink Edge
             </Link>
-            , an AI-powered adaptive learning platform serving 3,000+
+            , an AI-powered adaptive learning platform engineered for 3,000+
             concurrent users with FastAPI, Postgres, and Redis pooled to the
             gills.
           </motion.p>

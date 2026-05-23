@@ -148,7 +148,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((_props, ref) => {
                     futurethinkedge.org / dashboard
                   </div>
                   <span className="text-[10px] font-mono text-fg-subtle hidden sm:inline">
-                    LIVE
+                    PREVIEW
                   </span>
                 </div>
                 {/* Screenshot */}

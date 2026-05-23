@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     template: "%s · Elwison Denampo",
   },
   description:
-    "Full-stack engineer shipping production systems — most recently a property-management platform with 45+ NestJS modules and an EdTech platform serving 3,000+ concurrent users.",
+    "Full-stack engineer shipping production systems — most recently a property-management platform with 45+ NestJS modules and an EdTech platform engineered for 3,000+ concurrent users.",
   keywords: [
     "Full-Stack Engineer",
     "Backend Engineer",
