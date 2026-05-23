@@ -70,9 +70,17 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((_props, ref) => {
             <span className="text-fg-subtle">Cebu, GMT+8</span>
           </motion.div>
 
+          {/* Warmth greeting — small italic above the outlined name */}
+          <motion.p
+            {...fade(0.03)}
+            className="font-serif text-fg-muted text-lg md:text-xl mb-2 md:mb-3"
+          >
+            Hi — I&apos;m
+          </motion.p>
+
           {/* Outlined-stroke byline — bold-flavored typographic signature */}
           <motion.p
-            {...fade(0.04)}
+            {...fade(0.05)}
             aria-label="Elwison Denampo"
             className="font-display text-outlined text-fg text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] tracking-[-0.04em] uppercase mb-6 md:mb-8"
           >

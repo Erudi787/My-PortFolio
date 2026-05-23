@@ -1,6 +1,7 @@
 // src/components/sections/AboutSection.tsx — high-end v2
 'use client';
 import React, { forwardRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 
@@ -39,13 +40,40 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((_props, ref) =>
           <span aria-hidden="true">]</span>
         </motion.p>
 
-        {/* Headline */}
-        <motion.h2
-          {...fade(0.05)}
-          className="font-display text-fg max-w-5xl text-4xl md:text-6xl lg:text-7xl mb-20 md:mb-24"
-        >
-          The kind of engineer who reads the migration script before agreeing to the deadline.
-        </motion.h2>
+        {/* Headline + portrait — magazine author-photo treatment */}
+        <div className="grid grid-cols-12 gap-x-8 md:gap-x-12 gap-y-10 items-start mb-20 md:mb-24">
+          <motion.h2
+            {...fade(0.05)}
+            className="col-span-12 md:col-span-9 font-display text-fg text-4xl md:text-6xl lg:text-7xl"
+          >
+            The kind of engineer who reads the migration script before agreeing to the deadline.
+          </motion.h2>
+
+          <motion.figure
+            {...fade(0.12)}
+            className="col-span-12 md:col-span-3 md:pt-2"
+          >
+            <div className="relative aspect-[4/5] w-full max-w-[180px] md:max-w-none overflow-hidden border border-border-strong bg-bg-elevated">
+              <Image
+                src="/images/profile.jpg"
+                alt="Portrait of Elwison Denampo"
+                fill
+                className="object-cover grayscale-[15%] saturate-[0.95]"
+                sizes="(max-width: 768px) 45vw, 200px"
+                priority
+              />
+              {/* Inset hairline frame */}
+              <div aria-hidden="true" className="absolute inset-1.5 border border-bg/15 pointer-events-none" />
+            </div>
+            <figcaption className="mt-3 font-mono text-[11px] tracking-[0.22em] uppercase text-fg-subtle inline-flex items-baseline gap-1.5">
+              <span aria-hidden="true">[</span>
+              <span className="text-fg-muted">Plate I</span>
+              <span aria-hidden="true" className="text-fg-subtle">·</span>
+              <span>Cebu, 2026</span>
+              <span aria-hidden="true">]</span>
+            </figcaption>
+          </motion.figure>
+        </div>
 
         {/* Two narrow columns of bio */}
         <div className="grid md:grid-cols-2 gap-x-12 gap-y-10 max-w-5xl text-fg-muted text-base md:text-lg leading-relaxed">

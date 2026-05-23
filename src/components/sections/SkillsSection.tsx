@@ -1,6 +1,6 @@
 // src/components/sections/SkillsSection.tsx — high-end v2 (hierarchy grid)
 'use client';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { skillsData } from '../../../lib/data';
 
@@ -36,8 +36,18 @@ const SECONDARY_GROUPS: { label: string; names: string[] }[] = [
 
 const knownNames = new Set(skillsData.map(s => s.name));
 
+/** Filter options derived from the SECONDARY_GROUPS labels, plus an "all" default. */
+const FILTERS = ['all', ...SECONDARY_GROUPS.map(g => g.label)] as const;
+type Filter = (typeof FILTERS)[number];
+
 const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((_props, ref) => {
   const reduce = useReducedMotion();
+  const [activeFilter, setActiveFilter] = useState<Filter>('all');
+
+  const visibleGroups =
+    activeFilter === 'all'
+      ? SECONDARY_GROUPS
+      : SECONDARY_GROUPS.filter(g => g.label === activeFilter);
   const spring = { type: 'spring' as const, stiffness: 160, damping: 28, mass: 0.9 };
   const fade = (delay = 0) =>
     reduce
@@ -104,14 +114,37 @@ const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((_props, ref) 
           ))}
         </div>
 
-        {/* Secondary tier — quieter compact grid */}
+        {/* Secondary tier — quieter compact grid with restrained filter */}
         <motion.div {...fade(0.3)} className="border-t border-border pt-12 md:pt-16">
-          <p className="text-[12px] font-mono uppercase tracking-[0.18em] text-fg-subtle mb-10">
-            Also fluent in
-          </p>
+          <div className="flex flex-wrap items-baseline justify-between gap-4 mb-8">
+            <p className="text-[12px] font-mono uppercase tracking-[0.18em] text-fg-subtle">
+              Also fluent in
+            </p>
+            {/* Filter pills — text-only chips, no logos */}
+            <div role="tablist" aria-label="Filter skill categories" className="flex flex-wrap items-center gap-1.5">
+              {FILTERS.map((f) => {
+                const active = activeFilter === f;
+                return (
+                  <button
+                    key={f}
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setActiveFilter(f)}
+                    className={`px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-[0.18em] border transition-colors ${
+                      active
+                        ? 'bg-accent text-accent-fg border-accent'
+                        : 'border-border text-fg-muted hover:border-border-strong hover:text-fg'
+                    }`}
+                  >
+                    {f}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
           <div className="space-y-8">
-            {SECONDARY_GROUPS.map((group) => {
+            {visibleGroups.map((group) => {
               const items = group.names.filter(n => knownNames.has(n) && !PRIMARY_SET.has(n));
               if (items.length === 0) return null;
               return (
