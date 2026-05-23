@@ -27,13 +27,16 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((_props, ref) =>
       className="bg-bg text-fg py-28 md:py-40 relative"
     >
       <div className="container mx-auto px-6 md:px-10">
-        {/* Section tag */}
+        {/* Section tag — bracketed mono with section number */}
         <motion.p
           {...fade(0)}
-          className="text-[12px] font-mono uppercase tracking-[0.18em] text-accent mb-8 flex items-center gap-2"
+          className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-8 inline-flex items-baseline gap-1.5"
         >
-          <span aria-hidden="true" className="h-1 w-1 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-          About
+          <span aria-hidden="true">[</span>
+          <span className="text-fg-muted">§ 02</span>
+          <span aria-hidden="true" className="text-fg-subtle">·</span>
+          <span>About</span>
+          <span aria-hidden="true">]</span>
         </motion.p>
 
         {/* Headline */}

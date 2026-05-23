@@ -26,10 +26,13 @@ export default function Home() {
         className="bg-bg text-fg py-28 md:py-40 border-t border-border"
       >
         <div className="container mx-auto px-6 md:px-10">
-          {/* Section tag */}
-          <p className="text-[12px] font-mono uppercase tracking-[0.18em] text-accent mb-8 flex items-center gap-2">
-            <span aria-hidden="true" className="h-1 w-1 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-            Selected work
+          {/* Section tag — bracketed mono with section number */}
+          <p className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-8 inline-flex items-baseline gap-1.5">
+            <span aria-hidden="true">[</span>
+            <span className="text-fg-muted">§ 04</span>
+            <span aria-hidden="true" className="text-fg-subtle">·</span>
+            <span>Selected work</span>
+            <span aria-hidden="true">]</span>
           </p>
 
           {/* Headline */}
@@ -47,8 +50,8 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 max-w-6xl">
-            {featured.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+            {featured.map((project, i) => (
+              <ProjectCard key={project.id} project={project} index={i} />
             ))}
           </div>
         </div>

@@ -66,9 +66,10 @@ function subtitle(title: string): string {
 
 function SectionTag({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[12px] font-mono uppercase tracking-[0.18em] text-accent mb-6 flex items-center gap-2">
-      <span aria-hidden="true" className="h-1 w-1 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-      {children}
+    <p className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-6 inline-flex items-baseline gap-1.5">
+      <span aria-hidden="true">[</span>
+      <span>{children}</span>
+      <span aria-hidden="true">]</span>
     </p>
   );
 }

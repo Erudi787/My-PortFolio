@@ -70,6 +70,15 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((_props, ref) => {
             <span className="text-fg-subtle">Cebu, GMT+8</span>
           </motion.div>
 
+          {/* Outlined-stroke byline — bold-flavored typographic signature */}
+          <motion.p
+            {...fade(0.04)}
+            aria-label="Elwison Denampo"
+            className="font-display text-outlined text-fg text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] tracking-[-0.04em] uppercase mb-6 md:mb-8"
+          >
+            Elwison Denampo.
+          </motion.p>
+
           {/* Massive sans headline */}
           <motion.h1
             {...fade(0.08)}
@@ -87,9 +96,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((_props, ref) => {
             {...fade(0.18)}
             className="mt-8 max-w-2xl text-base md:text-lg text-fg-muted leading-relaxed"
           >
-            I&apos;m{' '}
-            <span className="text-fg font-medium">Elwison Denampo</span>
-            , a full-stack engineer specialising in backend architecture and the
+            Full-stack engineer specialising in backend architecture and the
             systems that hold up when no one is watching.
           </motion.p>
 

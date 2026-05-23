@@ -86,7 +86,7 @@ export default function MetricsSection() {
               {...fade(0.06 + i * 0.08)}
               className="text-center md:text-left md:border-l md:border-border md:pl-8 md:first:border-l-0 md:first:pl-0"
             >
-              <p className="font-metric text-fg text-[6rem] sm:text-[8rem] md:text-[7.5rem] lg:text-[9rem]">
+              <p className="font-metric text-outlined text-fg text-[6rem] sm:text-[8rem] md:text-[7.5rem] lg:text-[9rem]">
                 <CountUp to={m.value} suffix={m.suffix} />
               </p>
               <p className="mt-4 max-w-xs mx-auto md:mx-0 text-sm md:text-base text-fg-muted leading-snug">

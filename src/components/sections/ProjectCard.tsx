@@ -7,9 +7,12 @@ import { Project } from '../../../lib/data';
 
 interface ProjectCardProps {
   project: Project;
+  /** Zero-based card position — renders as `N° 01` stamp in the top-left corner. */
+  index?: number;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
+  const numStamp = typeof index === 'number' ? `N° ${String(index + 1).padStart(2, '0')}` : null;
   const reduce = useReducedMotion();
   const spring = { type: 'spring' as const, stiffness: 160, damping: 28, mass: 0.9 };
   const reveal = reduce
@@ -58,11 +61,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           </div>
         )}
 
-        {/* Year + live badge — top corners */}
+        {/* N° stamp + year (combined) on the left, live badge on the right */}
         <div className="absolute top-4 left-4 right-4 flex items-start justify-between z-10">
-          {project.year && (
-            <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-fg/90 px-2.5 py-1 rounded-md bg-bg-deep/70 backdrop-blur-md border border-border">
-              {project.year}
+          {(numStamp || project.year) && (
+            <span className="inline-flex items-baseline gap-1.5 text-[11px] font-mono uppercase tracking-[0.22em] text-fg/90 px-2.5 py-1 rounded-md bg-bg-deep/70 backdrop-blur-md border border-border">
+              {numStamp && <span aria-hidden="true">[</span>}
+              {numStamp && <span className="text-accent">{numStamp}</span>}
+              {numStamp && project.year && <span aria-hidden="true" className="text-fg-subtle">·</span>}
+              {project.year && <span>{project.year}</span>}
+              {numStamp && <span aria-hidden="true">]</span>}
             </span>
           )}
           {project.liveDemoUrl && (

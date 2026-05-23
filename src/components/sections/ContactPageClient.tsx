@@ -22,9 +22,12 @@ export default function ContactPageClient() {
       />
 
       <div className="container mx-auto px-6 md:px-10 relative z-10">
-        <p className="text-[12px] font-mono uppercase tracking-[0.18em] text-accent mb-8 flex items-center gap-2">
-          <span aria-hidden="true" className="h-1 w-1 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-          Get in touch
+        <p className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-8 inline-flex items-baseline gap-1.5">
+          <span aria-hidden="true">[</span>
+          <span className="text-fg-muted">contact</span>
+          <span aria-hidden="true" className="text-fg-subtle">·</span>
+          <span>Get in touch</span>
+          <span aria-hidden="true">]</span>
         </p>
 
         <div className="max-w-4xl">

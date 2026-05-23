@@ -118,6 +118,40 @@ body {
 }
 
 /* ============================================================
+ * Outlined-stroke text — bold-flavored signature element.
+ * Hollow type, currentColor stroke. Use for ONE moment per
+ * section (byline, metric, project initials), never as body.
+ * ============================================================ */
+.text-outlined {
+  -webkit-text-stroke: 1.25px currentColor;
+  -webkit-text-fill-color: transparent;
+  color: currentColor;
+  paint-order: stroke fill;
+}
+@media (min-width: 768px) {
+  .text-outlined { -webkit-text-stroke-width: 1.75px; }
+}
+
+/* ============================================================
+ * Marquee — horizontal infinite-scroll strip. Footer only.
+ * Pauses on hover so screen readers / keyboard users aren't
+ * fighting the motion.
+ * ============================================================ */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+.marquee-container:hover .marquee,
+.marquee-container:focus-within .marquee {
+  animation-play-state: paused;
+}
+
+/* ============================================================
  * Glass surface — used by header + project overlays.
  * Premium look = subtle backdrop blur + faint border.
  * ============================================================ */

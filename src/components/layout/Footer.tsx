@@ -2,8 +2,41 @@ import Link from 'next/link';
 
 const Footer = () => {
   const year = new Date().getFullYear();
+
+  // Items carried by the iris marquee strip — duplicated twice in the
+  // render so the -50% translateX wraps seamlessly.
+  const marqueeItems = [
+    'Elwison Denampo',
+    '★',
+    'Available for remote roles',
+    '★',
+    'Cebu · GMT+8',
+    '★',
+    'Building LaChowOS',
+    '★',
+    'Last 12 months: 45+ NestJS modules, 10+ integrations',
+    '★',
+  ];
+
   return (
     <footer className="bg-bg-deep text-fg border-t border-border">
+      {/* Iris marquee strip — the bold-flavored signature moment */}
+      <div
+        className="marquee-container overflow-hidden border-b border-border"
+        style={{ background: 'var(--accent)', color: 'var(--accent-fg)' }}
+      >
+        <div className="marquee py-3" aria-hidden="true">
+          {[...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, i) => (
+            <span
+              key={i}
+              className="font-display text-[1.35rem] md:text-[1.65rem] px-5 whitespace-nowrap tracking-[-0.02em] leading-none"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
       <div className="container mx-auto px-6 md:px-10 pt-20 pb-10">
         {/* Big wordmark — almost takes the column */}
         <Link href="/" className="block group">

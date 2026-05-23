@@ -21,10 +21,13 @@ export default function ProjectsPage() {
       className="bg-bg text-fg pt-32 pb-32 md:pt-40 md:pb-40 min-h-screen"
     >
       <div className="container mx-auto px-6 md:px-10">
-        {/* Tag */}
-        <p className="text-[12px] font-mono uppercase tracking-[0.18em] text-accent mb-8 flex items-center gap-2">
-          <span aria-hidden="true" className="h-1 w-1 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]" />
-          Selected work
+        {/* Tag — bracketed mono */}
+        <p className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-8 inline-flex items-baseline gap-1.5">
+          <span aria-hidden="true">[</span>
+          <span className="text-fg-muted">archive</span>
+          <span aria-hidden="true" className="text-fg-subtle">·</span>
+          <span>Selected work</span>
+          <span aria-hidden="true">]</span>
         </p>
 
         <header className="max-w-4xl mb-20 md:mb-24">
@@ -41,8 +44,8 @@ export default function ProjectsPage() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sorted.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+          {sorted.map((project, i) => (
+            <ProjectCard key={project.id} project={project} index={i} />
           ))}
         </div>
 
