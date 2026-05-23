@@ -560,6 +560,9 @@ export const projectsData: Project[] = [
         solution: "Integrated DocuSign's eSignature API with envelope-based workflows, supporting multi-party signing, status callbacks, and automatic lease activation on completion."
       },
     ],
-    githubUrl: "https://github.com/FutureThink-Edge/LaChowOS",
+    // Source intentionally omitted — enterprise repo, not publicly viewable.
+    // liveDemoUrl points to the public marketing site (thelachow.com); the
+    // LaChowOS tenant portal itself lives at portal.thelachow.com behind auth.
+    liveDemoUrl: "https://thelachow.com",
   },
 ];
