@@ -183,19 +183,6 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((_props, ref) => {
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          {...fade(0.6)}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[10px] tracking-[0.32em] uppercase text-fg-subtle"
-        >
-          <span>Scroll</span>
-          <motion.span
-            aria-hidden="true"
-            animate={reduce ? {} : { y: [0, 6, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className="block h-3 w-px bg-fg-subtle"
-          />
-        </motion.div>
       </div>
     </section>
   );
