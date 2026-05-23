@@ -1,27 +1,26 @@
-// src/components/sections/MetricsSection.tsx — high-end v2
+// src/components/sections/MetricsSection.tsx — hybrid v3 (project-attributed metrics)
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 
 interface Metric {
+  /** Project name shown as a bracketed kicker above the numeral — explicit attribution. */
+  project: string;
   value: number;
   suffix?: string;
+  /** What the number actually measures (shown under the numeral). */
   label: string;
-  /** Number of decimals when formatting */
-  decimals?: number;
 }
 
+// Ordered so LaChowOS leads — it matches the hero mockup directly above.
 const METRICS: Metric[] = [
-  { value: 3000, suffix: '+', label: 'Concurrent-user capacity on FutureThink Edge' },
-  { value: 45,   suffix: '+', label: 'NestJS modules in LaChowOS' },
-  { value: 10,   suffix: '+', label: 'Third-party integrations wired' },
+  { project: 'LaChowOS',         value: 45,   suffix: '+', label: 'NestJS modules' },
+  { project: 'FutureThink Edge', value: 3000, suffix: '+', label: 'Concurrent users (engineered capacity)' },
+  { project: 'Across projects',  value: 10,   suffix: '+', label: 'Third-party integrations wired' },
 ];
 
-function formatNumber(n: number, decimals = 0): string {
-  if (n >= 1000) {
-    return n.toLocaleString('en-US', { maximumFractionDigits: decimals });
-  }
-  return n.toFixed(decimals);
+function formatNumber(n: number): string {
+  return n >= 1000 ? n.toLocaleString('en-US') : String(n);
 }
 
 function CountUp({ to, suffix = '', durationMs = 1400 }: { to: number; suffix?: string; durationMs?: number }) {
@@ -36,7 +35,6 @@ function CountUp({ to, suffix = '', durationMs = 1400 }: { to: number; suffix?: 
     let raf = 0;
     const tick = (now: number) => {
       const p = Math.min(1, (now - start) / durationMs);
-      // Ease-out cubic
       const eased = 1 - Math.pow(1 - p, 3);
       setValue(Math.round(to * eased));
       if (p < 1) raf = requestAnimationFrame(tick);
@@ -67,29 +65,30 @@ export default function MetricsSection() {
         };
 
   return (
-    <section className="bg-bg text-fg py-28 md:py-36 relative overflow-hidden">
+    <section className="bg-bg text-fg pt-14 md:pt-20 pb-24 md:pb-32 relative overflow-hidden">
       {/* Subtle dot grid backdrop */}
       <div aria-hidden="true" className="absolute inset-0 bg-dots opacity-30" />
 
       <div className="container mx-auto px-6 md:px-10 relative z-10">
-        <motion.p
-          {...fade(0)}
-          className="text-[12px] font-mono uppercase tracking-[0.18em] text-fg-subtle mb-12 md:mb-16 text-center"
-        >
-          Last twelve months — at a glance
-        </motion.p>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-y-14 md:gap-x-12 max-w-6xl mx-auto">
           {METRICS.map((m, i) => (
             <motion.div
-              key={m.label}
+              key={m.project}
               {...fade(0.06 + i * 0.08)}
               className="text-center md:text-left md:border-l md:border-border md:pl-10 md:first:border-l-0 md:first:pl-0 min-w-0"
             >
+              {/* Project attribution — bracketed mono, accent-colored, sits above the numeral */}
+              <p className="text-[11px] font-mono uppercase tracking-[0.22em] text-accent mb-4 inline-flex items-baseline gap-1.5">
+                <span aria-hidden="true">[</span>
+                <span>{m.project}</span>
+                <span aria-hidden="true">]</span>
+              </p>
+
               <p className="font-metric text-outlined text-fg text-[clamp(3.5rem,8vw,6rem)] whitespace-nowrap">
                 <CountUp to={m.value} suffix={m.suffix} />
               </p>
-              <p className="mt-5 max-w-xs mx-auto md:mx-0 text-sm md:text-base text-fg-muted leading-snug">
+
+              <p className="mt-4 max-w-xs mx-auto md:mx-0 text-sm md:text-base text-fg-muted leading-snug">
                 {m.label}
               </p>
             </motion.div>

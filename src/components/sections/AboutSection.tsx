@@ -95,7 +95,7 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((_props, ref) =>
             {...fade(0.12)}
             className="col-span-12 md:col-span-4 md:pl-4"
           >
-            <div className="md:sticky md:top-28 space-y-8">
+            <div className="space-y-8">
               {/* Portrait + caption */}
               <figure>
                 <div className="relative aspect-[4/5] w-full max-w-[280px] overflow-hidden border border-border-strong bg-bg-elevated">
