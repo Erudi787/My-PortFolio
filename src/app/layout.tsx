@@ -79,11 +79,17 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable} font-sans bg-bg text-fg antialiased`}
       >
-        {/* 5 named-theme presets, iris is the canonical default. */}
+        {/* 5 color identities × 2 modes = 10 themes; iris-dark is the canonical default. */}
         <ThemeProvider
           attribute="data-theme"
-          defaultTheme="iris"
-          themes={['iris', 'emerald', 'copper', 'voltage', 'mono']}
+          defaultTheme="iris-dark"
+          themes={[
+            'iris-dark',    'iris-light',
+            'emerald-dark', 'emerald-light',
+            'copper-dark',  'copper-light',
+            'voltage-dark', 'voltage-light',
+            'mono-dark',    'mono-light',
+          ]}
           enableSystem={false}
         >
           <a

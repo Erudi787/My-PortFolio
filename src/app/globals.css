@@ -5,18 +5,19 @@
 @import "tailwindcss";
 
 /* ============================================================
- * 5 themes via [data-theme="..."]. :root defaults to iris so
- * SSR + pre-hydration renders the canonical look.
+ * 5 color identities × 2 modes = 10 theme combos.
+ * Naming convention: data-theme="<color>-<mode>" (e.g. "iris-dark").
+ * :root defaults to iris-dark so SSR shows the canonical look.
  *
- *   iris    — electric violet on navy ink (dark, default)
- *   emerald — deep forest on slate-green ink (dark)
- *   copper  — warm copper on warm cream (light)
- *   voltage — electric yellow on near-black (dark)
- *   mono    — no color accent (light)
+ * Across themes, the MODE (dark/light) controls bg lightness +
+ * fg lightness consistently; the COLOR controls hue + accent.
+ * Switch mode without changing color → bg stays "dark" or "light".
+ * Switch color without changing mode → only hue shifts.
  * ============================================================ */
+
+/* ===== IRIS — electric violet ===== */
 :root,
-[data-theme="iris"] {
-  /* Deep iris-tinted navy — visibly purple-blue, not flat black */
+[data-theme="iris-dark"] {
   --bg:           oklch(0.14 0.045 280);
   --bg-elevated:  oklch(0.18 0.050 280);
   --bg-deep:      oklch(0.10 0.040 280);
@@ -29,13 +30,28 @@
   --accent-hover: oklch(0.82 0.22 295);
   --accent-fg:    oklch(0.10 0.040 280);
   --signal-live:  oklch(0.78 0.16 145);
-
   --glass-bg:     oklch(0.14 0.045 280 / 0.65);
   --glass-border: oklch(0.96 0.008 290 / 0.08);
 }
+[data-theme="iris-light"] {
+  --bg:           oklch(0.96 0.020 280);
+  --bg-elevated:  oklch(0.93 0.024 280);
+  --bg-deep:      oklch(0.90 0.028 280);
+  --fg:           oklch(0.18 0.040 285);
+  --fg-muted:     oklch(0.44 0.030 285);
+  --fg-subtle:    oklch(0.60 0.022 285);
+  --border:       oklch(0.18 0.040 285 / 0.14);
+  --border-strong:oklch(0.18 0.040 285 / 0.24);
+  --accent:       oklch(0.50 0.24 295);
+  --accent-hover: oklch(0.42 0.26 295);
+  --accent-fg:    oklch(0.96 0.020 280);
+  --signal-live:  oklch(0.55 0.16 145);
+  --glass-bg:     oklch(0.96 0.020 280 / 0.75);
+  --glass-border: oklch(0.18 0.040 285 / 0.12);
+}
 
-[data-theme="emerald"] {
-  /* Deep forest — visibly green-ink, not flat black */
+/* ===== EMERALD — deep forest ===== */
+[data-theme="emerald-dark"] {
   --bg:           oklch(0.15 0.045 165);
   --bg-elevated:  oklch(0.19 0.050 165);
   --bg-deep:      oklch(0.11 0.040 165);
@@ -48,13 +64,44 @@
   --accent-hover: oklch(0.78 0.18 160);
   --accent-fg:    oklch(0.11 0.040 165);
   --signal-live:  oklch(0.80 0.18 145);
-
   --glass-bg:     oklch(0.15 0.045 165 / 0.65);
   --glass-border: oklch(0.96 0.012 140 / 0.08);
 }
+[data-theme="emerald-light"] {
+  --bg:           oklch(0.96 0.020 150);
+  --bg-elevated:  oklch(0.93 0.024 150);
+  --bg-deep:      oklch(0.90 0.028 150);
+  --fg:           oklch(0.18 0.035 160);
+  --fg-muted:     oklch(0.44 0.025 160);
+  --fg-subtle:    oklch(0.60 0.020 160);
+  --border:       oklch(0.18 0.035 160 / 0.14);
+  --border-strong:oklch(0.18 0.035 160 / 0.24);
+  --accent:       oklch(0.46 0.18 160);
+  --accent-hover: oklch(0.38 0.20 160);
+  --accent-fg:    oklch(0.96 0.020 150);
+  --signal-live:  oklch(0.55 0.16 145);
+  --glass-bg:     oklch(0.96 0.020 150 / 0.75);
+  --glass-border: oklch(0.18 0.035 160 / 0.12);
+}
 
-[data-theme="copper"] {
-  /* Warm parchment — visibly amber, not flat white */
+/* ===== COPPER — warm amber ===== */
+[data-theme="copper-dark"] {
+  --bg:           oklch(0.15 0.030 50);
+  --bg-elevated:  oklch(0.19 0.034 50);
+  --bg-deep:      oklch(0.11 0.026 50);
+  --fg:           oklch(0.96 0.018 70);
+  --fg-muted:     oklch(0.72 0.024 65);
+  --fg-subtle:    oklch(0.52 0.030 60);
+  --border:       oklch(0.96 0.018 70 / 0.10);
+  --border-strong:oklch(0.96 0.018 70 / 0.20);
+  --accent:       oklch(0.68 0.18 50);
+  --accent-hover: oklch(0.76 0.18 50);
+  --accent-fg:    oklch(0.11 0.026 50);
+  --signal-live:  oklch(0.78 0.18 145);
+  --glass-bg:     oklch(0.15 0.030 50 / 0.65);
+  --glass-border: oklch(0.96 0.018 70 / 0.08);
+}
+[data-theme="copper-light"] {
   --bg:           oklch(0.96 0.028 75);
   --bg-elevated:  oklch(0.93 0.032 75);
   --bg-deep:      oklch(0.90 0.036 75);
@@ -67,13 +114,12 @@
   --accent-hover: oklch(0.48 0.20 40);
   --accent-fg:    oklch(0.96 0.028 75);
   --signal-live:  oklch(0.55 0.16 145);
-
   --glass-bg:     oklch(0.96 0.028 75 / 0.75);
   --glass-border: oklch(0.20 0.030 50 / 0.12);
 }
 
-[data-theme="voltage"] {
-  /* Warm near-black — yellow-tinged dark, not flat black */
+/* ===== VOLTAGE — electric yellow ===== */
+[data-theme="voltage-dark"] {
   --bg:           oklch(0.13 0.025 95);
   --bg-elevated:  oklch(0.17 0.030 95);
   --bg-deep:      oklch(0.09 0.020 95);
@@ -86,13 +132,45 @@
   --accent-hover: oklch(0.96 0.21 100);
   --accent-fg:    oklch(0.09 0.020 95);
   --signal-live:  oklch(0.80 0.20 145);
-
   --glass-bg:     oklch(0.13 0.025 95 / 0.65);
   --glass-border: oklch(0.97 0.012 95 / 0.12);
 }
+[data-theme="voltage-light"] {
+  --bg:           oklch(0.97 0.025 95);
+  --bg-elevated:  oklch(0.94 0.030 95);
+  --bg-deep:      oklch(0.91 0.034 95);
+  --fg:           oklch(0.18 0.025 85);
+  --fg-muted:     oklch(0.44 0.020 85);
+  --fg-subtle:    oklch(0.60 0.018 85);
+  --border:       oklch(0.18 0.025 85 / 0.14);
+  --border-strong:oklch(0.18 0.025 85 / 0.24);
+  /* Yellow doesn't read on cream — use deeper amber for the accent in light mode */
+  --accent:       oklch(0.62 0.18 75);
+  --accent-hover: oklch(0.54 0.20 70);
+  --accent-fg:    oklch(0.97 0.025 95);
+  --signal-live:  oklch(0.55 0.16 145);
+  --glass-bg:     oklch(0.97 0.025 95 / 0.75);
+  --glass-border: oklch(0.18 0.025 85 / 0.12);
+}
 
-[data-theme="mono"] {
-  /* Pure neutrals — the intentional no-color theme */
+/* ===== MONO — no color accent ===== */
+[data-theme="mono-dark"] {
+  --bg:           oklch(0.12 0 0);
+  --bg-elevated:  oklch(0.16 0 0);
+  --bg-deep:      oklch(0.08 0 0);
+  --fg:           oklch(0.97 0 0);
+  --fg-muted:     oklch(0.72 0 0);
+  --fg-subtle:    oklch(0.50 0 0);
+  --border:       oklch(0.97 0 0 / 0.12);
+  --border-strong:oklch(0.97 0 0 / 0.22);
+  --accent:       oklch(0.97 0 0);
+  --accent-hover: oklch(1.00 0 0);
+  --accent-fg:    oklch(0.12 0 0);
+  --signal-live:  oklch(0.78 0.16 145);
+  --glass-bg:     oklch(0.12 0 0 / 0.7);
+  --glass-border: oklch(0.97 0 0 / 0.10);
+}
+[data-theme="mono-light"] {
   --bg:           oklch(0.99 0 0);
   --bg-elevated:  oklch(0.96 0 0);
   --bg-deep:      oklch(0.94 0 0);
@@ -105,7 +183,6 @@
   --accent-hover: oklch(0.04 0 0);
   --accent-fg:    oklch(0.99 0 0);
   --signal-live:  oklch(0.55 0.16 145);
-
   --glass-bg:     oklch(0.99 0 0 / 0.7);
   --glass-border: oklch(0.12 0 0 / 0.10);
 }
@@ -138,15 +215,13 @@ html {
 }
 
 /* Tell the browser whether each theme is dark or light so native
- * scrollbars / form controls match. */
+ * scrollbars / form controls match. The convention is just the
+ * "-dark" / "-light" suffix in the theme name. */
 :root,
-[data-theme="iris"],
-[data-theme="emerald"],
-[data-theme="voltage"] {
+[data-theme$="-dark"] {
   color-scheme: dark;
 }
-[data-theme="copper"],
-[data-theme="mono"] {
+[data-theme$="-light"] {
   color-scheme: light;
 }
 
