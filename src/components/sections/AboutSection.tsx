@@ -63,16 +63,17 @@ const AboutSection = forwardRef<HTMLElement, AboutSectionProps>((_props, ref) =>
               </motion.p>
 
               <motion.p {...fade(0.15)}>
-                Right now I&apos;m shipping{' '}
+                Most recently I shipped{' '}
                 <span className="text-fg font-medium">LaChowOS</span> — a
                 property-management platform for culinary innovation
-                facilities. Before that I built the backend for{' '}
+                facilities. Before that, the backend for{' '}
                 <Link href="/projects/futurethink-edge" className="text-fg link-underline">
                   FutureThink Edge
                 </Link>
                 , an AI-powered adaptive learning platform engineered for
                 3,000+ concurrent users with FastAPI, Postgres, and Redis
-                pooled to the gills.
+                pooled to the gills. I&apos;m between roles now and open to
+                what&apos;s next.
               </motion.p>
 
               <motion.p {...fade(0.2)}>

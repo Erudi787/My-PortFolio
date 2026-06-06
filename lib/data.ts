@@ -184,7 +184,7 @@ export const projectsData: Project[] = [
     ],
     tags: ["FastAPI", "Next.js", "PostgreSQL", "Redis", "OpenAI API", "WebSocket", "TypeScript", "Python"],
     longDescription: "FutureThink Edge is a comprehensive AI-powered adaptive learning platform specifically designed for students with ADHD and learning differences. The platform is engineered for 3,000+ concurrent users across multiple roles (Students, Teachers, Parents, Admins, Organizations) with features including AI-powered tutoring, real-time collaboration, gamification, mental health monitoring, and advanced analytics. Fully deployed on Render with PostgreSQL database and Redis caching.",
-    myRole: "Junior Full-Stack Developer",
+    myRole: "Full-Stack Developer",
     myRoles: [
       "Backend Developer",
       "Database Administrator",

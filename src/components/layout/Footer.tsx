@@ -12,9 +12,9 @@ const Footer = () => {
     '★',
     'Cebu · GMT+8',
     '★',
-    'Building LaChowOS',
+    'Open to what’s next',
     '★',
-    'Last 12 months: 45+ NestJS modules, 10+ integrations',
+    'Shipped LaChowOS · 45+ NestJS modules · 10+ integrations',
     '★',
   ];
 
