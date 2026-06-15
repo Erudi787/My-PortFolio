@@ -1,14 +1,10 @@
-import AboutSection from "@/components/sections/AboutSection";
+import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "About Me",
-  description: "Learn about Elwison Denampo's journey as a Full-Stack Developer, technical experience with FastAPI, Next.js, and PostgreSQL, and philosophy on building scalable systems.",
+  title: "About",
+  description: "Learn about Elwison Denampo, a full-stack developer building production systems.",
 };
 
 export default function AboutPage() {
-  return (
-    // You can add page-specific layout or introductory text here if needed
-    // For now, it will directly render the AboutSection
-    <AboutSection />
-  );
+  redirect("/#about");
 }

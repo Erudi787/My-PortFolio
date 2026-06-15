@@ -26,6 +26,8 @@ export interface Project {
   id: string;
   title: string;
   slug: string; // for URL
+  year?: string; // Display year, e.g. "2026" — used as marginalia on cards & detail
+  pullQuote?: string; // Optional one-line editorial pull-quote shown on the case-study page
   shortDescription: string;
   tags: string[]; // e.g., ["Next.js", "Supabase", "API Design"]
   imageUrl?: string; // Optional image for the card
@@ -102,12 +104,29 @@ export const skillsData: Skill[] = [
   { name: "React Flow", filterCategories: ["all", "framework/library", "frontend"], description: "Node-based UI framework" },
   { name: "Zustand", filterCategories: ["all", "framework/library", "frontend"], description: "Lightweight State Management" },
   { name: "Zod", filterCategories: ["all", "tool", "frontend", "backend"], description: "TypeScript-first schema validation" },
+  // LaChowOS Stack
+  { name: "NestJS", filterCategories: ["all", "core", "framework/library", "backend"], description: "Progressive Node.js Framework" },
+  { name: "Prisma", filterCategories: ["all", "core", "database", "backend"], description: "Next-gen Node.js ORM" },
+  { name: "Clerk", filterCategories: ["all", "api/protocol", "backend", "frontend"], description: "Authentication & User Management" },
+  { name: "Stripe", filterCategories: ["all", "api/protocol", "backend"], description: "Payment Processing" },
+  { name: "AWS S3", filterCategories: ["all", "cloud", "cloud/devops", "backend"], description: "Cloud Object Storage" },
+  { name: "SendGrid", filterCategories: ["all", "api/protocol", "backend"], description: "Email Delivery Service" },
+  { name: "DocuSign", filterCategories: ["all", "api/protocol", "backend"], description: "eSignature Integration" },
+  { name: "Socket.IO", filterCategories: ["all", "api/protocol", "backend", "frontend"], description: "Real-time Bidirectional Communication" },
+  { name: "Turborepo", filterCategories: ["all", "tool", "cloud/devops"], description: "High-performance Monorepo Build System" },
+  { name: "pnpm", filterCategories: ["all", "tool", "environment"], description: "Fast, Disk-efficient Package Manager" },
+  { name: "Sentry", filterCategories: ["all", "tool", "cloud/devops"], description: "Error Monitoring & Performance Tracking" },
+  { name: "shadcn/ui", filterCategories: ["all", "framework/library", "frontend"], description: "Accessible UI Component Library" },
+  { name: "React Query", filterCategories: ["all", "framework/library", "frontend"], description: "Server State Management" },
+  { name: "FullCalendar", filterCategories: ["all", "framework/library", "frontend"], description: "Interactive Calendar Component" },
+  { name: "Recharts", filterCategories: ["all", "framework/library", "frontend"], description: "React Charting Library" },
 ];
 
 export const projectsData: Project[] = [
   {
     id: "0",
     slug: "ai-pollo-mood-playlist",
+    year: "2025",
     title: "AI.pollo - AI Mood Playlist Recommender",
     shortDescription: "An AI-powered mood-based music playlist recommender using the Spotify API. Built with a React/Vite frontend and a FastAPI backend.",
     imageUrl: "/images/apollo_login.jpg",
@@ -153,6 +172,8 @@ export const projectsData: Project[] = [
   {
     id: "1",
     slug: "futurethink-edge",
+    year: "2025",
+    pullQuote: "Built for students whose attention isn't always available — adaptive AI across three providers, engineered for 3,000+ concurrent users, FERPA-grade audit logs.",
     title: "FutureThink Edge - AI-Powered Adaptive Learning Platform",
     shortDescription: "A production EdTech platform for students with ADHD and learning differences, featuring AI-powered adaptive learning, multi-role portals, and real-time collaboration.",
     imageUrl: "/images/futurethink-thumbnail.png",
@@ -162,8 +183,8 @@ export const projectsData: Project[] = [
       { src: "/images/futurethink_braingym.png", alt: "Brain Gym", caption: "Gamified brain training exercises." },
     ],
     tags: ["FastAPI", "Next.js", "PostgreSQL", "Redis", "OpenAI API", "WebSocket", "TypeScript", "Python"],
-    longDescription: "FutureThink Edge is a comprehensive AI-powered adaptive learning platform specifically designed for students with ADHD and learning differences. The platform serves 3,000+ concurrent users across multiple roles (Students, Teachers, Parents, Admins, Organizations) with features including AI-powered tutoring, real-time collaboration, gamification, mental health monitoring, and advanced analytics. Fully deployed on Render with PostgreSQL database and Redis caching.",
-    myRole: "Junior Full-Stack Developer",
+    longDescription: "FutureThink Edge is a comprehensive AI-powered adaptive learning platform specifically designed for students with ADHD and learning differences. The platform is engineered for 3,000+ concurrent users across multiple roles (Students, Teachers, Parents, Admins, Organizations) with features including AI-powered tutoring, real-time collaboration, gamification, mental health monitoring, and advanced analytics. Fully deployed on Render with PostgreSQL database and Redis caching.",
+    myRole: "Full-Stack Developer",
     myRoles: [
       "Backend Developer",
       "Database Administrator",
@@ -175,7 +196,7 @@ export const projectsData: Project[] = [
       "Built 40+ RESTful API endpoints using FastAPI handling authentication, learning sessions, analytics, and admin functions.",
       "Designed and implemented 42+ database models with SQLAlchemy ORM supporting complex role-based relationships.",
       "Developed JWT authentication system with role-based access control (RBAC) for 5 user types (Student, Teacher, Parent, Admin, Organization).",
-      "Implemented Redis caching strategy with connection pooling (pool size: 20, max overflow: 40) supporting 3,000+ concurrent users.",
+      "Implemented Redis caching strategy with connection pooling (pool size: 20, max overflow: 40) sized for 3,000+ concurrent users.",
       "Created WebSocket server with room-based broadcasting for real-time collaboration and notifications.",
       "Built 25+ database migration scripts ensuring zero-downtime production deployments.",
       "Integrated 3 AI providers (OpenAI, Groq, Google Gemini) with orchestration layer for optimal performance.",
@@ -190,7 +211,7 @@ export const projectsData: Project[] = [
     ],
     challengesAndSolutions: [
       {
-        challenge: "Supporting 3,000+ concurrent users without performance degradation.",
+        challenge: "Engineering for 3,000+ concurrent users without performance degradation.",
         solution: "Implemented Redis caching with multiple cache layers (SmartCache, AnalyticsCache, AICache), configured database connection pooling with pool size of 20 and max overflow of 40, and optimized database queries."
       },
       {
@@ -215,6 +236,7 @@ export const projectsData: Project[] = [
   {
     id: "2",
     slug: "bsdoc-health-platform",
+    year: "2024",
     title: "BSDOC - Personal Health Management Platform",
     shortDescription: "A comprehensive platform for health record management, OTC suggestions, and doctor appointments.",
     imageUrl: "/images/bsdoc-thumbnail.jpg",
@@ -253,6 +275,7 @@ export const projectsData: Project[] = [
   {
     id: "3",
     slug: "schemaflow",
+    year: "2025",
     title: "SchemaFlow - Interactive Schema Visualizer",
     shortDescription: "An interactive visualizer that turns SQL DDL and JSON payloads into live ERD diagrams using React Flow.",
     imageUrl: "/images/schemaflow_thumbnail.png",
@@ -294,6 +317,7 @@ export const projectsData: Project[] = [
   {
     id: "4",
     slug: "book-buddi",
+    year: "2024",
     title: "Book Buddi - Library Management System",
     shortDescription: "A comprehensive web-based Library Management and Book Catalogue System built with ASP.NET Core and Razor Pages, featuring clean 3-tier architecture.",
     imageUrl: "/images/bookbuddi-thumbnail.png",
@@ -353,6 +377,7 @@ export const projectsData: Project[] = [
   {
     id: "5",
     slug: "sync-task-collaboration",
+    year: "2023",
     title: "Sync() – Personal Task and Collaboration Web App",
     shortDescription: "A centralized web platform for managing personal tasks, collaborating with colleagues, and maintaining customizable user profiles.",
     imageUrl: "/images/sync_landing.png",
@@ -405,6 +430,7 @@ export const projectsData: Project[] = [
   {
     id: "6",
     slug: "wildchat-chatting-app",
+    year: "2022",
     title: "Wildchat - Campus-Based Real-Time Chat Application",
     shortDescription: "A campus-exclusive desktop chat application built using Windows Forms in C#. It allows students to connect through real-time private messaging in a familiar and lightweight interface.",
     imageUrl: "/images/wildchat_login.png",
@@ -459,5 +485,92 @@ export const projectsData: Project[] = [
     classDiagramUrl: "/images/wildchat_cd.png",
     erdUrl: "/images/wildchat_erd.png",
     githubUrl: "https://github.com/Erudi787/WildChat---Campus-Based-Real-Time-Chat-Application--Unfinished",
+  },
+  {
+    id: "7",
+    slug: "lachowos-property-management",
+    year: "2026",
+    pullQuote: "Ten tools collapsed into one schema — billing, signatures, access control, screening, all reconciled in Postgres.",
+    title: "LaChowOS - Property Management Platform",
+    shortDescription: "A full-scale property management platform for culinary innovation facilities. Built as a monorepo with a NestJS API, Next.js admin/tenant portals, and 10+ third-party integrations.",
+    imageUrl: "/images/lachow-thumbnail.png",
+    carouselImages: [
+      { src: "/images/lachow_bookings.png",         alt: "Bookings calendar",          caption: "Bookings calendar with database-level exclusion constraints preventing double-booking." },
+      { src: "/images/lachow_tenant_dashboard.png", alt: "Tenant portal dashboard",    caption: "Tenant self-service portal — leases, bookings, payments, and maintenance in one place." },
+      { src: "/images/lachow_leases.png",           alt: "Lease management",           caption: "Digital lease lifecycle with DocuSign envelope-based signing and auto-activation on completion." },
+      { src: "/images/lachow_payments.png",         alt: "Payments and rent collection", caption: "Rent collection via Stripe with webhook-based reconciliation and tenant-side payment history." },
+      { src: "/images/lachow_reports.png",          alt: "Operational reporting",      caption: "Operational reporting — revenue, occupancy, and compliance metrics built with Recharts." },
+    ],
+    tags: ["Next.js", "NestJS", "Prisma", "Stripe", "PostgreSQL", "Turborepo"],
+    longDescription: "LaChowOS is a unified property management platform purpose-built for La Chow's mixed-use culinary innovation facilities. It replaces scattered management tools with a single, integrated system covering kitchen scheduling, tenant onboarding, digital lease management with eSignature, rent collection via Stripe, compliance document tracking, maintenance requests, and business intelligence reporting. The platform is built as a Turborepo monorepo with a NestJS backend (45+ modules), a Next.js App Router frontend with dual portals (admin and tenant), and a shared Prisma database layer — all connected to 10+ third-party services including Stripe, DocuSign, SendGrid, AWS S3, ButterflyMX, QuickBooks, and TransUnion SmartMove. LaChowOS deploys to portal.thelachow.com as the authenticated tenant portal for the public marketing site at thelachow.com — I wired the cross-app handoff between the two so signed-in tenants flow from the marketing site directly into the portal.",
+    myRole: "Full-Stack Developer",
+    myRoles: [
+      "Backend Developer — NestJS API architecture, Prisma schema design, 45+ API modules",
+      "Frontend Developer — Next.js App Router, admin & tenant portal UI, real-time dashboards",
+      "Database Administrator — PostgreSQL schema design, migrations, query optimization",
+      "Integration Engineer — Stripe payments, DocuSign eSignatures, SendGrid emails, AWS S3 storage",
+      "DevOps — Docker, Render deployment, Turborepo build pipelines, Sentry monitoring",
+    ],
+    techStack: [
+      "TypeScript", "Next.js", "React", "NestJS", "Prisma", "PostgreSQL", "Tailwind CSS",
+      "shadcn/ui", "Radix UI", "React Query", "React Hook Form", "Zod", "Zustand",
+      "FullCalendar", "Recharts", "Socket.IO", "Stripe", "DocuSign", "SendGrid",
+      "AWS S3", "Clerk", "Sentry", "Turborepo", "pnpm", "Docker", "Render", "Supabase",
+    ],
+    backendFeatures: [
+      "45+ NestJS modules covering tenants, leases, bookings, payments, compliance, maintenance, and more.",
+      "Stripe integration for rent collection, guest charges, and payment tracking with webhook handlers.",
+      "DocuSign eSignature API for digital lease signing workflows.",
+      "SendGrid transactional email service for notifications, reminders, and tenant communications.",
+      "AWS S3 presigned URL system for secure document and image uploads.",
+      "ButterflyMX access control integration for managing property entry permissions.",
+      "QuickBooks accounting sync for automated financial record-keeping.",
+      "TransUnion SmartMove integration for tenant background screening.",
+      "JWT-based authentication with Clerk, role-based access control (Admin, Tenant, Staff).",
+      "Socket.IO real-time notifications and live updates across the platform.",
+      "Cron-based scheduled jobs for lease expiration alerts, compliance reminders, and data syncs.",
+      "PostgreSQL exclusion constraints to prevent double-booking of shared kitchen spaces.",
+      "Comprehensive import system with idempotency via externalId for data migration.",
+    ],
+    frontendFeatures: [
+      "Dual-portal architecture: full admin dashboard and tenant self-service portal.",
+      "50+ admin pages covering tenant management, lease lifecycle, bookings, payments, compliance, and reports.",
+      "Interactive booking calendar using FullCalendar with drag-and-drop scheduling.",
+      "Real-time analytics dashboards with Recharts for revenue, occupancy, and compliance metrics.",
+      "Complex multi-step forms for lease creation, tenant applications, and property configuration.",
+      "Advanced data tables with TanStack React Table for sorting, filtering, and pagination.",
+      "Dark/light mode theming with shadcn/ui and Radix UI accessible components.",
+      "Responsive design supporting desktop and tablet admin workflows.",
+    ],
+    challengesAndSolutions: [
+      {
+        challenge: "Preventing double-booking of shared kitchen spaces across overlapping time slots.",
+        solution: "Implemented PostgreSQL exclusion constraints with tsrange and a gist index, enforced at the database level so no application-layer race condition can create overlapping bookings."
+      },
+      {
+        challenge: "Managing 45+ API modules without coupling or circular dependencies.",
+        solution: "Used NestJS module-per-feature architecture with clearly defined service boundaries, shared DTOs via class-validator, and Prisma transactions for cross-module writes."
+      },
+      {
+        challenge: "Handling secure document uploads for compliance files, lease agreements, and tenant documents.",
+        solution: "Built an AWS S3 presigned URL system that generates time-limited upload/download links, keeping sensitive files off the application server entirely."
+      },
+      {
+        challenge: "Migrating legacy data from DoorLoop while preventing duplicate records.",
+        solution: "Designed an import system using externalId-based idempotency — each imported record is checked against its source ID before insertion, allowing safe re-runs of the import process."
+      },
+      {
+        challenge: "Coordinating a monorepo with shared database types across frontend and backend.",
+        solution: "Used Turborepo with pnpm workspaces and a shared database package that exports the generated Prisma client, ensuring type-safe database access across all apps."
+      },
+      {
+        challenge: "Implementing digital lease signing with legally binding eSignatures.",
+        solution: "Integrated DocuSign's eSignature API with envelope-based workflows, supporting multi-party signing, status callbacks, and automatic lease activation on completion."
+      },
+    ],
+    // Source intentionally omitted — enterprise repo, not publicly viewable.
+    // liveDemoUrl points to the public marketing site (thelachow.com); the
+    // LaChowOS tenant portal itself lives at portal.thelachow.com behind auth.
+    liveDemoUrl: "https://thelachow.com",
   },
 ];

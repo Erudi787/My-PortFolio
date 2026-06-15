@@ -1,80 +1,228 @@
-/* src/app/globals.css */
+/* src/app/globals.css — design/rei (faithful port of rei-naissance/portfolio's design DNA) */
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
-
 @import "yet-another-react-lightbox/styles.css";
 @import "tailwindcss";
+
 @custom-variant dark (&:is(.dark *));
-/* Make sure this is the FIRST import in your file */
 
+/* ============================================================
+ * Rei's HSL token system. Dark default, light alternate.
+ * Primary violet hsl(250 65% 65%) is the signature accent.
+ * ============================================================ */
 :root {
-  /* Light Mode Defaults */
-  --background: #ffffff;
-  --foreground: #171717;
-
-  /* Premium Portfolio Theme Colors */
-  --color-primary: #0A4DDE;
-  /* A richer, more vibrant blue */
-  --color-secondary: #00C6C6;
-  /* A more vibrant teal */
-  --color-accent: #FFB347;
-  /* A warmer, richer accent */
-  --color-light-bg: #F0F4F8;
-  /* A softer, cooler light background */
-  --color-dark-bg: #030712;
-  /* Sleek dark mode background */
-  --color-dark-text: #0B1120;
-  --color-light-text: #64748B;
-
-  --font-inter: 'Inter', sans-serif;
-  --font-outfit: 'Outfit', sans-serif;
+  /* Light alternate */
+  --background:           210 40% 98%;
+  --foreground:           222 47% 11%;
+  --card:                 0 0% 100%;
+  --card-foreground:      222 47% 11%;
+  --primary:              250 47% 60%;
+  --primary-foreground:   210 40% 98%;
+  --secondary:            210 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --muted:                210 40% 96%;
+  --muted-foreground:     215 16% 47%;
+  --border:               214 32% 91%;
+  --input:                214 32% 91%;
+  --ring:                 250 47% 60%;
 }
 
 .dark {
-  --background: #030712;
-  --foreground: #f8fafc;
+  --background:           222 47% 4%;
+  --foreground:           213 31% 91%;
+  --card:                 222 47% 8%;
+  --card-foreground:      213 31% 91%;
+  --primary:              250 65% 65%;
+  --primary-foreground:   213 31% 91%;
+  --secondary:            217 33% 12%;
+  --secondary-foreground: 213 31% 91%;
+  --muted:                217 33% 12%;
+  --muted-foreground:     217 19% 65%;
+  --border:               217 33% 20%;
+  --input:                217 33% 20%;
+  --ring:                 250 65% 65%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #030712;
-    --foreground: #f8fafc;
-  }
-}
+/* Bridge HSL tokens to Tailwind v4 utilities */
+@theme inline {
+  --color-background:           hsl(var(--background));
+  --color-foreground:           hsl(var(--foreground));
+  --color-card:                 hsl(var(--card));
+  --color-card-foreground:      hsl(var(--card-foreground));
+  --color-primary:              hsl(var(--primary));
+  --color-primary-foreground:   hsl(var(--primary-foreground));
+  --color-secondary:            hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted:                hsl(var(--muted));
+  --color-muted-foreground:     hsl(var(--muted-foreground));
+  --color-border:               hsl(var(--border));
+  --color-input:                hsl(var(--input));
+  --color-ring:                 hsl(var(--ring));
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-outfit), sans-serif;
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
+}
+.dark { color-scheme: dark; }
+:root:not(.dark) { color-scheme: light; }
+
+body {
+  font-family: var(--font-sans);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  transition: background-color 0.3s, color 0.3s;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Ensure the container that holds the Slider has position: relative */
-.slick-container-custom {
-  position: relative;
-  padding-bottom: 40px;
-  /* Add padding at the bottom of the main container to make space for dots */
-  /* Adjust this value based on dot size and desired spacing */
+::selection {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }
 
-/* Custom styles for react-slick dots */
-.custom-dots-styling {
-  /* Use the custom class */
+/* ============================================================
+ * KEYFRAMES — Rei's cinematic cascade + cosmic motion
+ * ============================================================ */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes pulse-subtle {
+  0%, 100% { opacity: var(--star-opacity, 1); }
+  50%      { opacity: calc(var(--star-opacity, 1) * 0.55); }
+}
+@keyframes meteor {
+  0%   { transform: rotate(215deg) translateX(0);     opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: rotate(215deg) translateX(-560px); opacity: 0; }
+}
+
+.animate-fade-in           { opacity: 0; animation: fade-in 0.7s ease-out forwards; }
+.animate-fade-in-delay-1   { opacity: 0; animation: fade-in 0.7s ease-out 0.2s forwards; }
+.animate-fade-in-delay-2   { opacity: 0; animation: fade-in 0.7s ease-out 0.4s forwards; }
+.animate-fade-in-delay-3   { opacity: 0; animation: fade-in 0.7s ease-out 0.6s forwards; }
+.animate-fade-in-delay-4   { opacity: 0; animation: fade-in 0.7s ease-out 0.8s forwards; }
+.animate-float             { animation: float 6s ease-in-out infinite; }
+.animate-pulse-subtle      { animation: pulse-subtle var(--star-duration, 4s) ease-in-out infinite; }
+.animate-meteor            { animation: meteor var(--meteor-duration, 5s) linear infinite;
+                             animation-delay: var(--meteor-delay, 0s); }
+
+/* ============================================================
+ * UTILITIES — Rei's signature classes
+ * ============================================================ */
+
+/* Star/meteor field — theme-aware via currentColor on the parent */
+.star {
   position: absolute;
-  bottom: -25;
-  /* Position dots from the bottom of .slick-container-custom */
+  border-radius: 9999px;
+  background: white;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.4);
+}
+.meteor {
+  position: absolute;
+  background: linear-gradient(to right, white, transparent);
+  border-radius: 9999px;
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.3);
+}
+/* In light mode, stars become muted dark dots — they'd disappear on white otherwise */
+:root:not(.dark) .star {
+  background: hsl(var(--foreground));
+  box-shadow: 0 0 6px 1px hsl(var(--foreground) / 0.25);
+}
+:root:not(.dark) .meteor {
+  background: linear-gradient(to right, hsl(var(--foreground)), transparent);
+  box-shadow: 0 0 6px 2px hsl(var(--foreground) / 0.2);
+}
+
+/* text-glow — soft primary-colored aura around accent text */
+.text-glow {
+  position: relative;
+  text-shadow: 0 0 10px hsl(var(--primary) / 0.5);
+}
+
+/* text-gradient — primary-to-foreground gradient text (used on hero name) */
+.text-gradient {
+  background-image: linear-gradient(
+    135deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary) / 0.7) 50%,
+    hsl(var(--foreground)) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* cosmic-button — primary pill with glow on hover */
+.cosmic-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-weight: 500;
+  transition: all 300ms;
+}
+.cosmic-button:hover {
+  box-shadow: 0 0 14px hsl(var(--primary) / 0.5);
+  transform: scale(1.05);
+}
+.cosmic-button:active {
+  transform: scale(0.97);
+}
+
+/* gradient-border — subtle bordered card */
+.gradient-border {
+  position: relative;
+  border-radius: 0.5rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+}
+
+/* card-hover — scale + shadow on hover */
+.card-hover {
+  transition: transform 300ms, box-shadow 300ms;
+}
+.card-hover:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 25px hsl(var(--primary) / 0.15);
+}
+
+/* ============================================================
+ * Reduced motion — respect user preferences
+ * ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-fade-in, .animate-fade-in-delay-1, .animate-fade-in-delay-2,
+  .animate-fade-in-delay-3, .animate-fade-in-delay-4 {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+ * react-slick — quiet defaults
+ * ============================================================ */
+.slick-container-custom { position: relative; padding-bottom: 40px; }
+.custom-dots-styling {
+  position: absolute;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   list-style: none;
@@ -82,115 +230,20 @@ html {
   margin: 0;
   display: flex !important;
   justify-content: center;
-  /* Ensure dots are centered if they wrap */
   align-items: center;
-  width: 100%;
-  /* Take full width to center properly */
   z-index: 5;
-  /* Ensure dots are above slides if any overlap, but below arrows usually */
 }
-
-.custom-dots-styling li {
-  margin: 0 4px;
-  /* Space between dot list items */
-}
-
+.custom-dots-styling li { margin: 0 4px; }
 .custom-dots-styling li button {
-  font-size: 0;
-  line-height: 0;
-  display: block;
-  width: 10px;
-  height: 10px;
-  padding: 0;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  background-color: #ccc;
-  /* Default inactive dot color - light gray */
+  font-size: 0; line-height: 0; display: block;
+  width: 6px; height: 6px; padding: 0; cursor: pointer; border: none; outline: none;
+  background-color: hsl(var(--border));
   border-radius: 50%;
-  transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
+  transition: background-color 0.2s, width 0.2s;
 }
-
 .custom-dots-styling li button:hover,
-.custom-dots-styling li button:focus {
-  background-color: #aaa;
-  /* Darker gray on hover/focus */
-}
-
+.custom-dots-styling li button:focus { background-color: hsl(var(--muted-foreground)); }
 .custom-dots-styling li.slick-active button {
-  background-color: #043CAA;
-  /* Your primary color for active dot */
-  width: 12px;
-  /* Make active dot slightly larger */
-  height: 12px;
-  /* Make active dot slightly larger */
+  background-color: hsl(var(--primary)); width: 18px; border-radius: 3px;
 }
-
-/* Adjust arrow positions if needed due to new dot positioning */
-.slick-container-custom .slick-prev {
-  left: 10px;
-  /* Example: adjust if default is too close to edge */
-  z-index: 10;
-  /* Ensure arrows are above dots if they overlap */
-}
-
-.slick-container-custom .slick-next {
-  right: 10px;
-  /* Example */
-  z-index: 10;
-}
-
-.slick-container-custom .slick-dots li {
-  margin: 0;
-  /* Reset default margins if any */
-}
-
-.slick-container-custom .slick-dots li button {
-  font-size: 0;
-  /* Hide the default text (usually a number) */
-  line-height: 0;
-  display: block;
-  width: 10px;
-  /* Size of the dot */
-  height: 10px;
-  /* Size of the dot */
-  padding: 0;
-  /* Reset padding */
-  cursor: pointer;
-  border: none;
-  /* Remove default button border */
-  outline: none;
-  background: #ccc;
-  /* Default dot color (inactive) */
-  border-radius: 50%;
-  /* Make it a circle */
-  transition: background-color 0.3s ease;
-}
-
-.slick-container-custom .slick-dots li button:hover,
-.slick-container-custom .slick-dots li button:focus {
-  background: #aaa;
-  /* Darker on hover/focus */
-}
-
-.slick-container-custom .slick-dots li.slick-active button {
-  background: #62B6B8;
-  /* Active dot color (your primary theme color) */
-  width: 12px;
-  /* Optional: Make active dot slightly larger */
-  height: 12px;
-  /* Optional: Make active dot slightly larger */
-}
-
-/* Ensure the main slide track has enough bottom padding if dots are absolutely positioned inside */
-/* This is tricky as react-slick controls its internal structure.
-   The absolute positioning of slick-dots within .slick-container-custom
-   should usually work. If slides overlap the dots, you might need to
-   add some bottom padding to the individual slide items' inner content
-   or adjust the 'bottom' value of .slick-dots.
-*/
-.slick-container-custom .slick-list {
-  /* The track containing slides */
-  padding-bottom: 30px !important;
-  /* Add space for dots, adjust value as needed. Use !important cautiously. */
-}
+.slick-container-custom .slick-list { padding-bottom: 30px !important; }
