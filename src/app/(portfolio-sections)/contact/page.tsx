@@ -75,7 +75,7 @@ export default function ContactPage() {
             </div>
 
             <a
-              href="/resume/ElwisonDenampo_SoftwareEngineer_Resume.pdf"
+              href="resume/Elwison Denampo Resume.pdf"
               target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border hover:border-primary/60 hover:text-primary transition-colors text-sm"
             >
