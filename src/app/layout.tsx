@@ -1,48 +1,41 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Fraunces } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
-import Header from "../components/layout/Header";
-import Footer from "../components/layout/Footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import StarBackground from "../components/StarBackground";
+import MountainSilhouette from "../components/MountainSilhouette";
+import SeasonalParticles from "../components/SeasonalParticles";
+import FloatingBackToTop from "../components/FloatingBackToTop";
+import Preloader from "../components/Preloader";
 import { ThemeProvider } from "../components/ThemeProvider";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "yet-another-react-lightbox/styles.css";
 
-// Inter variable — the workhorse. All weights up to 800 for bold display.
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
 });
 
-// JetBrains Mono — small mono accents (timestamps, status pills, etc.)
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
 });
 
-// Fraunces — used only for the *one* serif italic moment per page.
-// Keeps the rhetorical contrast without falling back into editorial pattern.
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["300", "400"],
-  style: ["italic"],
-  variable: "--font-serif",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   title: {
-    default: "Elwison Denampo — Full-Stack Engineer",
-    template: "%s · Elwison Denampo",
+    default: "Elwison Denampo | Full-Stack Developer",
+    template: "%s | Elwison Denampo",
   },
   description:
-    "Full-stack engineer shipping production systems — most recently a property-management platform with 45+ NestJS modules and an EdTech platform engineered for 3,000+ concurrent users.",
+    "Full-stack developer building production systems. Most recently shipped LaChowOS (a property-management platform with 45+ NestJS modules) and the backend for FutureThink Edge (engineered for 3,000+ concurrent users).",
   keywords: [
-    "Full-Stack Engineer",
-    "Backend Engineer",
+    "Full-Stack Developer",
+    "Backend Developer",
     "NestJS",
     "FastAPI",
     "Next.js",
@@ -57,14 +50,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Elwison Denampo",
-    title: "Elwison Denampo — Full-Stack Engineer",
-    description:
-      "Full-stack engineer shipping production systems — NestJS, FastAPI, Next.js, Postgres.",
+    title: "Elwison Denampo | Full-Stack Developer",
+    description: "Full-stack developer building production systems — NestJS, FastAPI, Next.js, Postgres.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Elwison Denampo — Full-Stack Engineer",
-    description: "Building production systems — NestJS, FastAPI, Next.js, Postgres.",
+    title: "Elwison Denampo | Full-Stack Developer",
+    description: "Full-stack developer building production systems — NestJS, FastAPI, Next.js, Postgres.",
   },
   robots: { index: true, follow: true },
 };
@@ -77,34 +69,40 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable} font-sans bg-bg text-fg antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-background text-foreground antialiased overflow-x-hidden`}
       >
-        {/* 5 color identities × 2 modes = 10 themes; iris-dark is the canonical default. */}
         <ThemeProvider
           attribute="data-theme"
-          defaultTheme="iris-dark"
+          defaultTheme="spring-night"
           themes={[
-            'iris-dark',    'iris-light',
-            'emerald-dark', 'emerald-light',
-            'copper-dark',  'copper-light',
-            'voltage-dark', 'voltage-light',
-            'mono-dark',    'mono-light',
+            'spring-night', 'spring-morning',
+            'summer-night', 'summer-morning',
+            'autumn-night', 'autumn-morning',
+            'winter-night', 'winter-morning',
+            'meteors-night', 'meteors-morning',
           ]}
           enableSystem={false}
         >
           <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-fg focus:text-bg focus:rounded-md focus:outline-none"
+            href="#hero"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none"
           >
             Skip to main content
           </a>
 
-          <Header />
-          <main id="main-content" className="min-h-screen" role="main">
+          <Preloader />
+          <StarBackground />
+          <MountainSilhouette />
+          <SeasonalParticles />
+          <Navbar />
+
+          <main className="relative z-10">
             {children}
             <Analytics />
           </main>
+
           <Footer />
+          <FloatingBackToTop />
         </ThemeProvider>
       </body>
     </html>

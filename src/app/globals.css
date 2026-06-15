@@ -1,380 +1,453 @@
-/* src/app/globals.css — hybrid with 5 named-theme presets */
+/* src/app/globals.css — design/rei (faithful port of rei-naissance/portfolio's design DNA) */
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 @import "yet-another-react-lightbox/styles.css";
 @import "tailwindcss";
 
 /* ============================================================
- * 5 color identities × 2 modes = 10 theme combos.
- * Naming convention: data-theme="<color>-<mode>" (e.g. "iris-dark").
- * :root defaults to iris-dark so SSR shows the canonical look.
+ * 4 seasons × 2 modes = 8 themes. Inspired by seeson.vercel.app.
  *
- * Across themes, the MODE (dark/light) controls bg lightness +
- * fg lightness consistently; the COLOR controls hue + accent.
- * Switch mode without changing color → bg stays "dark" or "light".
- * Switch color without changing mode → only hue shifts.
+ *   Spring  — soft rose on warm cream
+ *   Summer  — sunlit gold on warm cream
+ *   Autumn  — rust amber on warm beige
+ *   Winter  — muted steel-blue on cool off-white
+ *
+ * Each season has a Morning (light) and Night (dark) variant.
+ * Lower saturation + warmer undertones than typical SaaS themes —
+ * the goal is craft/personal not tech-product. All flat colors,
+ * no gradients in the palette itself.
+ *
+ * :root defaults to spring-night so SSR matches the canonical
+ * starting look (the ThemePicker reassigns based on current
+ * time-of-day on hydrate).
  * ============================================================ */
 
-/* ===== IRIS — electric violet ===== */
+/* ===== SPRING — soft rose ===== */
 :root,
-[data-theme="iris-dark"] {
-  --bg:           oklch(0.14 0.045 280);
-  --bg-elevated:  oklch(0.18 0.050 280);
-  --bg-deep:      oklch(0.10 0.040 280);
-  --fg:           oklch(0.96 0.008 290);
-  --fg-muted:     oklch(0.70 0.020 290);
-  --fg-subtle:    oklch(0.50 0.030 285);
-  --border:       oklch(0.96 0.008 290 / 0.10);
-  --border-strong:oklch(0.96 0.008 290 / 0.18);
-  --accent:       oklch(0.74 0.22 295);
-  --accent-hover: oklch(0.82 0.22 295);
-  --accent-fg:    oklch(0.10 0.040 280);
-  --signal-live:  oklch(0.78 0.16 145);
-  --glass-bg:     oklch(0.14 0.045 280 / 0.65);
-  --glass-border: oklch(0.96 0.008 290 / 0.08);
+[data-theme="spring-night"] {
+  --background:           345 15% 8%;
+  --foreground:           25 15% 92%;
+  --card:                 345 14% 12%;
+  --card-foreground:      25 15% 92%;
+  --primary:              345 60% 68%;
+  --primary-foreground:   345 15% 8%;
+  --secondary:            345 12% 15%;
+  --secondary-foreground: 25 15% 92%;
+  --muted:                345 12% 15%;
+  --muted-foreground:     345 10% 68%;
+  --border:               345 12% 22%;
+  --input:                345 12% 22%;
+  --ring:                 345 60% 68%;
 }
-[data-theme="iris-light"] {
-  --bg:           oklch(0.96 0.020 280);
-  --bg-elevated:  oklch(0.93 0.024 280);
-  --bg-deep:      oklch(0.90 0.028 280);
-  --fg:           oklch(0.18 0.040 285);
-  --fg-muted:     oklch(0.44 0.030 285);
-  --fg-subtle:    oklch(0.60 0.022 285);
-  --border:       oklch(0.18 0.040 285 / 0.14);
-  --border-strong:oklch(0.18 0.040 285 / 0.24);
-  --accent:       oklch(0.50 0.24 295);
-  --accent-hover: oklch(0.42 0.26 295);
-  --accent-fg:    oklch(0.96 0.020 280);
-  --signal-live:  oklch(0.55 0.16 145);
-  --glass-bg:     oklch(0.96 0.020 280 / 0.75);
-  --glass-border: oklch(0.18 0.040 285 / 0.12);
+[data-theme="spring-morning"] {
+  --background:           25 30% 96%;
+  --foreground:           345 20% 14%;
+  --card:                 25 30% 99%;
+  --card-foreground:      345 20% 14%;
+  --primary:              345 55% 52%;
+  --primary-foreground:   25 30% 96%;
+  --secondary:            25 25% 92%;
+  --secondary-foreground: 345 20% 14%;
+  --muted:                25 25% 92%;
+  --muted-foreground:     345 12% 38%;
+  --border:               25 20% 86%;
+  --input:                25 20% 86%;
+  --ring:                 345 55% 52%;
 }
 
-/* ===== EMERALD — deep forest ===== */
-[data-theme="emerald-dark"] {
-  --bg:           oklch(0.15 0.045 165);
-  --bg-elevated:  oklch(0.19 0.050 165);
-  --bg-deep:      oklch(0.11 0.040 165);
-  --fg:           oklch(0.96 0.012 140);
-  --fg-muted:     oklch(0.72 0.025 145);
-  --fg-subtle:    oklch(0.52 0.030 155);
-  --border:       oklch(0.96 0.012 140 / 0.10);
-  --border-strong:oklch(0.96 0.012 140 / 0.20);
-  --accent:       oklch(0.70 0.18 160);
-  --accent-hover: oklch(0.78 0.18 160);
-  --accent-fg:    oklch(0.11 0.040 165);
-  --signal-live:  oklch(0.80 0.18 145);
-  --glass-bg:     oklch(0.15 0.045 165 / 0.65);
-  --glass-border: oklch(0.96 0.012 140 / 0.08);
+/* ===== SUMMER — sunlit gold ===== */
+[data-theme="summer-night"] {
+  --background:           30 15% 8%;
+  --foreground:           45 15% 92%;
+  --card:                 30 14% 12%;
+  --card-foreground:      45 15% 92%;
+  --primary:              40 75% 62%;
+  --primary-foreground:   30 15% 8%;
+  --secondary:            30 12% 15%;
+  --secondary-foreground: 45 15% 92%;
+  --muted:                30 12% 15%;
+  --muted-foreground:     35 10% 68%;
+  --border:               30 12% 22%;
+  --input:                30 12% 22%;
+  --ring:                 40 75% 62%;
 }
-[data-theme="emerald-light"] {
-  --bg:           oklch(0.96 0.020 150);
-  --bg-elevated:  oklch(0.93 0.024 150);
-  --bg-deep:      oklch(0.90 0.028 150);
-  --fg:           oklch(0.18 0.035 160);
-  --fg-muted:     oklch(0.44 0.025 160);
-  --fg-subtle:    oklch(0.60 0.020 160);
-  --border:       oklch(0.18 0.035 160 / 0.14);
-  --border-strong:oklch(0.18 0.035 160 / 0.24);
-  --accent:       oklch(0.46 0.18 160);
-  --accent-hover: oklch(0.38 0.20 160);
-  --accent-fg:    oklch(0.96 0.020 150);
-  --signal-live:  oklch(0.55 0.16 145);
-  --glass-bg:     oklch(0.96 0.020 150 / 0.75);
-  --glass-border: oklch(0.18 0.035 160 / 0.12);
+[data-theme="summer-morning"] {
+  --background:           45 38% 96%;
+  --foreground:           30 25% 13%;
+  --card:                 45 38% 99%;
+  --card-foreground:      30 25% 13%;
+  --primary:              35 75% 45%;
+  --primary-foreground:   45 38% 96%;
+  --secondary:            45 30% 92%;
+  --secondary-foreground: 30 25% 13%;
+  --muted:                45 30% 92%;
+  --muted-foreground:     30 15% 38%;
+  --border:               45 25% 86%;
+  --input:                45 25% 86%;
+  --ring:                 35 75% 45%;
 }
 
-/* ===== COPPER — warm amber ===== */
-[data-theme="copper-dark"] {
-  --bg:           oklch(0.15 0.030 50);
-  --bg-elevated:  oklch(0.19 0.034 50);
-  --bg-deep:      oklch(0.11 0.026 50);
-  --fg:           oklch(0.96 0.018 70);
-  --fg-muted:     oklch(0.72 0.024 65);
-  --fg-subtle:    oklch(0.52 0.030 60);
-  --border:       oklch(0.96 0.018 70 / 0.10);
-  --border-strong:oklch(0.96 0.018 70 / 0.20);
-  --accent:       oklch(0.68 0.18 50);
-  --accent-hover: oklch(0.76 0.18 50);
-  --accent-fg:    oklch(0.11 0.026 50);
-  --signal-live:  oklch(0.78 0.18 145);
-  --glass-bg:     oklch(0.15 0.030 50 / 0.65);
-  --glass-border: oklch(0.96 0.018 70 / 0.08);
+/* ===== AUTUMN — rust amber ===== */
+[data-theme="autumn-night"] {
+  --background:           20 15% 8%;
+  --foreground:           30 15% 92%;
+  --card:                 20 14% 12%;
+  --card-foreground:      30 15% 92%;
+  --primary:              20 70% 58%;
+  --primary-foreground:   20 15% 8%;
+  --secondary:            20 12% 15%;
+  --secondary-foreground: 30 15% 92%;
+  --muted:                20 12% 15%;
+  --muted-foreground:     25 10% 68%;
+  --border:               20 12% 22%;
+  --input:                20 12% 22%;
+  --ring:                 20 70% 58%;
 }
-[data-theme="copper-light"] {
-  --bg:           oklch(0.96 0.028 75);
-  --bg-elevated:  oklch(0.93 0.032 75);
-  --bg-deep:      oklch(0.90 0.036 75);
-  --fg:           oklch(0.20 0.030 50);
-  --fg-muted:     oklch(0.46 0.022 50);
-  --fg-subtle:    oklch(0.62 0.018 55);
-  --border:       oklch(0.20 0.030 50 / 0.14);
-  --border-strong:oklch(0.20 0.030 50 / 0.24);
-  --accent:       oklch(0.56 0.18 40);
-  --accent-hover: oklch(0.48 0.20 40);
-  --accent-fg:    oklch(0.96 0.028 75);
-  --signal-live:  oklch(0.55 0.16 145);
-  --glass-bg:     oklch(0.96 0.028 75 / 0.75);
-  --glass-border: oklch(0.20 0.030 50 / 0.12);
+[data-theme="autumn-morning"] {
+  --background:           28 30% 95%;
+  --foreground:           20 30% 12%;
+  --card:                 28 30% 99%;
+  --card-foreground:      20 30% 12%;
+  --primary:              15 70% 42%;
+  --primary-foreground:   28 30% 95%;
+  --secondary:            28 22% 92%;
+  --secondary-foreground: 20 30% 12%;
+  --muted:                28 22% 92%;
+  --muted-foreground:     20 15% 38%;
+  --border:               28 18% 86%;
+  --input:                28 18% 86%;
+  --ring:                 15 70% 42%;
 }
 
-/* ===== VOLTAGE — electric yellow ===== */
-[data-theme="voltage-dark"] {
-  --bg:           oklch(0.13 0.025 95);
-  --bg-elevated:  oklch(0.17 0.030 95);
-  --bg-deep:      oklch(0.09 0.020 95);
-  --fg:           oklch(0.97 0.012 95);
-  --fg-muted:     oklch(0.72 0.020 95);
-  --fg-subtle:    oklch(0.52 0.025 95);
-  --border:       oklch(0.97 0.012 95 / 0.14);
-  --border-strong:oklch(0.97 0.012 95 / 0.24);
-  --accent:       oklch(0.92 0.21 100);
-  --accent-hover: oklch(0.96 0.21 100);
-  --accent-fg:    oklch(0.09 0.020 95);
-  --signal-live:  oklch(0.80 0.20 145);
-  --glass-bg:     oklch(0.13 0.025 95 / 0.65);
-  --glass-border: oklch(0.97 0.012 95 / 0.12);
+/* ===== WINTER — muted steel-blue ===== */
+[data-theme="winter-night"] {
+  --background:           220 15% 8%;
+  --foreground:           210 15% 92%;
+  --card:                 220 14% 12%;
+  --card-foreground:      210 15% 92%;
+  --primary:              205 55% 65%;
+  --primary-foreground:   220 15% 8%;
+  --secondary:            220 12% 15%;
+  --secondary-foreground: 210 15% 92%;
+  --muted:                220 12% 15%;
+  --muted-foreground:     215 10% 68%;
+  --border:               220 12% 22%;
+  --input:                220 12% 22%;
+  --ring:                 205 55% 65%;
 }
-[data-theme="voltage-light"] {
-  --bg:           oklch(0.97 0.025 95);
-  --bg-elevated:  oklch(0.94 0.030 95);
-  --bg-deep:      oklch(0.91 0.034 95);
-  --fg:           oklch(0.18 0.025 85);
-  --fg-muted:     oklch(0.44 0.020 85);
-  --fg-subtle:    oklch(0.60 0.018 85);
-  --border:       oklch(0.18 0.025 85 / 0.14);
-  --border-strong:oklch(0.18 0.025 85 / 0.24);
-  /* Yellow doesn't read on cream — use deeper amber for the accent in light mode */
-  --accent:       oklch(0.62 0.18 75);
-  --accent-hover: oklch(0.54 0.20 70);
-  --accent-fg:    oklch(0.97 0.025 95);
-  --signal-live:  oklch(0.55 0.16 145);
-  --glass-bg:     oklch(0.97 0.025 95 / 0.75);
-  --glass-border: oklch(0.18 0.025 85 / 0.12);
+[data-theme="winter-morning"] {
+  --background:           215 20% 96%;
+  --foreground:           220 25% 12%;
+  --card:                 215 20% 99%;
+  --card-foreground:      220 25% 12%;
+  --primary:              210 60% 42%;
+  --primary-foreground:   215 20% 96%;
+  --secondary:            215 18% 92%;
+  --secondary-foreground: 220 25% 12%;
+  --muted:                215 18% 92%;
+  --muted-foreground:     220 12% 38%;
+  --border:               215 15% 86%;
+  --input:                215 15% 86%;
+  --ring:                 210 60% 42%;
 }
 
-/* ===== MONO — no color accent ===== */
-[data-theme="mono-dark"] {
-  --bg:           oklch(0.12 0 0);
-  --bg-elevated:  oklch(0.16 0 0);
-  --bg-deep:      oklch(0.08 0 0);
-  --fg:           oklch(0.97 0 0);
-  --fg-muted:     oklch(0.72 0 0);
-  --fg-subtle:    oklch(0.50 0 0);
-  --border:       oklch(0.97 0 0 / 0.12);
-  --border-strong:oklch(0.97 0 0 / 0.22);
-  --accent:       oklch(0.97 0 0);
-  --accent-hover: oklch(1.00 0 0);
-  --accent-fg:    oklch(0.12 0 0);
-  --signal-live:  oklch(0.78 0.16 145);
-  --glass-bg:     oklch(0.12 0 0 / 0.7);
-  --glass-border: oklch(0.97 0 0 / 0.10);
+/* Meteors — both modes stay dark so the starfield + meteors read clearly.
+   Night: deep cosmic black + cool violet primary.
+   Morning: dusk — indigo sky with a warm horizon tint, dark enough for stars. */
+[data-theme="meteors-night"] {
+  --background:           240 30% 6%;
+  --foreground:           240 15% 92%;
+  --card:                 240 28% 10%;
+  --card-foreground:      240 15% 92%;
+  --primary:              260 70% 70%;
+  --primary-foreground:   240 30% 6%;
+  --secondary:            240 22% 14%;
+  --secondary-foreground: 240 15% 92%;
+  --muted:                240 22% 14%;
+  --muted-foreground:     240 12% 65%;
+  --border:               240 20% 20%;
+  --input:                240 20% 20%;
+  --ring:                 260 70% 70%;
 }
-[data-theme="mono-light"] {
-  --bg:           oklch(0.99 0 0);
-  --bg-elevated:  oklch(0.96 0 0);
-  --bg-deep:      oklch(0.94 0 0);
-  --fg:           oklch(0.12 0 0);
-  --fg-muted:     oklch(0.42 0 0);
-  --fg-subtle:    oklch(0.60 0 0);
-  --border:       oklch(0.12 0 0 / 0.12);
-  --border-strong:oklch(0.12 0 0 / 0.22);
-  --accent:       oklch(0.12 0 0);
-  --accent-hover: oklch(0.04 0 0);
-  --accent-fg:    oklch(0.99 0 0);
-  --signal-live:  oklch(0.55 0.16 145);
-  --glass-bg:     oklch(0.99 0 0 / 0.7);
-  --glass-border: oklch(0.12 0 0 / 0.10);
+[data-theme="meteors-morning"] {
+  --background:           255 35% 14%;
+  --foreground:           30 35% 92%;
+  --card:                 255 32% 18%;
+  --card-foreground:      30 35% 92%;
+  --primary:              25 85% 65%;
+  --primary-foreground:   255 35% 14%;
+  --secondary:            255 25% 22%;
+  --secondary-foreground: 30 35% 92%;
+  --muted:                255 25% 22%;
+  --muted-foreground:     20 25% 75%;
+  --border:               255 22% 28%;
+  --input:                255 22% 28%;
+  --ring:                 25 85% 65%;
 }
 
-/* Bridge tokens to Tailwind utilities */
+/* Bridge HSL tokens to Tailwind v4 utilities */
 @theme inline {
-  --color-bg:            var(--bg);
-  --color-bg-elevated:   var(--bg-elevated);
-  --color-bg-deep:       var(--bg-deep);
-  --color-fg:            var(--fg);
-  --color-fg-muted:      var(--fg-muted);
-  --color-fg-subtle:     var(--fg-subtle);
-  --color-border:        var(--border);
-  --color-border-strong: var(--border-strong);
-  --color-accent:        var(--accent);
-  --color-accent-hover:  var(--accent-hover);
-  --color-accent-fg:     var(--accent-fg);
-  --color-signal-live:   var(--signal-live);
+  --color-background:           hsl(var(--background));
+  --color-foreground:           hsl(var(--foreground));
+  --color-card:                 hsl(var(--card));
+  --color-card-foreground:      hsl(var(--card-foreground));
+  --color-primary:              hsl(var(--primary));
+  --color-primary-foreground:   hsl(var(--primary-foreground));
+  --color-secondary:            hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted:                hsl(var(--muted));
+  --color-muted-foreground:     hsl(var(--muted-foreground));
+  --color-border:               hsl(var(--border));
+  --color-input:                hsl(var(--input));
+  --color-ring:                 hsl(var(--ring));
 
-  --font-sans:  var(--font-sans),  ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
-  --font-mono:  var(--font-mono),  ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* ============================================================
- * Base
- * ============================================================ */
 html {
   scroll-behavior: smooth;
 }
-
-/* Tell the browser whether each theme is dark or light so native
- * scrollbars / form controls match. The convention is just the
- * "-dark" / "-light" suffix in the theme name. */
+/* color-scheme derived from the -night / -morning suffix.
+   Meteor themes are dark in both modes (dusk + cosmic). */
 :root,
-[data-theme$="-dark"] {
-  color-scheme: dark;
-}
-[data-theme$="-light"] {
-  color-scheme: light;
-}
+[data-theme$="-night"] { color-scheme: dark; }
+[data-theme$="-morning"] { color-scheme: light; }
+[data-theme="meteors-morning"],
+[data-theme="meteors-night"] { color-scheme: dark; }
 
 body {
   font-family: var(--font-sans);
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01", "ss03";
-  font-optical-sizing: auto;
-  text-rendering: optimizeLegibility;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  transition: background-color 0.3s, color 0.3s;
+  font-feature-settings: "rlig" 1, "calt" 1;
   -webkit-font-smoothing: antialiased;
-  background: var(--bg);
+}
+
+/* Themed scrollbar — thumb uses --primary so it picks up the active season.
+   Firefox uses the shorthand; WebKit/Blink uses the pseudo-elements. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.55) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.45);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.75);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--accent-fg);
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }
 
 /* ============================================================
- * Display utilities — metric numerals + display sans
+ * KEYFRAMES — Rei's cinematic cascade + cosmic motion
  * ============================================================ */
-.font-metric {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-feature-settings: "tnum", "ss01", "ss03";   /* tabular numerals */
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.04em;
-  line-height: 0.85;
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
-.font-display {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 0.95;
-  text-wrap: balance;
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
 }
-
-/* Italic Fraunces — used once per page max */
-.font-serif {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 300;
-  letter-spacing: -0.005em;
+@keyframes pulse-subtle {
+  0%, 100% { opacity: var(--star-opacity, 1); }
+  50%      { opacity: calc(var(--star-opacity, 1) * 0.55); }
+}
+/* Meteor — each instance picks its own rotation via --meteor-angle, so the
+   shower has variety: steep angles (~235°) enter from above-left, shallow
+   angles (~195°) enter from the left-side horizontally. The translateX
+   entry/exit pair is always off-screen relative to the chosen angle, and
+   the opacity-0 entry/exit prevents mid-air pop-ins on mount. */
+@keyframes meteor {
+  0%   { transform: rotate(var(--meteor-angle, 215deg)) translateX(700px);  opacity: 0; }
+  15%  { transform: rotate(var(--meteor-angle, 215deg)) translateX(420px);  opacity: 0.95; }
+  85%  { transform: rotate(var(--meteor-angle, 215deg)) translateX(-420px); opacity: 0.95; }
+  100% { transform: rotate(var(--meteor-angle, 215deg)) translateX(-700px); opacity: 0; }
 }
 
 /* ============================================================
- * Outlined-stroke text — bold-flavored signature element.
- * Hollow type, currentColor stroke. Use for ONE moment per
- * section (byline, metric, project initials), never as body.
+ * SEASONAL PARTICLES — petals / fireflies / leaves / snow.
+ * Tinted with the active --primary so they harmonise with the theme.
  * ============================================================ */
-.text-outlined {
-  -webkit-text-stroke: 1.25px currentColor;
-  -webkit-text-fill-color: transparent;
-  color: currentColor;
-  paint-order: stroke fill;
-}
-@media (min-width: 768px) {
-  .text-outlined { -webkit-text-stroke-width: 1.75px; }
+/* Falling shapes (spring petals, autumn leaves, winter snowflakes) — top to
+   bottom with lateral drift + full rotation. */
+@keyframes seasonal-fall {
+  from { transform: translate3d(0, -10vh, 0) rotate(var(--rot, 0deg)); opacity: 0; }
+  10%  { opacity: 0.9; }
+  90%  { opacity: 0.9; }
+  to   { transform: translate3d(var(--drift, 0), 110vh, 0) rotate(calc(var(--rot, 0deg) + 360deg)); opacity: 0; }
 }
 
-/* ============================================================
- * Marquee — horizontal infinite-scroll strip. Footer only.
- * Pauses on hover so screen readers / keyboard users aren't
- * fighting the motion.
- * ============================================================ */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+/* Firefly wander — 3 independent 2D paths so the swarm looks alive.
+   Each is a closed loop so motion is seamless when looping. */
+@keyframes firefly-wander-1 {
+  0%   { transform: translate(0,    0); }
+  20%  { transform: translate(38px, -42px); }
+  40%  { transform: translate(-22px, -86px); }
+  60%  { transform: translate(44px, -60px); }
+  80%  { transform: translate(-28px, -28px); }
+  100% { transform: translate(0,    0); }
 }
-.marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 40s linear infinite;
+@keyframes firefly-wander-2 {
+  0%   { transform: translate(0,    0); }
+  25%  { transform: translate(-46px, 22px); }
+  50%  { transform: translate(20px,  56px); }
+  75%  { transform: translate(54px, -12px); }
+  100% { transform: translate(0,    0); }
 }
-.marquee-container:hover .marquee,
-.marquee-container:focus-within .marquee {
-  animation-play-state: paused;
-}
-
-/* ============================================================
- * Glass surface — used by header + project overlays.
- * Premium look = subtle backdrop blur + faint border.
- * ============================================================ */
-.glass {
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  backdrop-filter: blur(20px) saturate(160%);
-  border-bottom: 1px solid var(--glass-border);
+@keyframes firefly-wander-3 {
+  0%   { transform: translate(0,    0); }
+  16%  { transform: translate(34px,  28px); }
+  33%  { transform: translate(62px, -22px); }
+  50%  { transform: translate(20px, -54px); }
+  66%  { transform: translate(-32px, -30px); }
+  83%  { transform: translate(-52px,  12px); }
+  100% { transform: translate(0,    0); }
 }
 
-/* ============================================================
- * Accent glow — the Linear-style purple bloom around links
- * and big elements on hover.
- * ============================================================ */
-.accent-glow {
-  text-shadow: 0 0 30px color-mix(in oklch, var(--accent) 50%, transparent);
+/* Firefly blink — opacity pulse layered on top of the wander */
+@keyframes firefly-blink {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 1;   }
 }
 
-.bloom {
-  position: relative;
-}
-.bloom::before {
-  content: "";
+.seasonal-particle {
   position: absolute;
-  inset: -1.5rem;
-  background: radial-gradient(
-    ellipse at center,
-    color-mix(in oklch, var(--accent) 24%, transparent) 0%,
-    transparent 60%
+  top: 0;
+  will-change: transform, opacity;
+  display: inline-block;
+}
+/* Falling shape — used by spring petals, autumn leaves, winter snowflakes.
+   SVG inside provides the actual silhouette; this class only animates. */
+.particle-fall {
+  animation: seasonal-fall var(--duration, 18s) linear infinite;
+}
+/* Firefly wander — three variants for path diversity across the swarm */
+.firefly-wander-1 { animation: firefly-wander-1 14s ease-in-out infinite; }
+.firefly-wander-2 { animation: firefly-wander-2 16s ease-in-out infinite; }
+.firefly-wander-3 { animation: firefly-wander-3 18s ease-in-out infinite; }
+.firefly-blink    { animation: firefly-blink 2.4s ease-in-out infinite; }
+
+.animate-fade-in           { opacity: 0; animation: fade-in 0.7s ease-out forwards; }
+.animate-fade-in-delay-1   { opacity: 0; animation: fade-in 0.7s ease-out 0.2s forwards; }
+.animate-fade-in-delay-2   { opacity: 0; animation: fade-in 0.7s ease-out 0.4s forwards; }
+.animate-fade-in-delay-3   { opacity: 0; animation: fade-in 0.7s ease-out 0.6s forwards; }
+.animate-fade-in-delay-4   { opacity: 0; animation: fade-in 0.7s ease-out 0.8s forwards; }
+.animate-float             { animation: float 6s ease-in-out infinite; }
+.animate-pulse-subtle      { animation: pulse-subtle var(--star-duration, 4s) ease-in-out infinite; }
+/* animation-fill-mode: backwards — during the positive `--meteor-delay`
+   window the element renders at the 0% keyframe (off-screen + opacity 0),
+   not its bare un-animated state. Without this, meteors flash visible as
+   static horizontal bars at their top/left coords until their delay fires. */
+.animate-meteor            { animation: meteor var(--meteor-duration, 5s) linear infinite backwards;
+                             animation-delay: var(--meteor-delay, 0s); }
+
+/* ============================================================
+ * UTILITIES — Rei's signature classes
+ * ============================================================ */
+
+/* Star/meteor field — theme-aware via currentColor on the parent */
+.star {
+  position: absolute;
+  border-radius: 9999px;
+  background: white;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.4);
+}
+.meteor {
+  position: absolute;
+  background: linear-gradient(to right, white, transparent);
+  border-radius: 9999px;
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.3);
+}
+/* In morning themes, stars flip to muted dark dots — they'd disappear on cream otherwise */
+[data-theme$="-morning"] .star {
+  background: hsl(var(--foreground));
+  box-shadow: 0 0 6px 1px hsl(var(--foreground) / 0.25);
+}
+[data-theme$="-morning"] .meteor {
+  background: linear-gradient(to right, hsl(var(--foreground)), transparent);
+  box-shadow: 0 0 6px 2px hsl(var(--foreground) / 0.2);
+}
+
+/* text-glow — soft primary-colored aura around accent text */
+.text-glow {
+  position: relative;
+  text-shadow: 0 0 10px hsl(var(--primary) / 0.5);
+}
+
+/* text-gradient — primary-to-foreground gradient text (used on hero name) */
+.text-gradient {
+  background-image: linear-gradient(
+    135deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary) / 0.7) 50%,
+    hsl(var(--foreground)) 100%
   );
-  filter: blur(40px);
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 500ms ease;
-  pointer-events: none;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
-.bloom:hover::before {
-  opacity: 1;
+
+/* cosmic-button — primary pill with glow on hover */
+.cosmic-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-weight: 500;
+  transition: all 300ms;
+}
+.cosmic-button:hover {
+  box-shadow: 0 0 14px hsl(var(--primary) / 0.5);
+  transform: scale(1.05);
+}
+.cosmic-button:active {
+  transform: scale(0.97);
+}
+
+/* gradient-border — subtle bordered card */
+.gradient-border {
+  position: relative;
+  border-radius: 0.5rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+}
+
+/* card-hover — scale + shadow on hover */
+.card-hover {
+  transition: transform 300ms, box-shadow 300ms;
+}
+.card-hover:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 25px hsl(var(--primary) / 0.15);
 }
 
 /* ============================================================
- * Animated underline (kept — universally useful)
- * ============================================================ */
-.link-underline {
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 100% 1px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  transition: background-size 350ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.link-underline:hover {
-  background-size: 0% 1px;
-  background-position: 100% 100%;
-}
-
-/* ============================================================
- * Full-bleed escape — content can escape the container.
- * ============================================================ */
-.full-bleed {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-}
-
-/* Subtle dot grid background (used on metrics section) */
-.bg-dots {
-  background-image:
-    radial-gradient(circle at 1px 1px, var(--border-strong) 1px, transparent 0);
-  background-size: 32px 32px;
-}
-
-/* ============================================================
- * Reduced motion
+ * Reduced motion — respect user preferences
  * ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -382,6 +455,11 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .animate-fade-in, .animate-fade-in-delay-1, .animate-fade-in-delay-2,
+  .animate-fade-in-delay-3, .animate-fade-in-delay-4 {
+    opacity: 1 !important;
+    animation: none !important;
   }
 }
 
@@ -404,26 +482,15 @@ body {
 }
 .custom-dots-styling li { margin: 0 4px; }
 .custom-dots-styling li button {
-  font-size: 0;
-  line-height: 0;
-  display: block;
-  width: 6px;
-  height: 6px;
-  padding: 0;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  background-color: var(--border-strong);
+  font-size: 0; line-height: 0; display: block;
+  width: 6px; height: 6px; padding: 0; cursor: pointer; border: none; outline: none;
+  background-color: hsl(var(--border));
   border-radius: 50%;
-  transition: background-color 0.2s ease, width 0.2s ease;
+  transition: background-color 0.2s, width 0.2s;
 }
 .custom-dots-styling li button:hover,
-.custom-dots-styling li button:focus { background-color: var(--fg-muted); }
+.custom-dots-styling li button:focus { background-color: hsl(var(--muted-foreground)); }
 .custom-dots-styling li.slick-active button {
-  background-color: var(--accent);
-  width: 18px;
-  border-radius: 3px;
+  background-color: hsl(var(--primary)); width: 18px; border-radius: 3px;
 }
-.slick-container-custom .slick-prev,
-.slick-container-custom .slick-next { z-index: 10; }
 .slick-container-custom .slick-list { padding-bottom: 30px !important; }

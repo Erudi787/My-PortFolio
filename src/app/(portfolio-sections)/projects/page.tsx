@@ -1,14 +1,16 @@
-import ProjectCard from "@/components/sections/ProjectCard";
-import { projectsData } from "../../../../lib/data";
+import type { Metadata } from 'next';
+import { ArrowRight } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa';
+import ProjectCard from '@/components/sections/ProjectCard';
+import { projectsData } from '../../../../lib/data';
 
-export const metadata = {
-  title: "Work",
+export const metadata: Metadata = {
+  title: 'Projects',
   description:
-    "Selected projects — production builds in EdTech, property management, music recommendation, and developer tooling.",
+    'The full archive of projects shipped by Elwison Denampo — production systems, side experiments, and case studies.',
 };
 
 export default function ProjectsPage() {
-  // Sort newest first
   const sorted = [...projectsData].sort((a, b) => {
     const ay = a.year ? parseInt(a.year, 10) : 0;
     const by = b.year ? parseInt(b.year, 10) : 0;
@@ -16,51 +18,42 @@ export default function ProjectsPage() {
   });
 
   return (
-    <section
-      id="projects"
-      className="bg-bg text-fg pt-32 pb-32 md:pt-40 md:pb-40 min-h-screen"
-    >
-      <div className="container mx-auto px-6 md:px-10">
-        {/* Tag — bracketed mono */}
-        <p className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-8 inline-flex items-baseline gap-1.5">
+    <section className="relative pt-32 pb-24 px-4">
+      <div className="container mx-auto max-w-6xl">
+        <p className="text-[11px] font-mono uppercase tracking-[0.22em] text-primary mb-6 inline-flex items-baseline gap-1.5">
           <span aria-hidden="true">[</span>
-          <span className="text-fg-muted">archive</span>
-          <span aria-hidden="true" className="text-fg-subtle">·</span>
-          <span>Selected work</span>
+          <span className="text-muted-foreground">§ 05</span>
+          <span aria-hidden="true" className="text-muted-foreground">·</span>
+          <span>Work · Archive</span>
           <span aria-hidden="true">]</span>
         </p>
 
-        <header className="max-w-4xl mb-20 md:mb-24">
-          <h1 className="font-display text-fg text-5xl md:text-7xl lg:text-[6rem]">
-            Things I&apos;ve shipped,{' '}
-            <span className="font-serif text-fg-muted">chronological</span>.
+        <div className="mb-12 max-w-3xl">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+            All <span className="text-primary">Projects</span>
           </h1>
-          <p className="mt-10 text-fg-muted text-base md:text-lg leading-relaxed max-w-2xl">
-            From a campus chat app in WinForms to a production
-            property-management platform with ten third-party integrations.
-            Click any tile for the full case study.
+          <p className="text-lg text-muted-foreground">
+            Production systems, side experiments, and the in-between. Each card
+            links to a case study or the source — whichever is more useful.
           </p>
-        </header>
+        </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sorted.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {sorted.map((project) => (
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
 
-        <p className="mt-20 text-sm text-fg-subtle">
-          More on{" "}
+        <div className="text-center mt-16">
           <a
             href="https://github.com/Erudi787"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-fg link-underline"
+            className="cosmic-button w-fit inline-flex items-center mx-auto gap-2"
           >
-            GitHub
+            <FaGithub size={16} /> More on GitHub <ArrowRight size={16} />
           </a>
-          .
-        </p>
+        </div>
       </div>
     </section>
   );

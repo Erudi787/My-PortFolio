@@ -1,193 +1,69 @@
-// src/components/sections/HeroSection.tsx — high-end v2 (Linear/Vercel DNA)
-'use client';
-import React, { forwardRef, useRef } from 'react';
+// src/components/sections/HeroSection.tsx — design/rei
 import Image from 'next/image';
-import Link from 'next/link';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { ArrowDown } from 'lucide-react';
+import PacmanGame from '@/components/PacmanGame';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface HeroSectionProps {}
-
-const HeroSection = forwardRef<HTMLElement, HeroSectionProps>((_props, ref) => {
-  const reduce = useReducedMotion();
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Parallax on the product mockup — moves slower than scroll, scales down
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-  const mockupY = useTransform(scrollYProgress, [0, 1], ['0%', reduce ? '0%' : '-12%']);
-  const mockupRotate = useTransform(scrollYProgress, [0, 1], [3, reduce ? 3 : 0]);
-  const mockupScale = useTransform(scrollYProgress, [0, 1], [1, reduce ? 1 : 0.94]);
-  const mockupOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0.4]);
-
-  // Smoother spring than editorial — Linear's signature easing
-  const spring = { type: 'spring' as const, stiffness: 160, damping: 28, mass: 0.9 };
-
-  const fade = (delay = 0) =>
-    reduce
-      ? { initial: { opacity: 1 }, animate: { opacity: 1 } }
-      : {
-          initial: { opacity: 0, y: 12 },
-          animate: { opacity: 1, y: 0 },
-          transition: { ...spring, delay },
-        };
-
+export default function HeroSection() {
   return (
     <section
-      ref={ref}
-      id="home"
-      className="relative bg-bg text-fg overflow-hidden"
+      id="hero"
+      className="relative min-h-screen flex items-center justify-center px-4 py-24 md:py-12"
     >
-      <div ref={containerRef} className="relative min-h-screen flex flex-col items-center justify-center pt-32 pb-16">
-        {/* Background — subtle iris glow + dot grid */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-dots opacity-40"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] max-w-[1100px] rounded-full pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(ellipse, color-mix(in oklch, var(--accent) 18%, transparent) 0%, transparent 55%)',
-            filter: 'blur(80px)',
-          }}
-        />
-
-        <div className="container mx-auto px-6 md:px-10 relative z-10 flex flex-col items-center text-center">
-          {/* Availability pill */}
-          <motion.div
-            {...fade(0)}
-            className="inline-flex items-center gap-2.5 mb-10 px-3.5 py-1.5 rounded-full border border-border bg-bg-elevated/60 backdrop-blur-md text-[12px] font-medium text-fg-muted"
-          >
-            <span aria-hidden="true" className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[color:var(--signal-live)]">
-              <span className="absolute inset-0 rounded-full bg-[color:var(--signal-live)] motion-safe:animate-ping opacity-70" />
+      <div className="container max-w-6xl mx-auto z-10 grid md:grid-cols-[1.1fr_1fr] gap-10 md:gap-14 items-center">
+        {/* LEFT — text + inline avatar */}
+        <div className="space-y-6 text-center md:text-left">
+          <div className="flex items-center gap-4 justify-center md:justify-start">
+            <div className="w-16 h-16 rounded-full bg-muted/30 border-2 border-primary flex items-center justify-center overflow-hidden shrink-0">
+              <Image
+                src="/images/profile.jpg"
+                alt="Portrait of Elwison Denampo"
+                width={64}
+                height={64}
+                className="w-full h-full object-cover rounded-full"
+                priority
+              />
+            </div>
+            <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+              [ § 01 · Hero ]
             </span>
-            Available for remote roles
-            <span className="text-fg-subtle">·</span>
-            <span className="text-fg-subtle">Cebu, GMT+8</span>
-          </motion.div>
+          </div>
 
-          {/* Warmth greeting — small italic above the outlined name */}
-          <motion.p
-            {...fade(0.03)}
-            className="font-serif text-fg-muted text-lg md:text-xl mb-2 md:mb-3"
-          >
-            Hi — I&apos;m
-          </motion.p>
+          <h1 className="text-4xl font-bold md:text-6xl tracking-tight leading-tight">
+            <span className="animate-fade-in">Hi! I&apos;m</span>{' '}
+            <span className="text-primary animate-fade-in-delay-1">Elwison</span>{' '}
+            <span className="text-gradient ml-2 animate-fade-in-delay-2">Denampo</span>
+          </h1>
 
-          {/* Outlined-stroke byline — bold-flavored typographic signature */}
-          <motion.p
-            {...fade(0.05)}
-            aria-label="Elwison Denampo"
-            className="font-display text-outlined text-fg text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] tracking-[-0.04em] uppercase mb-6 md:mb-8"
-          >
-            Elwison Denampo.
-          </motion.p>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0 animate-fade-in-delay-3">
+            A full-stack developer passionate about backend architecture, scalable systems,
+            and shipping production-grade software. I enjoy building things that hold up
+            when no one is watching, and continuously learning to grow as a developer.
+          </p>
 
-          {/* Massive sans headline */}
-          <motion.h1
-            {...fade(0.08)}
-            className="font-display text-fg max-w-5xl text-[3.25rem] sm:text-7xl md:text-[5.5rem] lg:text-[7rem]"
-          >
-            Software companies stake their
-            {' '}
-            <span className="font-serif text-fg-muted">reputation</span>
-            {' '}
-            on.
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            {...fade(0.18)}
-            className="mt-8 max-w-2xl text-base md:text-lg text-fg-muted leading-relaxed"
-          >
-            Full-stack engineer specialising in backend architecture and the
-            systems that hold up when no one is watching.
-          </motion.p>
-
-          {/* Twin CTAs */}
-          <motion.div
-            {...fade(0.28)}
-            className="mt-12 flex flex-wrap items-center justify-center gap-3"
-          >
-            <Link
-              href="/projects"
-              className="bloom inline-flex items-center gap-2 px-5 py-3 rounded-full bg-accent text-accent-fg hover:bg-accent-hover transition-colors text-[14px] font-semibold"
-            >
-              See selected work
-              <span aria-hidden="true" className="text-base">→</span>
-            </Link>
-            <Link
+          <div className="animate-fade-in-delay-4 pt-2 flex flex-wrap gap-3 justify-center md:justify-start">
+            <a href="#projects" className="cosmic-button">
+              View My Work
+            </a>
+            <a
               href="/contact"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border-strong text-fg hover:bg-bg-elevated transition-colors text-[14px] font-semibold"
+              className="inline-flex items-center px-5 py-2 rounded-full border border-border text-foreground hover:border-primary/60 hover:text-primary transition-colors"
             >
               Get in touch
-            </Link>
-          </motion.div>
-
-          {/* Product mockup — tilted browser window with parallax */}
-          <motion.div
-            style={{
-              y: mockupY,
-              scale: mockupScale,
-              rotate: mockupRotate,
-              opacity: mockupOpacity,
-            }}
-            {...fade(0.4)}
-            className="mt-20 md:mt-28 w-full max-w-[1100px] origin-center"
-          >
-            <div className="relative">
-              {/* Glow underneath */}
-              <div
-                aria-hidden="true"
-                className="absolute -inset-6 rounded-3xl pointer-events-none"
-                style={{
-                  background:
-                    'radial-gradient(ellipse at bottom, color-mix(in oklch, var(--accent) 35%, transparent) 0%, transparent 60%)',
-                  filter: 'blur(40px)',
-                }}
-              />
-              {/* Browser window */}
-              <div className="relative rounded-2xl overflow-hidden border border-border-strong bg-bg-elevated shadow-2xl">
-                {/* Chrome bar */}
-                <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-bg-deep">
-                  <div className="flex gap-1.5">
-                    <span className="h-3 w-3 rounded-full bg-fg-subtle/30" />
-                    <span className="h-3 w-3 rounded-full bg-fg-subtle/30" />
-                    <span className="h-3 w-3 rounded-full bg-fg-subtle/30" />
-                  </div>
-                  <div className="flex-1 mx-4 px-3 py-1 rounded-md bg-bg-elevated border border-border text-[11px] font-mono text-fg-subtle truncate">
-                    portal.thelachow.com / admin
-                  </div>
-                  <span className="text-[10px] font-mono text-fg-subtle hidden sm:inline">
-                    PREVIEW
-                  </span>
-                </div>
-                {/* Screenshot */}
-                <div className="relative aspect-[16/9.5] bg-bg-deep">
-                  <Image
-                    src="/images/lachow-thumbnail.png"
-                    alt="LaChowOS admin dashboard"
-                    fill
-                    className="object-cover object-top"
-                    sizes="(max-width: 1024px) 100vw, 1100px"
-                    priority
-                    unoptimized
-                  />
-                </div>
-              </div>
-            </div>
-          </motion.div>
+            </a>
+          </div>
         </div>
 
+        {/* RIGHT — Pacman game */}
+        <div className="flex justify-center md:justify-end animate-fade-in-delay-3">
+          <PacmanGame cellSize={14} />
+        </div>
+      </div>
+
+      {/* Scroll affordance */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce">
+        <span className="text-sm text-muted-foreground m-2">Scroll</span>
+        <ArrowDown className="h-5 w-5 text-primary" />
       </div>
     </section>
   );
-});
-
-HeroSection.displayName = 'HeroSection';
-
-export default HeroSection;
+}

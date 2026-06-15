@@ -1,182 +1,99 @@
-// src/components/sections/SkillsSection.tsx — high-end v2 (hierarchy grid)
-'use client';
-import React, { forwardRef, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import { skillsData } from '../../../lib/data';
+// src/components/sections/SkillsSection.tsx — design/rei
+import { Layout, Server, Database, Terminal } from 'lucide-react';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface SkillsSectionProps {}
-
-interface PrimarySkill {
-  name: string;
-  blurb: string;
+interface SkillCategory {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  description: string;
+  skills: string[];
 }
 
-/** The eight tools I'd build a production system with tomorrow. */
-const PRIMARY: PrimarySkill[] = [
-  { name: 'TypeScript',  blurb: 'End-to-end type safety, every project' },
-  { name: 'Next.js',     blurb: 'App router, RSC, edge-aware deployments' },
-  { name: 'NestJS',      blurb: 'Modular monolith done right' },
-  { name: 'FastAPI',     blurb: 'Lean Python services that actually scale' },
-  { name: 'PostgreSQL',  blurb: 'Exclusion constraints, partial indexes, GiST' },
-  { name: 'Prisma',      blurb: 'Type-safe data access, migrations as code' },
-  { name: 'React',       blurb: 'Server components, suspense, react-query' },
-  { name: 'Stripe',      blurb: 'Payments + webhooks + reconciliation' },
+const skillCategories: SkillCategory[] = [
+  {
+    id: 'frontend',
+    title: 'Frontend & Mobile',
+    icon: <Layout className="w-6 h-6 text-primary" />,
+    description: 'Crafting responsive, interactive, and seamless user interfaces.',
+    skills: ['React', 'Next.js', 'TypeScript', 'TailwindCSS', 'shadcn/ui', 'React Query', 'Framer Motion', 'React Flow', 'Flutter'],
+  },
+  {
+    id: 'backend',
+    title: 'Backend & Architecture',
+    icon: <Server className="w-6 h-6 text-primary" />,
+    description: 'Building scalable APIs, modular monoliths, and robust server logic.',
+    skills: ['NestJS', 'FastAPI', 'ASP.NET Core', 'Express.js', 'Node.js', 'Python', 'C#', 'GraphQL', 'REST APIs', 'WebSocket', 'JWT'],
+  },
+  {
+    id: 'database',
+    title: 'Database & Cloud',
+    icon: <Database className="w-6 h-6 text-primary" />,
+    description: 'Managing data persistence, ORMs, and cloud infrastructure.',
+    skills: ['PostgreSQL', 'Prisma', 'SQLAlchemy', 'Supabase', 'Firebase', 'Redis', 'SQL Server', 'MySQL', 'AWS S3', 'Render'],
+  },
+  {
+    id: 'tools',
+    title: 'DevOps & Tools',
+    icon: <Terminal className="w-6 h-6 text-primary" />,
+    description: 'Streamlining development workflows, integrations, and observability.',
+    skills: ['Git & GitHub', 'Docker', 'Turborepo', 'pnpm', 'Sentry', 'Stripe', 'DocuSign', 'SendGrid', 'Clerk', 'OpenAI API', 'Jira', 'VS Code'],
+  },
 ];
 
-const PRIMARY_SET = new Set(PRIMARY.map(p => p.name));
-
-const SECONDARY_GROUPS: { label: string; names: string[] }[] = [
-  { label: 'Languages',     names: ['JavaScript', 'Python', 'C#', 'Dart', 'Swift', 'C', 'C++', 'HTML5', 'CSS3'] },
-  { label: 'Frameworks',    names: ['ASP.NET Core', 'Express.js', 'Node.js', 'Flutter', 'Vite', 'React Query', 'React Flow', 'Framer Motion', 'shadcn/ui', 'Zustand', 'Tailwind CSS'] },
-  { label: 'Data',          names: ['Supabase', 'SQL Server', 'MySQL', 'Firebase', 'Redis', 'SQLAlchemy', 'AutoMapper', 'MSAccess'] },
-  { label: 'Infra & tools', names: ['AWS S3', 'Render', 'Docker', 'Turborepo', 'pnpm', 'Sentry', 'Git & GitHub', 'Jira', 'VS Code'] },
-  { label: 'Integrations',  names: ['DocuSign', 'SendGrid', 'Clerk', 'OpenAI API', 'Groq API', 'Socket.IO', 'WebSocket', 'Zod', 'GraphQL', 'REST APIs', 'JWT Auth', 'Spotify API', 'Spotipy', 'FullCalendar', 'Recharts'] },
-];
-
-const knownNames = new Set(skillsData.map(s => s.name));
-
-/** Filter options derived from the SECONDARY_GROUPS labels, plus an "all" default. */
-const FILTERS = ['all', ...SECONDARY_GROUPS.map(g => g.label)] as const;
-type Filter = (typeof FILTERS)[number];
-
-const SkillsSection = forwardRef<HTMLElement, SkillsSectionProps>((_props, ref) => {
-  const reduce = useReducedMotion();
-  const [activeFilter, setActiveFilter] = useState<Filter>('all');
-
-  const visibleGroups =
-    activeFilter === 'all'
-      ? SECONDARY_GROUPS
-      : SECONDARY_GROUPS.filter(g => g.label === activeFilter);
-  const spring = { type: 'spring' as const, stiffness: 160, damping: 28, mass: 0.9 };
-  const fade = (delay = 0) =>
-    reduce
-      ? { initial: { opacity: 1 }, whileInView: { opacity: 1 }, viewport: { once: true } }
-      : {
-          initial: { opacity: 0, y: 14 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, amount: 0.1 },
-          transition: { ...spring, delay },
-        };
-
+export default function SkillsSection() {
   return (
-    <section
-      ref={ref}
-      id="skills"
-      className="bg-bg text-fg py-28 md:py-40 border-t border-border relative"
-    >
-      <div className="container mx-auto px-6 md:px-10">
-        {/* Section tag — bracketed mono with section number */}
-        <motion.p
-          {...fade(0)}
-          className="text-[12px] font-mono uppercase tracking-[0.22em] text-accent mb-8 inline-flex items-baseline gap-1.5"
-        >
-          <span aria-hidden="true">[</span>
-          <span className="text-fg-muted">§ 03</span>
-          <span aria-hidden="true" className="text-fg-subtle">·</span>
-          <span>Stack</span>
-          <span aria-hidden="true">]</span>
-        </motion.p>
-
-        {/* Headline */}
-        <motion.h2
-          {...fade(0.05)}
-          className="font-display text-fg max-w-4xl text-4xl md:text-5xl lg:text-6xl mb-6"
-        >
-          The eight I&apos;d build with{' '}
-          <span className="font-serif text-fg-muted">tomorrow</span>.
-        </motion.h2>
-        <motion.p {...fade(0.1)} className="text-fg-muted text-base md:text-lg max-w-xl mb-16 md:mb-20">
-          Tools I&apos;ve shipped production with — not the full list, just the
-          shortlist for picking up a clean slate.
-        </motion.p>
-
-        {/* Primary tier — large hierarchical cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-20">
-          {PRIMARY.map((tool, i) => (
-            <motion.div
-              key={tool.name}
-              {...fade(0.1 + i * 0.03)}
-              className="group relative p-6 rounded-xl border border-border bg-bg-elevated/40 hover:bg-bg-elevated hover:border-border-strong transition-colors overflow-hidden"
-            >
-              {/* Accent line that lights up on hover */}
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              />
-              <p className="font-display text-fg text-2xl md:text-[1.75rem] tracking-[-0.02em] leading-none">
-                {tool.name}
-              </p>
-              <p className="mt-4 text-[13px] text-fg-muted leading-snug">
-                {tool.blurb}
-              </p>
-            </motion.div>
-          ))}
+    <section id="skills" className="py-24 px-4 relative">
+      <div className="container mx-auto max-w-5xl">
+        <div className="mb-16">
+          <p className="text-[11px] font-mono uppercase tracking-[0.22em] text-primary mb-3 inline-flex items-baseline gap-1.5">
+            <span aria-hidden="true">[</span>
+            <span className="text-muted-foreground">§ 04</span>
+            <span aria-hidden="true" className="text-muted-foreground">·</span>
+            <span>Skills</span>
+            <span aria-hidden="true">]</span>
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3">
+            Technical <span className="text-primary">Repertoire</span>
+          </h2>
+          <p className="text-muted-foreground max-w-2xl">
+            A list of technologies I use to build robust and scalable digital solutions.
+          </p>
         </div>
 
-        {/* Secondary tier — quieter compact grid with restrained filter */}
-        <motion.div {...fade(0.3)} className="border-t border-border pt-12 md:pt-16">
-          <div className="flex flex-wrap items-baseline justify-between gap-4 mb-8">
-            <p className="text-[12px] font-mono uppercase tracking-[0.18em] text-fg-subtle">
-              Also fluent in
-            </p>
-            {/* Filter pills — text-only chips, no logos */}
-            <div role="tablist" aria-label="Filter skill categories" className="flex flex-wrap items-center gap-1.5">
-              {FILTERS.map((f) => {
-                const active = activeFilter === f;
-                return (
-                  <button
-                    key={f}
-                    role="tab"
-                    aria-selected={active}
-                    onClick={() => setActiveFilter(f)}
-                    className={`px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-[0.18em] border transition-colors ${
-                      active
-                        ? 'bg-accent text-accent-fg border-accent'
-                        : 'border-border text-fg-muted hover:border-border-strong hover:text-fg'
-                    }`}
-                  >
-                    {f}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="space-y-8">
-            {visibleGroups.map((group) => {
-              const items = group.names.filter(n => knownNames.has(n) && !PRIMARY_SET.has(n));
-              if (items.length === 0) return null;
-              return (
-                <div key={group.label} className="grid grid-cols-12 gap-4 md:gap-6">
-                  <p className="col-span-12 md:col-span-3 text-[13px] text-fg-subtle">
-                    {group.label}
-                  </p>
-                  <div className="col-span-12 md:col-span-9 flex flex-wrap gap-2">
-                    {items.map((name) => (
-                      <span
-                        key={name}
-                        className="inline-flex items-center px-3 py-1.5 rounded-full border border-border bg-bg-elevated/30 text-[13px] text-fg hover:border-border-strong transition-colors"
-                      >
-                        {name}
-                      </span>
-                    ))}
-                  </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {skillCategories.map((category) => (
+            <div
+              key={category.id}
+              className="gradient-border p-8 card-hover group bg-card/50 backdrop-blur-sm"
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-3 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors duration-300">
+                  {category.icon}
                 </div>
-              );
-            })}
-          </div>
+                <div className="text-left">
+                  <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                    {category.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {category.description}
+                  </p>
+                </div>
+              </div>
 
-          <p className="mt-12 text-sm text-fg-subtle">
-            Always picking up the next thing — currently studying edge runtimes
-            and DX-first build tooling.
-          </p>
-        </motion.div>
+              <div className="flex flex-wrap gap-2">
+                {category.skills.map((skill, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 text-sm font-medium border border-border rounded-full bg-secondary text-secondary-foreground transition-all duration-300 hover:text-primary hover:shadow-[0_0_10px_hsl(var(--primary))] cursor-default select-none"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
-});
-
-SkillsSection.displayName = 'SkillsSection';
-
-export default SkillsSection;
+}

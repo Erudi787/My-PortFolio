@@ -2,96 +2,189 @@
 
 import * as React from 'react';
 import { useTheme } from 'next-themes';
+import { ChevronDown, Check } from 'lucide-react';
 
-type Mode = 'dark' | 'light';
+type Mode = 'morning' | 'night';
+type Season = 'spring' | 'summer' | 'autumn' | 'winter' | 'meteors';
 
-interface ColorOption {
-  name: string;
+interface SeasonOption {
+  name: Season;
   label: string;
-  /** Accent color shown in the picker dot — uses the dark-mode accent so dots read consistently. */
   dotColor: string;
-  /** Extra inset ring for mono (otherwise the black dot disappears on light backgrounds). */
-  ringColor?: string;
 }
 
-const COLORS: ColorOption[] = [
-  { name: 'iris',    label: 'Iris',    dotColor: 'oklch(0.74 0.22 295)' },
-  { name: 'emerald', label: 'Emerald', dotColor: 'oklch(0.70 0.18 160)' },
-  { name: 'copper',  label: 'Copper',  dotColor: 'oklch(0.68 0.18 50)'  },
-  { name: 'voltage', label: 'Voltage', dotColor: 'oklch(0.92 0.21 100)' },
-  { name: 'mono',    label: 'Mono',    dotColor: 'oklch(0.12 0 0)', ringColor: 'oklch(0.99 0 0)' },
+const SEASONS: SeasonOption[] = [
+  { name: 'spring',  label: 'Spring',  dotColor: 'hsl(345 60% 68%)' },
+  { name: 'summer',  label: 'Summer',  dotColor: 'hsl(40 75% 62%)'  },
+  { name: 'autumn',  label: 'Autumn',  dotColor: 'hsl(20 70% 58%)'  },
+  { name: 'winter',  label: 'Winter',  dotColor: 'hsl(205 55% 65%)' },
+  { name: 'meteors', label: 'Meteors', dotColor: 'hsl(260 70% 70%)' },
 ];
 
-const DEFAULT: { color: string; mode: Mode } = { color: 'iris', mode: 'dark' };
+const DATE_KEY = 'theme-date';
 
-/** Parse "iris-dark" → { color: 'iris', mode: 'dark' }. Falls back to default if malformed. */
-function parseTheme(theme: string | undefined): { color: string; mode: Mode } {
-  if (!theme) return DEFAULT;
-  const lastDash = theme.lastIndexOf('-');
-  if (lastDash === -1) return DEFAULT;
-  const color = theme.slice(0, lastDash);
-  const mode = theme.slice(lastDash + 1) as Mode;
-  if (mode !== 'dark' && mode !== 'light') return DEFAULT;
-  if (!COLORS.some(c => c.name === color)) return DEFAULT;
-  return { color, mode };
+function getCurrentSeason(date = new Date()): Season {
+  const m = date.getMonth();
+  if (m >= 2 && m <= 4) return 'spring';
+  if (m >= 5 && m <= 7) return 'summer';
+  if (m >= 8 && m <= 10) return 'autumn';
+  return 'winter';
+}
+
+function getCurrentMode(date = new Date()): Mode {
+  const h = date.getHours();
+  return h >= 6 && h < 18 ? 'morning' : 'night';
+}
+
+function getAutoTheme(): string {
+  return `${getCurrentSeason()}-${getCurrentMode()}`;
+}
+
+const fallback = { season: 'spring' as Season, mode: 'night' as Mode };
+
+function parseTheme(theme: string | undefined) {
+  if (!theme) return fallback;
+  const dash = theme.lastIndexOf('-');
+  if (dash === -1) return fallback;
+  const season = theme.slice(0, dash) as Season;
+  const mode = theme.slice(dash + 1) as Mode;
+  if (!SEASONS.some(s => s.name === season)) return fallback;
+  if (mode !== 'morning' && mode !== 'night') return fallback;
+  return { season, mode };
 }
 
 export default function ThemePicker() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
+  const [open, setOpen] = React.useState(false);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const menuRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    setMounted(true);
+    if (typeof window === 'undefined') return;
+    const today = new Date().toDateString();
+    const stored = localStorage.getItem(DATE_KEY);
+    if (stored !== today) {
+      setTheme(getAutoTheme());
+      localStorage.setItem(DATE_KEY, today);
+    }
+  }, [setTheme]);
+
+  // Click-outside + Escape to close
+  React.useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (
+        menuRef.current && !menuRef.current.contains(e.target as Node) &&
+        buttonRef.current && !buttonRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
 
   if (!mounted) {
-    // Reserve approximate width so the header doesn't shift on hydration
-    return <div aria-hidden="true" className="h-4 w-[10rem]" />;
+    return <div aria-hidden="true" className="h-8 w-[10rem]" />;
   }
 
-  const { color: activeColor, mode: activeMode } = parseTheme(theme);
+  const { season: activeSeason, mode: activeMode } = parseTheme(theme);
+  const activeSeasonOption = SEASONS.find(s => s.name === activeSeason)!;
 
-  const setColor = (color: string) => setTheme(`${color}-${activeMode}`);
-  const toggleMode = () => setTheme(`${activeColor}-${activeMode === 'dark' ? 'light' : 'dark'}`);
+  const setCombo = (s: Season, m: Mode) => {
+    setTheme(`${s}-${m}`);
+    localStorage.setItem(DATE_KEY, new Date().toDateString());
+    setOpen(false);
+  };
 
   return (
-    <div className="flex items-center gap-3">
-      {/* Color picker — 5 dots */}
-      <div role="radiogroup" aria-label="Theme color" className="flex items-center gap-2">
-        {COLORS.map((c) => {
-          const active = activeColor === c.name;
-          return (
-            <button
-              key={c.name}
-              role="radio"
-              aria-checked={active}
-              aria-label={`${c.label} theme`}
-              title={c.label}
-              onClick={() => setColor(c.name)}
-              className={`relative h-3 w-3 rounded-full outline-none transition-transform duration-200 ${
-                active ? 'scale-125' : 'opacity-70 hover:opacity-100 hover:scale-110'
-              } focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg focus-visible:ring-fg`}
-              style={{
-                background: c.dotColor,
-                boxShadow: active
-                  ? `0 0 0 1.5px var(--bg), 0 0 0 3px ${c.dotColor}`
-                  : c.ringColor
-                    ? `inset 0 0 0 1px ${c.ringColor}`
-                    : undefined,
-              }}
-            />
-          );
-        })}
-      </div>
-
-      {/* Divider */}
-      <span aria-hidden="true" className="h-3 w-px bg-border-strong" />
-
-      {/* Mode toggle */}
+    <div className="relative">
       <button
-        onClick={toggleMode}
-        aria-label={`Switch to ${activeMode === 'dark' ? 'light' : 'dark'} mode`}
-        className="text-[11px] font-mono uppercase tracking-[0.22em] text-fg-muted hover:text-fg transition-colors"
+        ref={buttonRef}
+        onClick={() => setOpen(o => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-background/60 backdrop-blur-md text-[12px] font-medium text-foreground hover:border-primary/60 transition-colors"
       >
-        {activeMode === 'dark' ? 'Light' : 'Dark'}
+        <span
+          aria-hidden="true"
+          className="block h-2.5 w-2.5 rounded-full"
+          style={{ background: activeSeasonOption.dotColor }}
+        />
+        <span className="capitalize">{activeSeason}</span>
+        <span className="text-muted-foreground">·</span>
+        <span className="capitalize text-muted-foreground">{activeMode}</span>
+        <ChevronDown size={14} className={`text-muted-foreground transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
+
+      {open && (
+        <div
+          ref={menuRef}
+          role="menu"
+          aria-label="Theme picker"
+          className="absolute right-0 mt-2 z-50 min-w-[14rem] rounded-xl border border-border bg-background/95 backdrop-blur-lg shadow-xl p-3"
+        >
+          {/* Column headers */}
+          <div className="grid grid-cols-[1fr_4rem_4rem] items-center gap-1 mb-2 px-2 text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">
+            <span>Season</span>
+            <span className="text-center">Morning</span>
+            <span className="text-center">Night</span>
+          </div>
+
+          {/* Rows: 4 seasons × 2 modes */}
+          <div className="space-y-1">
+            {SEASONS.map((s) => (
+              <div key={s.name} className="grid grid-cols-[1fr_4rem_4rem] items-center gap-1">
+                <span className="inline-flex items-center gap-2 px-2 text-[13px] text-foreground">
+                  <span
+                    aria-hidden="true"
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{ background: s.dotColor }}
+                  />
+                  {s.label}
+                </span>
+
+                {(['morning', 'night'] as Mode[]).map((m) => {
+                  const active = activeSeason === s.name && activeMode === m;
+                  return (
+                    <button
+                      key={m}
+                      role="menuitemradio"
+                      aria-checked={active}
+                      aria-label={`${s.label} ${m}`}
+                      onClick={() => setCombo(s.name, m)}
+                      className={`flex items-center justify-center h-8 rounded-md transition-colors ${
+                        active
+                          ? 'bg-primary/15 text-primary'
+                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                      }`}
+                    >
+                      {active ? (
+                        <Check size={14} />
+                      ) : (
+                        <span className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-3 pt-3 border-t border-border px-2 text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">
+            Resets daily · follows time of day
+          </p>
+        </div>
+      )}
     </div>
   );
 }

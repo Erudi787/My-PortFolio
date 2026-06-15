@@ -1,13 +1,10 @@
-import SkillsSection from "@/components/sections/SkillsSection";
+import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Skills | Your Name - Backend Developer",
-  description: "Overview of my technical skills in backend development, including languages, frameworks, databases, and tools.",
+  title: "Skills",
+  description: "Technical repertoire — frontend, backend, database, and tooling.",
 };
 
 export default function SkillsPage() {
-  return (
-    // You can add page-specific layout or introductory text here if needed
-    <SkillsSection />
-  );
+  redirect("/#skills");
 }
