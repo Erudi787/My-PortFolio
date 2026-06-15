@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import StarBackground from "../components/StarBackground";
 import Preloader from "../components/Preloader";
+import PacmanEgg from "../components/PacmanEgg";
 import { ThemeProvider } from "../components/ThemeProvider";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -70,13 +71,12 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="data-theme"
-          defaultTheme="iris-dark"
+          defaultTheme="spring-night"
           themes={[
-            'iris-dark',    'iris-light',
-            'emerald-dark', 'emerald-light',
-            'copper-dark',  'copper-light',
-            'voltage-dark', 'voltage-light',
-            'mono-dark',    'mono-light',
+            'spring-night', 'spring-morning',
+            'summer-night', 'summer-morning',
+            'autumn-night', 'autumn-morning',
+            'winter-night', 'winter-morning',
           ]}
           enableSystem={false}
         >
@@ -89,6 +89,7 @@ export default function RootLayout({
 
           <Preloader />
           <StarBackground />
+          <PacmanEgg />
           <Navbar />
 
           <main className="relative z-10">
