@@ -68,7 +68,18 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-background text-foreground antialiased overflow-x-hidden`}
       >
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="iris-dark"
+          themes={[
+            'iris-dark',    'iris-light',
+            'emerald-dark', 'emerald-light',
+            'copper-dark',  'copper-light',
+            'voltage-dark', 'voltage-light',
+            'mono-dark',    'mono-light',
+          ]}
+          enableSystem={false}
+        >
           <a
             href="#hero"
             className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none"

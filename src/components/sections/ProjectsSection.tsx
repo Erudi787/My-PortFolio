@@ -14,14 +14,22 @@ export default function ProjectsSection() {
   return (
     <section id="projects" className="py-24 px-4 relative">
       <div className="container mx-auto max-w-5xl">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-          Featured <span className="text-primary">Projects</span>
-        </h2>
-
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          A selection of projects I&apos;ve shipped — production systems, side experiments,
-          and the in-between. Each card links to a case study or the source.
-        </p>
+        <div className="mb-12">
+          <p className="text-[11px] font-mono uppercase tracking-[0.22em] text-primary mb-3 inline-flex items-baseline gap-1.5">
+            <span aria-hidden="true">[</span>
+            <span className="text-muted-foreground">§ 05</span>
+            <span aria-hidden="true" className="text-muted-foreground">·</span>
+            <span>Work</span>
+            <span aria-hidden="true">]</span>
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3">
+            Featured <span className="text-primary">Projects</span>
+          </h2>
+          <p className="text-muted-foreground max-w-2xl">
+            A selection of projects I&apos;ve shipped — production systems, side experiments,
+            and the in-between. Each card links to a case study or the source.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {sorted.map((project) => (

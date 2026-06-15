@@ -47,13 +47,21 @@ export default function WorkExperienceSection() {
   return (
     <section id="experience" className="py-24 px-4 relative bg-secondary/30">
       <div className="container mx-auto max-w-5xl">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-          Work <span className="text-primary">Experience</span>
-        </h2>
-
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          Building real-world systems that ship to real users.
-        </p>
+        <div className="mb-12">
+          <p className="text-[11px] font-mono uppercase tracking-[0.22em] text-primary mb-3 inline-flex items-baseline gap-1.5">
+            <span aria-hidden="true">[</span>
+            <span className="text-muted-foreground">§ 03</span>
+            <span aria-hidden="true" className="text-muted-foreground">·</span>
+            <span>Experience</span>
+            <span aria-hidden="true">]</span>
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3">
+            Work <span className="text-primary">Experience</span>
+          </h2>
+          <p className="text-muted-foreground max-w-2xl">
+            Building real-world systems that ship to real users.
+          </p>
+        </div>
 
         <div className="space-y-8">
           {experiences.map((exp) => (

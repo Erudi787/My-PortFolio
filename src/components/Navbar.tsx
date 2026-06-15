@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import ThemeToggle from './ThemeToggle';
+import ThemePicker from './ThemePicker';
 
 const navItems = [
   { name: 'Home',       href: '#hero' },
@@ -52,12 +52,12 @@ export default function Navbar() {
               {item.name}
             </a>
           ))}
-          <ThemeToggle />
+          <ThemePicker />
         </div>
 
         {/* Mobile controls */}
         <div className="md:hidden flex items-center gap-3">
-          <ThemeToggle />
+          <ThemePicker />
           <button
             onClick={() => setIsMenuOpen((p) => !p)}
             className="p-2 text-foreground z-50"

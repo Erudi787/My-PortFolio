@@ -44,11 +44,18 @@ export default function SkillsSection() {
   return (
     <section id="skills" className="py-24 px-4 relative">
       <div className="container mx-auto max-w-5xl">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        <div className="mb-16">
+          <p className="text-[11px] font-mono uppercase tracking-[0.22em] text-primary mb-3 inline-flex items-baseline gap-1.5">
+            <span aria-hidden="true">[</span>
+            <span className="text-muted-foreground">§ 04</span>
+            <span aria-hidden="true" className="text-muted-foreground">·</span>
+            <span>Skills</span>
+            <span aria-hidden="true">]</span>
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3">
             Technical <span className="text-primary">Repertoire</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl">
             A list of technologies I use to build robust and scalable digital solutions.
           </p>
         </div>

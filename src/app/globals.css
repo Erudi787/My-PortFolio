@@ -4,43 +4,175 @@
 @import "yet-another-react-lightbox/styles.css";
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
 /* ============================================================
- * Rei's HSL token system. Dark default, light alternate.
- * Primary violet hsl(250 65% 65%) is the signature accent.
+ * 5 color identities × 2 modes = 10 themes.
+ * Naming: data-theme="<color>-<mode>" (e.g. "iris-dark").
+ * :root defaults to iris-dark so SSR matches the canonical look.
+ *
+ * Across themes, the MODE (dark/light) controls bg/fg lightness;
+ * the COLOR controls the hue ring + primary accent.
  * ============================================================ */
-:root {
-  /* Light alternate */
-  --background:           210 40% 98%;
-  --foreground:           222 47% 11%;
+
+/* ===== IRIS — electric violet (default) ===== */
+:root,
+[data-theme="iris-dark"] {
+  --background:           250 30% 9%;
+  --foreground:           250 15% 92%;
+  --card:                 250 30% 13%;
+  --card-foreground:      250 15% 92%;
+  --primary:              250 70% 65%;
+  --primary-foreground:   250 30% 9%;
+  --secondary:            250 25% 16%;
+  --secondary-foreground: 250 15% 92%;
+  --muted:                250 25% 16%;
+  --muted-foreground:     250 12% 70%;
+  --border:               250 20% 22%;
+  --input:                250 20% 22%;
+  --ring:                 250 70% 65%;
+}
+[data-theme="iris-light"] {
+  --background:           250 30% 97%;
+  --foreground:           250 30% 12%;
   --card:                 0 0% 100%;
-  --card-foreground:      222 47% 11%;
-  --primary:              250 47% 60%;
-  --primary-foreground:   210 40% 98%;
-  --secondary:            210 40% 96%;
-  --secondary-foreground: 222 47% 11%;
-  --muted:                210 40% 96%;
-  --muted-foreground:     215 16% 47%;
-  --border:               214 32% 91%;
-  --input:                214 32% 91%;
-  --ring:                 250 47% 60%;
+  --card-foreground:      250 30% 12%;
+  --primary:              250 55% 50%;
+  --primary-foreground:   250 30% 97%;
+  --secondary:            250 30% 94%;
+  --secondary-foreground: 250 30% 12%;
+  --muted:                250 30% 94%;
+  --muted-foreground:     250 12% 38%;
+  --border:               250 20% 86%;
+  --input:                250 20% 86%;
+  --ring:                 250 55% 50%;
 }
 
-.dark {
-  --background:           222 47% 4%;
-  --foreground:           213 31% 91%;
-  --card:                 222 47% 8%;
-  --card-foreground:      213 31% 91%;
-  --primary:              250 65% 65%;
-  --primary-foreground:   213 31% 91%;
-  --secondary:            217 33% 12%;
-  --secondary-foreground: 213 31% 91%;
-  --muted:                217 33% 12%;
-  --muted-foreground:     217 19% 65%;
-  --border:               217 33% 20%;
-  --input:                217 33% 20%;
-  --ring:                 250 65% 65%;
+/* ===== EMERALD — deep forest ===== */
+[data-theme="emerald-dark"] {
+  --background:           160 30% 8%;
+  --foreground:           150 15% 92%;
+  --card:                 160 30% 12%;
+  --card-foreground:      150 15% 92%;
+  --primary:              160 55% 55%;
+  --primary-foreground:   160 30% 8%;
+  --secondary:            160 25% 14%;
+  --secondary-foreground: 150 15% 92%;
+  --muted:                160 25% 14%;
+  --muted-foreground:     150 12% 70%;
+  --border:               160 20% 20%;
+  --input:                160 20% 20%;
+  --ring:                 160 55% 55%;
+}
+[data-theme="emerald-light"] {
+  --background:           150 30% 96%;
+  --foreground:           160 30% 10%;
+  --card:                 0 0% 100%;
+  --card-foreground:      160 30% 10%;
+  --primary:              160 60% 35%;
+  --primary-foreground:   150 30% 96%;
+  --secondary:            150 30% 92%;
+  --secondary-foreground: 160 30% 10%;
+  --muted:                150 30% 92%;
+  --muted-foreground:     160 12% 35%;
+  --border:               150 20% 84%;
+  --input:                150 20% 84%;
+  --ring:                 160 60% 35%;
+}
+
+/* ===== COPPER — warm amber ===== */
+[data-theme="copper-dark"] {
+  --background:           30 30% 9%;
+  --foreground:           40 20% 92%;
+  --card:                 30 30% 13%;
+  --card-foreground:      40 20% 92%;
+  --primary:              35 70% 60%;
+  --primary-foreground:   30 30% 9%;
+  --secondary:            30 25% 16%;
+  --secondary-foreground: 40 20% 92%;
+  --muted:                30 25% 16%;
+  --muted-foreground:     35 15% 70%;
+  --border:               30 20% 22%;
+  --input:                30 20% 22%;
+  --ring:                 35 70% 60%;
+}
+[data-theme="copper-light"] {
+  --background:           45 50% 96%;
+  --foreground:           30 30% 12%;
+  --card:                 0 0% 100%;
+  --card-foreground:      30 30% 12%;
+  --primary:              30 70% 45%;
+  --primary-foreground:   45 50% 96%;
+  --secondary:            45 40% 90%;
+  --secondary-foreground: 30 30% 12%;
+  --muted:                45 40% 90%;
+  --muted-foreground:     30 15% 38%;
+  --border:               45 30% 82%;
+  --input:                45 30% 82%;
+  --ring:                 30 70% 45%;
+}
+
+/* ===== VOLTAGE — electric yellow ===== */
+[data-theme="voltage-dark"] {
+  --background:           60 15% 8%;
+  --foreground:           60 10% 92%;
+  --card:                 60 15% 12%;
+  --card-foreground:      60 10% 92%;
+  --primary:              55 95% 60%;
+  --primary-foreground:   60 15% 8%;
+  --secondary:            60 12% 14%;
+  --secondary-foreground: 60 10% 92%;
+  --muted:                60 12% 14%;
+  --muted-foreground:     55 10% 70%;
+  --border:               60 12% 22%;
+  --input:                60 12% 22%;
+  --ring:                 55 95% 60%;
+}
+[data-theme="voltage-light"] {
+  --background:           55 40% 96%;
+  --foreground:           45 30% 10%;
+  --card:                 0 0% 100%;
+  --card-foreground:      45 30% 10%;
+  /* Deeper amber for accent — pure electric yellow doesn't read on cream */
+  --primary:              35 90% 45%;
+  --primary-foreground:   55 40% 96%;
+  --secondary:            55 30% 90%;
+  --secondary-foreground: 45 30% 10%;
+  --muted:                55 30% 90%;
+  --muted-foreground:     45 12% 35%;
+  --border:               55 20% 82%;
+  --input:                55 20% 82%;
+  --ring:                 35 90% 45%;
+}
+
+/* ===== MONO — no chroma, accent collapses into ink ===== */
+[data-theme="mono-dark"] {
+  --background:           0 0% 8%;
+  --foreground:           0 0% 96%;
+  --card:                 0 0% 12%;
+  --card-foreground:      0 0% 96%;
+  --primary:              0 0% 96%;
+  --primary-foreground:   0 0% 8%;
+  --secondary:            0 0% 14%;
+  --secondary-foreground: 0 0% 96%;
+  --muted:                0 0% 14%;
+  --muted-foreground:     0 0% 70%;
+  --border:               0 0% 22%;
+  --input:                0 0% 22%;
+  --ring:                 0 0% 96%;
+}
+[data-theme="mono-light"] {
+  --background:           0 0% 99%;
+  --foreground:           0 0% 10%;
+  --card:                 0 0% 100%;
+  --card-foreground:      0 0% 10%;
+  --primary:              0 0% 10%;
+  --primary-foreground:   0 0% 99%;
+  --secondary:            0 0% 94%;
+  --secondary-foreground: 0 0% 10%;
+  --muted:                0 0% 94%;
+  --muted-foreground:     0 0% 40%;
+  --border:               0 0% 86%;
+  --input:                0 0% 86%;
+  --ring:                 0 0% 10%;
 }
 
 /* Bridge HSL tokens to Tailwind v4 utilities */
@@ -65,10 +197,11 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
 }
-.dark { color-scheme: dark; }
-:root:not(.dark) { color-scheme: light; }
+/* color-scheme derived from the -dark / -light suffix in the theme name */
+:root,
+[data-theme$="-dark"] { color-scheme: dark; }
+[data-theme$="-light"] { color-scheme: light; }
 
 body {
   font-family: var(--font-sans);
@@ -132,12 +265,12 @@ body {
   border-radius: 9999px;
   box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.3);
 }
-/* In light mode, stars become muted dark dots — they'd disappear on white otherwise */
-:root:not(.dark) .star {
+/* In light themes, stars flip to muted dark dots — they'd disappear on white otherwise */
+[data-theme$="-light"] .star {
   background: hsl(var(--foreground));
   box-shadow: 0 0 6px 1px hsl(var(--foreground) / 0.25);
 }
-:root:not(.dark) .meteor {
+[data-theme$="-light"] .meteor {
   background: linear-gradient(to right, hsl(var(--foreground)), transparent);
   box-shadow: 0 0 6px 2px hsl(var(--foreground) / 0.2);
 }
