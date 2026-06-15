@@ -30,7 +30,7 @@ export default function HeroSection() {
 
           <h1 className="text-4xl font-bold md:text-6xl tracking-tight leading-tight">
             <span className="animate-fade-in">Hi! I&apos;m</span>{' '}
-            <span className="text-primary animate-fade-in-delay-1">Elwison</span>{' '}
+            <span className="text-primary animate-fade-in-delay-1">Elwison</span>{''}
             <span className="text-gradient ml-2 animate-fade-in-delay-2">Denampo</span>
           </h1>
 

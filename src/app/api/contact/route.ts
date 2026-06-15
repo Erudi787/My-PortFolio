@@ -6,17 +6,19 @@ import { Resend } from 'resend';
 // CONFIGURATION
 // ============================================
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// Supabase deprecated `service_role` JWTs in favour of `sb_secret_*` keys.
+// Server-only — never expose in client bundles.
+const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
 const resendApiKey = process.env.RESEND_API_KEY;
 const personalEmailRecipient = process.env.PERSONAL_EMAIL;
 const fromEmailAddress = process.env.CONTACT_FORM_SEND_FROM_EMAIL;
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error("Supabase URL or Service Key is not defined. Check .env.local");
+if (!supabaseUrl || !supabaseSecretKey) {
+  console.error("Supabase URL or Secret Key is not defined. Check .env.local");
 }
 
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
-const supabaseAdmin = supabaseUrl && supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : null;
+const supabaseAdmin = supabaseUrl && supabaseSecretKey ? createClient(supabaseUrl, supabaseSecretKey) : null;
 
 // ============================================
 // SECURITY: Rate Limiting (In-Memory Store)
