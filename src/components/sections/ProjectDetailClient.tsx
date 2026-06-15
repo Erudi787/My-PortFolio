@@ -3,9 +3,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import { useState } from 'react';
-import { ArrowLeft, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import Lightbox from 'yet-another-react-lightbox';
 import { Project } from '../../../lib/data';
@@ -13,38 +12,6 @@ import { Project } from '../../../lib/data';
 interface ProjectDetailClientProps {
   project: Project;
 }
-
-const Slider = dynamic(() => import('react-slick'), {
-  ssr: false,
-  loading: () => <div className="aspect-video w-full bg-secondary/30 animate-pulse rounded-lg" />,
-});
-
-interface ArrowProps {
-  className?: string;
-  onClick?: () => void;
-}
-
-const PrevArrow: React.FC<ArrowProps> = ({ className, onClick }) => (
-  <button
-    onClick={onClick}
-    aria-label="Previous slide"
-    disabled={className?.includes('slick-disabled')}
-    className={`${className?.includes('slick-disabled') ? 'opacity-30 cursor-not-allowed' : ''} absolute top-1/2 -translate-y-1/2 left-3 z-10 p-2 rounded-full bg-card/90 backdrop-blur-sm border border-border text-foreground hover:bg-card transition-colors`}
-  >
-    <ChevronLeft size={18} />
-  </button>
-);
-
-const NextArrow: React.FC<ArrowProps> = ({ className, onClick }) => (
-  <button
-    onClick={onClick}
-    aria-label="Next slide"
-    disabled={className?.includes('slick-disabled')}
-    className={`${className?.includes('slick-disabled') ? 'opacity-30 cursor-not-allowed' : ''} absolute top-1/2 -translate-y-1/2 right-3 z-10 p-2 rounded-full bg-card/90 backdrop-blur-sm border border-border text-foreground hover:bg-card transition-colors`}
-  >
-    <ChevronRight size={18} />
-  </button>
-);
 
 function shortTitle(title: string): string {
   for (const sep of [' — ', ' – ', ' - ']) {
@@ -57,25 +24,20 @@ function shortTitle(title: string): string {
 export default function ProjectDetailClient({ project }: ProjectDetailClientProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [activeIdx, setActiveIdx] = useState(0);
 
   const title = shortTitle(project.title);
   const hasCarousel = !!project.carouselImages && project.carouselImages.length > 0;
   const lightboxSlides = project.carouselImages?.map((img) => ({ src: img.src, alt: img.alt, title: img.caption })) ?? [];
-
-  const carouselSettings = {
-    dots: true, infinite: true, speed: 500, slidesToShow: 1, slidesToScroll: 1,
-    autoplay: false, pauseOnHover: true, adaptiveHeight: true, arrows: true,
-    nextArrow: <NextArrow />, prevArrow: <PrevArrow />,
-    dotsClass: 'slick-dots custom-dots-styling',
-  };
+  const activeImage = hasCarousel ? project.carouselImages![activeIdx] : null;
 
   return (
-    <article className="bg-background text-foreground min-h-screen pt-28 md:pt-32 pb-24">
+    <article className="text-foreground min-h-screen pt-28 md:pt-32 pb-24 relative">
       <div className="container mx-auto max-w-4xl px-4">
         {/* Breadcrumb */}
         <nav className="mb-10" aria-label="Breadcrumb">
           <Link
-            href="/#projects"
+            href="/projects"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
           >
             <ArrowLeft size={16} />
@@ -127,30 +89,75 @@ export default function ProjectDetailClient({ project }: ProjectDetailClientProp
           </div>
         </header>
 
-        {/* Carousel */}
-        {hasCarousel ? (
-          <div className="slick-container-custom mb-16 gradient-border overflow-hidden">
-            <Slider {...carouselSettings}>
-              {project.carouselImages!.map((image, i) => (
-                <div key={i} className="outline-none" onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}>
-                  <div className="relative aspect-video w-full bg-secondary/30 cursor-zoom-in">
-                    <Image
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      className="object-contain"
-                      sizes="(max-width: 1024px) 100vw, 900px"
-                      quality={90}
-                      priority={i === 0}
-                      unoptimized
-                    />
-                  </div>
-                  {image.caption && (
-                    <p className="text-center text-sm text-muted-foreground py-4">{image.caption}</p>
-                  )}
-                </div>
-              ))}
-            </Slider>
+        {/* Gallery — hero image + thumbnail strip. Click hero to open lightbox,
+            click a thumb to swap the hero. */}
+        {hasCarousel && activeImage ? (
+          <div className="mb-16">
+            <button
+              type="button"
+              onClick={() => { setLightboxIndex(activeIdx); setLightboxOpen(true); }}
+              aria-label={`Open ${activeImage.alt} fullscreen`}
+              className="group relative block w-full aspect-video rounded-xl overflow-hidden border border-border bg-secondary/30 cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <Image
+                key={activeImage.src}
+                src={activeImage.src}
+                alt={activeImage.alt}
+                fill
+                className="object-contain transition-opacity duration-300"
+                sizes="(max-width: 1024px) 100vw, 900px"
+                quality={90}
+                priority
+                unoptimized
+              />
+              <span className="absolute bottom-3 right-3 px-2 py-1 rounded text-[10px] font-mono uppercase tracking-[0.2em] bg-background/70 backdrop-blur-sm text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                Click to zoom
+              </span>
+            </button>
+
+            {activeImage.caption && (
+              <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-3xl">
+                {activeImage.caption}
+              </p>
+            )}
+
+            <div className="mt-6 flex items-center justify-between gap-4">
+              <div
+                className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scrollbar-thin"
+                role="tablist"
+                aria-label="Project screenshots"
+              >
+                {project.carouselImages!.map((image, i) => {
+                  const isActive = i === activeIdx;
+                  return (
+                    <button
+                      key={image.src}
+                      role="tab"
+                      aria-selected={isActive}
+                      aria-label={`View screenshot ${i + 1}: ${image.alt}`}
+                      onClick={() => setActiveIdx(i)}
+                      className={`relative shrink-0 w-24 md:w-28 aspect-video rounded-md overflow-hidden border snap-start transition-all ${
+                        isActive
+                          ? 'border-primary ring-2 ring-primary/40 opacity-100'
+                          : 'border-border opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <Image
+                        src={image.src}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        sizes="120px"
+                        unoptimized
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+              <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground whitespace-nowrap tabular-nums">
+                {String(activeIdx + 1).padStart(2, '0')} / {String(project.carouselImages!.length).padStart(2, '0')}
+              </span>
+            </div>
           </div>
         ) : project.imageUrl ? (
           <div
@@ -235,15 +242,39 @@ export default function ProjectDetailClient({ project }: ProjectDetailClientProp
           </section>
         ) : null}
 
-        {/* Challenges */}
+        {/* Challenges — numbered editorial. Each entry: mono numeric kicker
+            (01, 02…), the challenge as a subhead, solution as flowing prose
+            beneath. Thin primary left-rule marks the start of each entry. */}
         {project.challengesAndSolutions?.length ? (
           <section className="mb-12">
-            <h2 className="text-2xl font-bold mb-6"><span className="text-primary">Challenges & Solutions</span></h2>
-            <div className="space-y-6">
+            <h2 className="text-2xl font-bold mb-8">
+              <span className="text-primary">Challenges</span>
+              <span className="text-muted-foreground"> & </span>
+              <span className="text-primary">Solutions</span>
+            </h2>
+
+            <div className="space-y-12">
               {project.challengesAndSolutions.map((item, i) => (
-                <div key={i} className="gradient-border p-6">
-                  <h3 className="font-semibold text-foreground mb-2">{item.challenge}</h3>
-                  <p className="text-muted-foreground">{item.solution}</p>
+                <div
+                  key={i}
+                  className="grid md:grid-cols-[auto_1fr] gap-x-8 gap-y-2 pl-5 border-l-2 border-primary/40"
+                >
+                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground pt-1 md:min-w-[5.5rem]">
+                    <span className="text-primary">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="mx-2 opacity-50">—</span>
+                    Challenge
+                  </p>
+                  <h3 className="text-lg md:text-xl font-semibold text-foreground leading-snug">
+                    {item.challenge}
+                  </h3>
+
+                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground pt-1 md:min-w-[5.5rem]">
+                    <span className="opacity-50">↳</span>
+                    <span className="ml-2">Solution</span>
+                  </p>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {item.solution}
+                  </p>
                 </div>
               ))}
             </div>

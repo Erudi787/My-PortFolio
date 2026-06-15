@@ -45,7 +45,7 @@ export default function HeroSection() {
               View My Work
             </a>
             <a
-              href="#contact"
+              href="/contact"
               className="inline-flex items-center px-5 py-2 rounded-full border border-border text-foreground hover:border-primary/60 hover:text-primary transition-colors"
             >
               Get in touch

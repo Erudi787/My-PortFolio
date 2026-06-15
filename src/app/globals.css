@@ -225,6 +225,34 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Themed scrollbar — thumb uses --primary so it picks up the active season.
+   Firefox uses the shorthand; WebKit/Blink uses the pseudo-elements. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.55) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.45);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.75);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 ::selection {
   background: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
