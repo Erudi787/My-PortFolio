@@ -5,8 +5,10 @@ import { Analytics } from "@vercel/analytics/next";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import StarBackground from "../components/StarBackground";
+import MountainSilhouette from "../components/MountainSilhouette";
+import SeasonalParticles from "../components/SeasonalParticles";
+import FloatingBackToTop from "../components/FloatingBackToTop";
 import Preloader from "../components/Preloader";
-import PacmanEgg from "../components/PacmanEgg";
 import { ThemeProvider } from "../components/ThemeProvider";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -77,6 +79,7 @@ export default function RootLayout({
             'summer-night', 'summer-morning',
             'autumn-night', 'autumn-morning',
             'winter-night', 'winter-morning',
+            'meteors-night', 'meteors-morning',
           ]}
           enableSystem={false}
         >
@@ -89,7 +92,8 @@ export default function RootLayout({
 
           <Preloader />
           <StarBackground />
-          <PacmanEgg />
+          <MountainSilhouette />
+          <SeasonalParticles />
           <Navbar />
 
           <main className="relative z-10">
@@ -98,6 +102,7 @@ export default function RootLayout({
           </main>
 
           <Footer />
+          <FloatingBackToTop />
         </ThemeProvider>
       </body>
     </html>

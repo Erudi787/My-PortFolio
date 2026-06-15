@@ -151,6 +151,40 @@
   --ring:                 210 60% 42%;
 }
 
+/* Meteors — both modes stay dark so the starfield + meteors read clearly.
+   Night: deep cosmic black + cool violet primary.
+   Morning: dusk — indigo sky with a warm horizon tint, dark enough for stars. */
+[data-theme="meteors-night"] {
+  --background:           240 30% 6%;
+  --foreground:           240 15% 92%;
+  --card:                 240 28% 10%;
+  --card-foreground:      240 15% 92%;
+  --primary:              260 70% 70%;
+  --primary-foreground:   240 30% 6%;
+  --secondary:            240 22% 14%;
+  --secondary-foreground: 240 15% 92%;
+  --muted:                240 22% 14%;
+  --muted-foreground:     240 12% 65%;
+  --border:               240 20% 20%;
+  --input:                240 20% 20%;
+  --ring:                 260 70% 70%;
+}
+[data-theme="meteors-morning"] {
+  --background:           255 35% 14%;
+  --foreground:           30 35% 92%;
+  --card:                 255 32% 18%;
+  --card-foreground:      30 35% 92%;
+  --primary:              25 85% 65%;
+  --primary-foreground:   255 35% 14%;
+  --secondary:            255 25% 22%;
+  --secondary-foreground: 30 35% 92%;
+  --muted:                255 25% 22%;
+  --muted-foreground:     20 25% 75%;
+  --border:               255 22% 28%;
+  --input:                255 22% 28%;
+  --ring:                 25 85% 65%;
+}
+
 /* Bridge HSL tokens to Tailwind v4 utilities */
 @theme inline {
   --color-background:           hsl(var(--background));
@@ -174,10 +208,13 @@
 html {
   scroll-behavior: smooth;
 }
-/* color-scheme derived from the -night / -morning suffix */
+/* color-scheme derived from the -night / -morning suffix.
+   Meteor themes are dark in both modes (dusk + cosmic). */
 :root,
 [data-theme$="-night"] { color-scheme: dark; }
 [data-theme$="-morning"] { color-scheme: light; }
+[data-theme="meteors-morning"],
+[data-theme="meteors-night"] { color-scheme: dark; }
 
 body {
   font-family: var(--font-sans);
@@ -208,11 +245,80 @@ body {
   0%, 100% { opacity: var(--star-opacity, 1); }
   50%      { opacity: calc(var(--star-opacity, 1) * 0.55); }
 }
+/* Meteor — each instance picks its own rotation via --meteor-angle, so the
+   shower has variety: steep angles (~235°) enter from above-left, shallow
+   angles (~195°) enter from the left-side horizontally. The translateX
+   entry/exit pair is always off-screen relative to the chosen angle, and
+   the opacity-0 entry/exit prevents mid-air pop-ins on mount. */
 @keyframes meteor {
-  0%   { transform: rotate(215deg) translateX(0);     opacity: 1; }
-  70%  { opacity: 1; }
-  100% { transform: rotate(215deg) translateX(-560px); opacity: 0; }
+  0%   { transform: rotate(var(--meteor-angle, 215deg)) translateX(700px);  opacity: 0; }
+  15%  { transform: rotate(var(--meteor-angle, 215deg)) translateX(420px);  opacity: 0.95; }
+  85%  { transform: rotate(var(--meteor-angle, 215deg)) translateX(-420px); opacity: 0.95; }
+  100% { transform: rotate(var(--meteor-angle, 215deg)) translateX(-700px); opacity: 0; }
 }
+
+/* ============================================================
+ * SEASONAL PARTICLES — petals / fireflies / leaves / snow.
+ * Tinted with the active --primary so they harmonise with the theme.
+ * ============================================================ */
+/* Falling shapes (spring petals, autumn leaves, winter snowflakes) — top to
+   bottom with lateral drift + full rotation. */
+@keyframes seasonal-fall {
+  from { transform: translate3d(0, -10vh, 0) rotate(var(--rot, 0deg)); opacity: 0; }
+  10%  { opacity: 0.9; }
+  90%  { opacity: 0.9; }
+  to   { transform: translate3d(var(--drift, 0), 110vh, 0) rotate(calc(var(--rot, 0deg) + 360deg)); opacity: 0; }
+}
+
+/* Firefly wander — 3 independent 2D paths so the swarm looks alive.
+   Each is a closed loop so motion is seamless when looping. */
+@keyframes firefly-wander-1 {
+  0%   { transform: translate(0,    0); }
+  20%  { transform: translate(38px, -42px); }
+  40%  { transform: translate(-22px, -86px); }
+  60%  { transform: translate(44px, -60px); }
+  80%  { transform: translate(-28px, -28px); }
+  100% { transform: translate(0,    0); }
+}
+@keyframes firefly-wander-2 {
+  0%   { transform: translate(0,    0); }
+  25%  { transform: translate(-46px, 22px); }
+  50%  { transform: translate(20px,  56px); }
+  75%  { transform: translate(54px, -12px); }
+  100% { transform: translate(0,    0); }
+}
+@keyframes firefly-wander-3 {
+  0%   { transform: translate(0,    0); }
+  16%  { transform: translate(34px,  28px); }
+  33%  { transform: translate(62px, -22px); }
+  50%  { transform: translate(20px, -54px); }
+  66%  { transform: translate(-32px, -30px); }
+  83%  { transform: translate(-52px,  12px); }
+  100% { transform: translate(0,    0); }
+}
+
+/* Firefly blink — opacity pulse layered on top of the wander */
+@keyframes firefly-blink {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 1;   }
+}
+
+.seasonal-particle {
+  position: absolute;
+  top: 0;
+  will-change: transform, opacity;
+  display: inline-block;
+}
+/* Falling shape — used by spring petals, autumn leaves, winter snowflakes.
+   SVG inside provides the actual silhouette; this class only animates. */
+.particle-fall {
+  animation: seasonal-fall var(--duration, 18s) linear infinite;
+}
+/* Firefly wander — three variants for path diversity across the swarm */
+.firefly-wander-1 { animation: firefly-wander-1 14s ease-in-out infinite; }
+.firefly-wander-2 { animation: firefly-wander-2 16s ease-in-out infinite; }
+.firefly-wander-3 { animation: firefly-wander-3 18s ease-in-out infinite; }
+.firefly-blink    { animation: firefly-blink 2.4s ease-in-out infinite; }
 
 .animate-fade-in           { opacity: 0; animation: fade-in 0.7s ease-out forwards; }
 .animate-fade-in-delay-1   { opacity: 0; animation: fade-in 0.7s ease-out 0.2s forwards; }
@@ -221,7 +327,11 @@ body {
 .animate-fade-in-delay-4   { opacity: 0; animation: fade-in 0.7s ease-out 0.8s forwards; }
 .animate-float             { animation: float 6s ease-in-out infinite; }
 .animate-pulse-subtle      { animation: pulse-subtle var(--star-duration, 4s) ease-in-out infinite; }
-.animate-meteor            { animation: meteor var(--meteor-duration, 5s) linear infinite;
+/* animation-fill-mode: backwards — during the positive `--meteor-delay`
+   window the element renders at the 0% keyframe (off-screen + opacity 0),
+   not its bare un-animated state. Without this, meteors flash visible as
+   static horizontal bars at their top/left coords until their delay fires. */
+.animate-meteor            { animation: meteor var(--meteor-duration, 5s) linear infinite backwards;
                              animation-delay: var(--meteor-delay, 0s); }
 
 /* ============================================================
