@@ -44,3 +44,5 @@ next-env.d.ts
 .env
 
 .claude
+# local Supabase restore artifacts (contain historical PII)
+.restore_*.sql
