@@ -7,7 +7,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Elwison Denampo. All rights reserved.
           </p>
           <a
-            href="/resume/ElwisonDenampo_SoftwareEngineer_Resume.pdf"
+            href="resume/Elwison Denampo Resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-muted-foreground hover:text-primary transition-colors mt-1 inline-block"
