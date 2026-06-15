@@ -46,3 +46,6 @@ next-env.d.ts
 .claude
 # local Supabase restore artifacts (contain historical PII)
 .restore_*.sql
+
+# scratch dir for favicon candidate SVGs/PNGs — not for prod
+public/favicon-previews/
