@@ -56,14 +56,14 @@ export default function ContactPage() {
               </a>
 
               <a
-                href="https://www.linkedin.com/in/elwison-l-denampo-b2042b285/"
+                href="https://www.linkedin.com/in/elwison-denampo-b2042b285/"
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 text-foreground hover:text-primary transition-colors group"
               >
                 <span className="p-2 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <FaLinkedin size={16} className="text-primary" />
                 </span>
-                linkedin.com/in/elwison-l-denampo
+                linkedin.com/in/elwison-denampo
               </a>
 
               <div className="flex items-center gap-3 text-muted-foreground">
