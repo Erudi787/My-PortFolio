@@ -37,7 +37,7 @@ export default function AboutSection() {
               I lean toward boring, durable choices — exclusion constraints over
               application-layer locks, audit trails before they&apos;re asked for,
               idempotent imports so re-runs don&apos;t become incidents. I&apos;m
-              currently between roles and open to what&apos;s next.
+              currently freelancing and open to full-time roles.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
@@ -65,8 +65,9 @@ export default function AboutSection() {
                 <div className="text-left">
                   <h4 className="font-semibold text-lg">Backend Architecture</h4>
                   <p className="text-muted-foreground">
-                    NestJS, FastAPI, ASP.NET Core. 45+ modules in production
-                    monorepos with Stripe, DocuSign, AWS S3 integrations.
+                    NestJS, FastAPI, ASP.NET Core, AWS Lambda (Node 22).
+                    45+ modules in production monorepos with Stripe, DocuSign,
+                    AWS S3, YouTube &amp; Spotify APIs.
                   </p>
                 </div>
               </div>
@@ -80,8 +81,9 @@ export default function AboutSection() {
                 <div className="text-left">
                   <h4 className="font-semibold text-lg">Database Design</h4>
                   <p className="text-muted-foreground">
-                    PostgreSQL with Prisma + SQLAlchemy. Exclusion constraints,
-                    Redis pooling, FERPA-grade audit logging.
+                    PostgreSQL with Prisma + SQLAlchemy, DynamoDB with
+                    chronology GSIs. Exclusion constraints, Redis pooling,
+                    FERPA-grade audit logging.
                   </p>
                 </div>
               </div>
@@ -95,8 +97,9 @@ export default function AboutSection() {
                 <div className="text-left">
                   <h4 className="font-semibold text-lg">Frontend Integration</h4>
                   <p className="text-muted-foreground">
-                    Next.js App Router with TypeScript. shadcn/ui, React Query,
-                    Tailwind v4, and the cross-app handoff patterns to match.
+                    Next.js App Router and Astro 6 SSG with TypeScript.
+                    shadcn/ui, React Query, Tailwind v4, Stripe Payment Element,
+                    and the cross-app handoff patterns to match.
                   </p>
                 </div>
               </div>
@@ -110,8 +113,10 @@ export default function AboutSection() {
                 <div className="text-left">
                   <h4 className="font-semibold text-lg">DevOps & Deployment</h4>
                   <p className="text-muted-foreground">
-                    Docker, Turborepo, pnpm workspaces, Render, Sentry. Zero-downtime
-                    migrations with rollback paths baked in.
+                    AWS CDK, Amplify Hosting, API Gateway, EventBridge cron,
+                    SSM Parameter Store. Docker, Turborepo, pnpm workspaces,
+                    Render, Sentry. Zero-downtime migrations with rollback
+                    paths baked in.
                   </p>
                 </div>
               </div>
