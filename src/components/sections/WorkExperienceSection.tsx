@@ -14,8 +14,23 @@ interface Experience {
 // Draft from project data — please verify dates/titles before shipping.
 const experiences: Experience[] = [
   {
+    id: 3,
+    title: 'Full-Stack Developer (Freelance)',
+    company: 'Dr. Rena Malik, MD',
+    location: 'Remote · PH',
+    period: 'Apr 2026 — Present',
+    description: [
+      'Built and shipped a 326-episode static podcast site (Astro + AWS CDK Lambda/DynamoDB/Amplify) replacing the existing third-party hosted page. CDK-managed infra is reproducible from a single `cdk:deploy` — 4 Lambdas, DynamoDB with chronology GSI, HTTP API + CORS, EventBridge cron.',
+      'Engineered an auto-rebuild pipeline via SSM Parameter Store: a daily cron Lambda upserts the RSS feed to DynamoDB then POSTs to an Amplify build webhook — new episodes go publish-to-live in under 24 hours with zero human action.',
+      'Designed a 5-tier per-episode thumbnail resolution chain (YouTube Data API v3 → Spotify Web API → RSS itunes:image → Spotify embed-page scrape → show cover) — raised cover coverage from ~86% to ~92% of 326 episodes by combining platform-specific APIs with a parallel-fetched fallback scrape.',
+      'Built a custom Stripe Payment Element checkout replacing Stripe-hosted Payment Links — 4-tier BUPP system ($397–$9,947) with Apple Pay / Google Pay, multi-step shipping intents (individual / single / donate-some / donate-all), and a hybrid Make.com Data Store fallback for the 500-char Stripe metadata cap on Diamond-tier 300-copy orders.',
+      'Delivered a WordPress + Elementor + WPCode snippet suite for the book pre-order funnel — $608+ bonus stack, vanilla-JS infinite-loop carousel for 13 endorsers with credential-verified billing (caught DO-vs-MD on multiple endorsers), and a redesigned Podcast Appearances page.',
+    ],
+    tags: ['TypeScript', 'Astro', 'AWS CDK', 'AWS Lambda', 'DynamoDB', 'Amplify Hosting', 'Stripe', 'WordPress', 'YouTube API', 'Spotify API', 'Make.com'],
+  },
+  {
     id: 1,
-    title: 'Full-Stack Developer',
+    title: 'Software Engineer',
     company: 'La Chow',
     location: 'Remote · PH',
     period: '2026 (resigned)',
@@ -29,7 +44,7 @@ const experiences: Experience[] = [
   },
   {
     id: 2,
-    title: 'Junior Full-Stack Developer',
+    title: 'Junior Software Engineer',
     company: 'FutureThink Edge',
     location: 'Remote · PH',
     period: '2025',

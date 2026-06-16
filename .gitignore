@@ -49,3 +49,5 @@ next-env.d.ts
 
 # scratch dir for favicon candidate SVGs/PNGs — not for prod
 public/favicon-previews/
+
+notes/

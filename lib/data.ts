@@ -488,6 +488,93 @@ export const projectsData: Project[] = [
   },
   {
     id: "7",
+    slug: "rmmd-podcast",
+    year: "2026",
+    pullQuote: "Five thumbnail sources, one cron, zero stale builds — a podcast site that ships new episodes within 24 hours, hands-off.",
+    title: "Rena Malik MD Podcast — Auto-Updating Site on AWS",
+    shortDescription: "A static podcast site for a 2.9M-subscriber urology channel — Astro frontend on AWS Amplify, CDK-managed Lambda + DynamoDB backend, cron-driven RSS ingestion, and a multi-source fallback chain that resolves a per-episode thumbnail for 326 episodes.",
+    imageUrl: "/images/rmmd-podcast-thumbnail.png",
+    carouselImages: [
+      { src: "/images/rmmd-podcast_home.png", alt: "Home page hero + Latest Episode feature", caption: "Home page — show-cover hero, Latest Episode feature, real-time fuzzy search, and the 'All Episodes' archive in a 3-column grid with visual pagination." },
+      { src: "/images/rmmd-podcast_grid.png", alt: "Episode archive grid", caption: "326 episode cards — each shows a unique thumbnail resolved at build time from YouTube, Spotify, Megaphone, or a Spotify-embed scrape; falls back to the show cover only as a last resort." },
+      { src: "/images/rmmd-podcast_episode.png", alt: "Individual episode page with tabbed content", caption: "Per-episode page — About / Timestamps / Article / Sponsors / Connect / Transcript tabs. Timestamps are clickable and deep-link into YouTube at the exact second." },
+      { src: "/images/rmmd-podcast_listenon.png", alt: "Listen On buttons with per-episode deep links", caption: "Platform buttons deep-link to THIS episode on YouTube, Spotify, and Apple Podcasts — not the show's channel page — using each platform's per-episode URL resolved at build time." },
+    ],
+    architectureDiagramUrl: "/images/rmmd-podcast_architecture.svg",
+    tags: ["Astro", "TypeScript", "AWS Lambda", "AWS CDK", "DynamoDB", "Amplify Hosting"],
+    longDescription: "A static podcast site for Dr. Rena Malik, the world's most-followed urologist (2.9M YouTube subscribers, 600M+ views). The site replaces a third-party podcast hosting page and is fully self-driving: it pulls Doc's Megaphone RSS feed daily via a cron Lambda, upserts episodes into DynamoDB, then triggers an Amplify rebuild via a webhook URL stored in AWS SSM Parameter Store. New episodes appear on the live site within 24 hours without any human action. The frontend is built with Astro (static SSG) and deployed to AWS Amplify behind a custom domain via Cloudflare DNS. The most technically interesting part is the per-episode thumbnail resolution chain: with 326 episodes spread across YouTube (not always synced to the podcast schedule), Spotify (where the Web API hides most per-episode art), Megaphone (which has custom uploads for only ~9 episodes), and Apple (which doesn't surface per-episode art at all), getting a unique thumbnail for every card required a 5-tier fallback chain — including a parallel scrape of Spotify's embed pages to extract image URLs that the Web API doesn't return.",
+    myRole: "Full-Stack Developer & Infrastructure Engineer",
+    myRoles: [
+      "Frontend Developer — Astro 6 SSG site, React islands, Tailwind v4, ARIA tabs, fuzzy search via Fuse.js",
+      "Backend Developer — 4 AWS Lambdas (RSS ingestion, list, get, hit-counter), all bundled via esbuild + NodejsFunction",
+      "Infrastructure Engineer — AWS CDK (TypeScript) defining DynamoDB schema, GSI, IAM, HTTP API, EventBridge cron",
+      "Integration Engineer — YouTube Data API v3, Spotify Web API (Client Credentials), Apple iTunes Lookup, Substack RSS",
+      "Data Engineer — multi-source per-episode thumbnail resolution chain with build-time parallel fetch + bounded concurrency",
+      "DevOps — Cloudflare DNS, Amplify Hosting, SSM Parameter Store for runtime secrets, cost-optimized to stay within free tier",
+    ],
+    techStack: [
+      "Astro", "TypeScript", "React", "Tailwind CSS", "Fuse.js",
+      "AWS CDK", "AWS Lambda", "AWS DynamoDB", "AWS API Gateway", "AWS EventBridge",
+      "AWS Amplify Hosting", "AWS SSM Parameter Store", "AWS CloudFront", "Cloudflare DNS",
+      "Node.js 22", "esbuild", "pnpm workspaces",
+      "YouTube Data API v3", "Spotify Web API", "Apple iTunes Lookup API",
+      "Megaphone RSS", "Substack RSS",
+    ],
+    backendFeatures: [
+      "CDK-defined infrastructure: DynamoDB table with GSI for chronological queries, 4 Lambda functions, HTTP API with CORS, EventBridge cron rule, IAM-scoped permissions, and SSM Parameter Store integration — all reproducible from a single `cdk:deploy`.",
+      "Daily RSS ingestion Lambda parses Megaphone's feed (326 episodes), captures per-episode `<itunes:image>` artwork when present, and upserts to DynamoDB via batched BatchWriteCommand (25 items per call).",
+      "Auto-rebuild pipeline: after a successful ingest, the Lambda reads an Amplify build-webhook URL from SSM Parameter Store (SecureString) and POSTs to it. The URL stays out of git and CloudFormation outputs — set once via `aws ssm put-parameter`.",
+      "GSI-backed `/episodes` endpoint returns all 326 episodes newest-first in a single query, cached by CloudFront for 5 minutes with a 1-day stale-while-revalidate window.",
+      "Per-episode `/episodes/{id}` endpoint reads from DynamoDB by partition key for sub-100ms cold-start responses.",
+      "All Lambdas run on Node.js 22 (latest LTS), bundled by esbuild for minimal cold-start size, with structured JSON logging for CloudWatch debug.",
+    ],
+    frontendFeatures: [
+      "326 statically-generated episode pages, each rendered at build time with full SEO metadata, Open Graph tags, and `PodcastEpisode` schema.org JSON-LD.",
+      "5-tier thumbnail resolution chain per episode: YouTube playlist enumeration → Spotify Web API → Megaphone RSS `<itunes:image>` → Spotify embed-page scrape → show cover fallback. Each tier is bounded-concurrency-parallel and degrades gracefully if its API credentials aren't set.",
+      "Per-episode deep links: YouTube `watch?v=<id>` URLs resolved at build time, Apple Podcasts URLs from iTunes Lookup (with `?i=<trackId>` deep-link), Spotify episode URLs from Web API.",
+      "Clickable timestamps in the Timestamps tab — each one opens the corresponding YouTube video at the exact second via `&t=<seconds>s`.",
+      "Fuzzy episode search via Fuse.js with 150ms debounce, real-time filtering as the user types, and 'Show all' progressive disclosure.",
+      "SEO-neutral visual pagination: all 326 episode cards stay in the rendered HTML (so Google's crawler still discovers every episode link), CSS just hides the off-page cards. Prev/next + numbered buttons with smart truncation.",
+      "Tabbed episode content (About / Timestamps / Article / Sponsors / Connect / Transcript) with full ARIA tabs pattern + keyboard navigation. Transcript tab is gated behind a 'Become a Member' CTA to drive Supercast subscriptions.",
+      "Substack 'Article' tab — RSS-ingested at build time from the Substack publication feed, matched to episodes by ±7-day date window; tab only renders when a match exists.",
+      "Description parser strips boilerplate (Supercast links, ad-choices footer, DISCLAIMER blocks) and extracts chapters from the RSS description into a Timestamps tab.",
+      "Image weight optimization: endorser photos auto-route to WordPress's `-300x300` thumbnail variants when displayed in 88px circles — reducing photo weight from ~1.5 MB to ~146 KB across the page.",
+    ],
+    challengesAndSolutions: [
+      {
+        challenge: "Doc's YouTube uploads are NOT synchronized with the podcast publish schedule — videos can land days after the RSS episode, and titles get A/B-tested in the first 3 days. A naive exact-title matcher missed ~45 of 326 episodes.",
+        solution: "Built a 4-tier YouTube matcher: (1) exact title + ±3 days, (2) ≥2 shared significant-token overlap + ±1 day, (3) within ±1 day with exactly one candidate, (4) exact title with no date constraint. Plus a normalization pass that strips RSS-only suffixes like '(YouTube Replay)' and '| Replay'. Match rate climbed from ~86% to ~91%."
+      },
+      {
+        challenge: "Spotify's Web API `/v1/shows/{id}/episodes` endpoint returns the show cover for 316 of 325 episodes — only 9 have unique audio-podcast art there, even though the Spotify app itself shows unique thumbnails for nearly every episode.",
+        solution: "Added a final-tier fallback that scrapes Spotify's public embed page (`/embed/episode/{id}`) for each unmatched episode. The embed bakes more image URLs into a `__NEXT_DATA__` JSON blob, including art the Web API doesn't surface. Bounded concurrency (8 parallel) keeps Spotify's CDN from rate-limiting and adds ~10s to the build."
+      },
+      {
+        challenge: "Static sites only rebuild on code push, so new episodes that landed in DynamoDB via the cron Lambda wouldn't appear on the live site until the next manual deploy.",
+        solution: "Wired the ingestion Lambda to POST to an Amplify build-webhook URL after every successful upsert. The webhook URL lives in AWS SSM Parameter Store (SecureString) — Lambda reads on cold start, caches across warm invocations. Net result: episodes go live within 24 hours, fully hands-off."
+      },
+      {
+        challenge: "Each Spotify image is served from multiple CDN hosts (`image-cdn-ak.spotifycdn.com` vs `image-cdn-fa.spotifycdn.com`) — same underlying image, different URLs. Comparing full URLs to detect 'show cover repeated' falsely treated CDN-host swaps as unique images.",
+        solution: "Switched the comparison to use just the image-hash suffix (`/image/<40-hex-chars>` → last 24 chars are stable identity, first 16 encode size/format). The stable suffix is identical across CDN hosts and size variants, so equality holds where it should."
+      },
+      {
+        challenge: "iTunes Lookup API returns at most 200 episodes regardless of pagination — `offset` parameter is silently ignored. We need per-episode Apple Podcasts deep links for all 326 episodes.",
+        solution: "Settled for direct deep links on the 200 most-recent episodes (which is what drives listening anyway) and falls back to the show-level URL for older archive entries. The dedupe-by-trackId logic in the fetcher also keeps the API call count to one (early-exit on the first zero-new-entries response)."
+      },
+      {
+        challenge: "Endorser headshots uploaded at full camera resolution were tanking the page load — one PNG alone was 1.88 MB on an 88px display circle. Page weight was ~3 MB above what it needed to be.",
+        solution: "Pointed every endorser `<img>` URL at WordPress's auto-generated `-300x300.jpg` thumbnail variant. WP creates these on upload (no code needed) and they're 4–28 KB each. Net reduction: ~1.4 MB on the endorsements section, plus removed 3 unused cards reclaimed another ~2 MB."
+      },
+      {
+        challenge: "AWS Cost Anomaly Detection flagged a $1.01 spike from heavy Amplify builds during an iteration burst. We needed to keep ongoing costs predictable.",
+        solution: "Auto-rebuild trigger is once-per-cron (1×/day), the static site itself is served by CloudFront (free under Amplify Hosting), Lambdas use NodejsFunction with esbuild minification for fast cold starts, and DynamoDB is on-demand pricing. Steady-state monthly cost ≈ $0 within AWS free tier."
+      },
+    ],
+    // Source intentionally omitted — client engagement, not publicly viewable.
+    liveDemoUrl: "https://podcast-new.renamalikmd.com",
+  },
+  {
+    id: "8",
     slug: "lachowos-property-management",
     year: "2026",
     pullQuote: "Ten tools collapsed into one schema — billing, signatures, access control, screening, all reconciled in Postgres.",
@@ -495,11 +582,11 @@ export const projectsData: Project[] = [
     shortDescription: "A full-scale property management platform for culinary innovation facilities. Built as a monorepo with a NestJS API, Next.js admin/tenant portals, and 10+ third-party integrations.",
     imageUrl: "/images/lachow-thumbnail.png",
     carouselImages: [
-      { src: "/images/lachow_bookings.png",         alt: "Bookings calendar",          caption: "Bookings calendar with database-level exclusion constraints preventing double-booking." },
-      { src: "/images/lachow_tenant_dashboard.png", alt: "Tenant portal dashboard",    caption: "Tenant self-service portal — leases, bookings, payments, and maintenance in one place." },
-      { src: "/images/lachow_leases.png",           alt: "Lease management",           caption: "Digital lease lifecycle with DocuSign envelope-based signing and auto-activation on completion." },
-      { src: "/images/lachow_payments.png",         alt: "Payments and rent collection", caption: "Rent collection via Stripe with webhook-based reconciliation and tenant-side payment history." },
-      { src: "/images/lachow_reports.png",          alt: "Operational reporting",      caption: "Operational reporting — revenue, occupancy, and compliance metrics built with Recharts." },
+      { src: "/images/lachow_bookings.png", alt: "Bookings calendar", caption: "Bookings calendar with database-level exclusion constraints preventing double-booking." },
+      { src: "/images/lachow_tenant_dashboard.png", alt: "Tenant portal dashboard", caption: "Tenant self-service portal — leases, bookings, payments, and maintenance in one place." },
+      { src: "/images/lachow_leases.png", alt: "Lease management", caption: "Digital lease lifecycle with DocuSign envelope-based signing and auto-activation on completion." },
+      { src: "/images/lachow_payments.png", alt: "Payments and rent collection", caption: "Rent collection via Stripe with webhook-based reconciliation and tenant-side payment history." },
+      { src: "/images/lachow_reports.png", alt: "Operational reporting", caption: "Operational reporting — revenue, occupancy, and compliance metrics built with Recharts." },
     ],
     tags: ["Next.js", "NestJS", "Prisma", "Stripe", "PostgreSQL", "Turborepo"],
     longDescription: "LaChowOS is a unified property management platform purpose-built for La Chow's mixed-use culinary innovation facilities. It replaces scattered management tools with a single, integrated system covering kitchen scheduling, tenant onboarding, digital lease management with eSignature, rent collection via Stripe, compliance document tracking, maintenance requests, and business intelligence reporting. The platform is built as a Turborepo monorepo with a NestJS backend (45+ modules), a Next.js App Router frontend with dual portals (admin and tenant), and a shared Prisma database layer — all connected to 10+ third-party services including Stripe, DocuSign, SendGrid, AWS S3, ButterflyMX, QuickBooks, and TransUnion SmartMove. LaChowOS deploys to portal.thelachow.com as the authenticated tenant portal for the public marketing site at thelachow.com — I wired the cross-app handoff between the two so signed-in tenants flow from the marketing site directly into the portal.",
@@ -572,5 +659,88 @@ export const projectsData: Project[] = [
     // liveDemoUrl points to the public marketing site (thelachow.com); the
     // LaChowOS tenant portal itself lives at portal.thelachow.com behind auth.
     liveDemoUrl: "https://thelachow.com",
+  },
+  {
+    id: "9",
+    slug: "hardtruth-preorder",
+    year: "2026",
+    pullQuote: "A 4-tier bulk pre-order funnel with multi-address shipping CSV upload, a vanilla-JS infinite-loop endorsement carousel, and a custom Stripe Elements checkout that engineered around the metadata-size limit.",
+    title: "The Hard Truth — Custom Pre-Order Funnel",
+    shortDescription: "A bespoke pre-order conversion funnel for Dr. Rena Malik's first book (HarperCollins, ships Nov 3, 2026). Spans the public bonus page, a 4-tier bulk pre-order (BUPP) system, and a custom Stripe Payment Element checkout — all delivered as standalone HTML/CSS/JS snippets dropped onto a WordPress + Elementor site via WPCode.",
+    imageUrl: "/images/hardtruth-thumbnail.png",
+    carouselImages: [
+      { src: "/images/hardtruth_bonuses.png", alt: "Bonus stack with total value", caption: "4-bonus pre-order incentive — Live Masterclass, online course, early chapters PDF, and a sexual-health course discount totaling $608+ value. Each card auto-targets WordPress's 300×300 thumbnail variant for fast loads." },
+      { src: "/images/hardtruth_endorsements.png", alt: "Endorsement carousel", caption: "Endorsement carousel built in vanilla JS — 13 confirmed endorsers with infinite-loop cloning, periwinkle-initials-circle placeholder pattern for missing photos, and `<strong>` pull-quote highlighting selected per card." },
+      { src: "/images/hardtruth-vip_tiers.png", alt: "BUPP tier selection", caption: "4-tier bulk pre-order: Silver / Gold / Platinum / Diamond — strikethrough retail vs. investment, 'Most Popular' badge on Platinum, tier-specific bonuses (per-tier Q&A invites, personalized videos, keynote outreach)." },
+      { src: "/images/hardtruth-vip_checkout.png", alt: "Custom Stripe Elements checkout", caption: "Custom on-site checkout (replacing Stripe Payment Links) built with the Stripe Payment Element — Apple Pay / Google Pay supported, multi-step shipping intent picker (individual / single address / donate some / donate all), and CSV bulk-address upload via FileReader + base64." },
+      { src: "/images/hardtruth_podcast_appearances.png", alt: "Podcast Appearances page", caption: "Adjacent deliverable: redesigned 'Podcast Appearances' page (Highlights section + 40-card paginated archive of Doc's guest appearances on other podcasts, including Diary of a CEO, Shawn Ryan, Mel Robbins, and Huberman Lab)." },
+    ],
+    tags: ["WordPress", "Stripe", "Vanilla JS", "Elementor", "Make.com"],
+    longDescription: "A bespoke pre-order sales funnel for Dr. Rena Malik's first book — 'The Hard Truth: Everything Men Need to Know for Good Health, Great Sex, and Long Life' (HarperCollins, Nov 3 2026). The engagement spans the public `/hardtruth/` bonus page, the bulk pre-order (`/hardtruth-vip/`) tier system for organizations buying 10+ copies, a custom Stripe Payment Element checkout that replaces Stripe-hosted Payment Links, and a redesigned Podcast Appearances page. Everything is delivered as standalone HTML/CSS/JS snippets layered onto Doc's existing WordPress + Elementor site via the WPCode plugin — no framework, no build step, no platform lock-in. The most technically interesting part is the custom checkout: a multi-step shipping flow (individual / single / donate-some / donate-all intents), CSV bulk-address upload encoded into Stripe metadata, and a hybrid fallback to Make.com Data Store when the metadata size limit would otherwise break Diamond-tier (300-copy) orders.",
+    myRole: "Frontend Developer & Payment Integration Engineer",
+    myRoles: [
+      "Frontend Developer — vanilla HTML/CSS/JS snippets, no framework, dropped into Elementor via WPCode",
+      "Payment Integration — Stripe Payment Element with Apple Pay / Google Pay, multi-step shipping form, $397–$9,947 tier pricing",
+      "Data Engineer — multi-address shipping serialization, CSV bulk-address upload via FileReader + base64, Make.com Data Store fallback for the 500-char metadata cap",
+      "Integration Engineer — Stripe → Make.com webhook payload contract design (with Charles, the automation owner)",
+      "Visual Design — match Doc's main-site brand (navy + gold + cream + peri), 4-tier package cards with strikethrough retail pricing and 'Most Popular' badge",
+      "Content & QA — endorsement carousel build, copy editing, factual cleanup (degree-suffix verification — DO vs MD — across 13 endorsers against official publisher / podcast sources)",
+    ],
+    techStack: [
+      "WordPress", "Elementor", "WPCode",
+      "HTML5", "CSS3", "JavaScript",
+      "Stripe.js", "Stripe Payment Intents API", "Stripe Payment Element",
+      "Stripe Apple Pay", "Stripe Google Pay",
+      "Make.com", "FileReader API", "base64 encoding",
+      "CSS Grid", "Flexbox", "CSS custom properties",
+    ],
+    backendFeatures: [
+      "Webhook payload contract design — defined the JSON schema sent to Make.com after `payment_intent.succeeded`, covering tier, customer info, organization name, address count, total copies, Q&A question, video question, page URL, and Stripe order metadata.",
+      "Shipping-intent serialization — 4 mutually-exclusive intents (individual addresses per copy, single bulk address, donate-some, donate-all) encoded into the Payment Intent metadata for Charles's Make.com receiver to branch on.",
+      "CSV bulk-address upload — FileReader API reads `.csv` client-side → base64 encoded → embedded in Stripe metadata as a single `shipping_csv` field → Make.com decodes via `{{decodeBase64(1.shipping_csv)}}` and parses inline with the built-in CSV module.",
+      "Hybrid metadata fallback — when the multi-address bundle would exceed Stripe's 500-char metadata cap (especially Diamond-tier orders, up to 300 copies), the snippet writes a Data Store entry in Make.com keyed by Payment Intent ID. The succeeded-handler looks it up after the payment clears.",
+      "Per-tier fulfillment branching — different bonus emails, Q&A invite counts, and personalized-video flags fire from Charles's succeeded-handler based on the tier embedded in metadata.",
+      "Beehiiv tag application on every tier so customers automatically enter Doc's newsletter audience.",
+    ],
+    frontendFeatures: [
+      "Vanilla-JS infinite-loop carousel for 13 testimonials — clones `visibleCount` cards at each end of the track, snaps to virtual index on click, teleports invisibly across the boundary. No carousel library.",
+      "4-tier package cards (Silver / Gold / Platinum / Diamond) with strikethrough retail pricing, 'Most Popular' badge on Platinum, tier-specific perks, and 'Investment' / 'Claim Your Spot' CTAs.",
+      "Multi-step Stripe Payment Element checkout — tier selection → shipping intent picker → address details (individual rows or CSV bulk upload) → recipient name/email/gift memo per address → Stripe payment.",
+      "$608+ pre-order bonus stack across 4 cards with image, value, copy, and 'How to Redeem' instructions. Bonus 4 (Heather Hirsch Academy course discount) shipped behind a CSS `display:none` until Doc's bonus-delivery emails were wired with the coupon code, then activated with a one-line toggle.",
+      "Endorsement card pattern with both `<img>` and `.ht-testi-ph` (periwinkle initials-circle) placeholder variants — graceful degradation when a headshot hasn't been uploaded yet.",
+      "Pull-quote `<strong>` highlighting selected per endorsement card for the gold-color emphasis — sentences chosen for tweet-worthiness from each endorser's body.",
+      "Per-card image cropping via inline `object-position` and `transform: scale()` to focus on faces when source photos have off-center composition (e.g., Doctor Mike's headshot needed `object-position: 50% 10%` + `transform: scale(1.5) translateX(-7%)` to bring his face into the 88px circle).",
+      "WordPress 300×300 thumbnail-variant routing — every endorser `<img src>` points at WP's auto-generated `-300x300.jpg` for a ~10x file-size reduction (~1.5 MB → ~146 KB across the endorsements section).",
+      "Redesigned Podcast Appearances page with a 3-card 'Highlights' section + 40-card paginated archive of Doc's guest appearances (Diary of a CEO, Shawn Ryan Show, Huberman Lab, Mel Robbins Podcast, etc.).",
+      "Thanks page personalization — Stripe checkout passes the buyer's first name in a `?first_name=` URL param (renamed from `?name=` to avoid WordPress's reserved query-var collision) so the post-purchase page greets them personally.",
+    ],
+    challengesAndSolutions: [
+      {
+        challenge: "Multi-address shipping data couldn't fit in Stripe's 500-char metadata limit — especially for Diamond-tier orders covering up to 300 copies, where the full address bundle (street, city, state, zip, recipient name, email, gift memo per copy) easily exceeded the cap.",
+        solution: "Hybrid storage: small orders embed the CSV (base64-encoded) directly in Stripe metadata; larger orders write to a Make.com Data Store entry keyed by Payment Intent ID. The succeeded handler does `if (metadata.shipping_csv) decode-and-parse else lookup Data Store`. Make.com's `{{decodeBase64(...)}}` IML expression handles the inline decode; no extra service needed."
+      },
+      {
+        challenge: "WordPress's built-in `?name=` query parameter is reserved and triggers fuzzy slug matching — passing `?name=Elwison` redirected the thanks page to a 'testosterone' post (it fuzzy-matched 'test' from the param somehow).",
+        solution: "Renamed the URL parameter from `?name=` to `?first_name=` in the checkout snippet's redirect logic. Doesn't collide with any WP reserved var, thanks page greets the buyer correctly. Documented this gotcha in the checkout snippet's header comment for future maintainers."
+      },
+      {
+        challenge: "WordPress doesn't ship a carousel component that works for unequal-length testimonial cards — Elementor's built-in carousel jumps layout when adjacent cards have different copy lengths.",
+        solution: "Wrote a vanilla-JS infinite-loop carousel using cloned cards + virtual index tracking. The visible track holds `realCount + 2 × visibleCount` cards; navigation increments a virtual index and uses CSS smooth-scroll. When the index crosses into clone territory, we teleport invisibly to the equivalent real position using `scroll-behavior: auto`."
+      },
+      {
+        challenge: "Endorser headshots arrived at full camera resolution — one PNG was 1.88 MB rendering in an 88px display circle, tanking page load. The /hardtruth/ page was getting flagged by AWS Cost Anomaly Detection during heavy iteration weeks.",
+        solution: "Routed every endorser `<img src>` URL through WordPress's auto-generated `-300x300.jpg` thumbnail variant. WP creates these on upload at no extra cost, they're 4–28 KB each, and 300×300 at 2x DPR is still crisper than the 88px display needs. Net reduction: ~1.4 MB on just the endorsements section."
+      },
+      {
+        challenge: "Endorser credentials needed to be verifiably accurate — getting 'Doctor Mike, MD' wrong (he's a DO, not MD) on a published book pre-order page risks an awkward correction from one of Doc's peers. The source spreadsheet had been hand-typed and a few entries were ambiguous.",
+        solution: "Ran a thorough research pass — verified every endorser's degree, board certifications, book titles (publisher styling), and podcast names against their own websites + publisher pages. Caught 'Doctor Mike, DO' (not MD), 'Gabrielle Lyon, DO' (not MD), 'Vonda Wright is *double* board-certified', 'Mohit Khera's book is *Re-Coupling* (not RE-COUPLING)', 'Testosterone *for* Life (lowercase for)' and ~10 other corrections."
+      },
+      {
+        challenge: "Hardcoded dates (Aug 2026 masterclass, Sep 2026 ship date, Nov 3 2026 launch) needed precise updates as Doc's launch schedule shifted — and Wordpress doesn't offer central date variables across Elementor widgets.",
+        solution: "Documented every date occurrence in section-leading HTML comments + grouped related dates together so search/replace across the snippet hits all relevant copy. Made the August→October masterclass swap and September→November launch-date swap into single find-and-replace operations per file (8 instances each, all caught)."
+      },
+    ],
+    // Source intentionally omitted — client engagement, not publicly viewable.
+    liveDemoUrl: "https://renamalikmd.com/hardtruth/",
   },
 ];

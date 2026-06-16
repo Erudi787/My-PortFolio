@@ -15,28 +15,28 @@ const skillCategories: SkillCategory[] = [
     title: 'Frontend & Mobile',
     icon: <Layout className="w-6 h-6 text-primary" />,
     description: 'Crafting responsive, interactive, and seamless user interfaces.',
-    skills: ['React', 'Next.js', 'TypeScript', 'TailwindCSS', 'shadcn/ui', 'React Query', 'Framer Motion', 'React Flow', 'Flutter'],
+    skills: ['React', 'Next.js', 'Astro', 'TypeScript', 'TailwindCSS', 'shadcn/ui', 'React Query', 'Framer Motion', 'React Flow', 'Flutter'],
   },
   {
     id: 'backend',
     title: 'Backend & Architecture',
     icon: <Server className="w-6 h-6 text-primary" />,
     description: 'Building scalable APIs, modular monoliths, and robust server logic.',
-    skills: ['NestJS', 'FastAPI', 'ASP.NET Core', 'Express.js', 'Node.js', 'Python', 'C#', 'GraphQL', 'REST APIs', 'WebSocket', 'JWT'],
+    skills: ['NestJS', 'FastAPI', 'ASP.NET Core', 'Express.js', 'Node.js', 'AWS Lambda', 'Python', 'C#', 'GraphQL', 'REST APIs', 'WebSocket', 'JWT'],
   },
   {
     id: 'database',
     title: 'Database & Cloud',
     icon: <Database className="w-6 h-6 text-primary" />,
     description: 'Managing data persistence, ORMs, and cloud infrastructure.',
-    skills: ['PostgreSQL', 'Prisma', 'SQLAlchemy', 'Supabase', 'Firebase', 'Redis', 'SQL Server', 'MySQL', 'AWS S3', 'Render'],
+    skills: ['PostgreSQL', 'Prisma', 'SQLAlchemy', 'Supabase', 'Firebase', 'Redis', 'SQL Server', 'MySQL', 'DynamoDB', 'AWS CDK', 'AWS Amplify Hosting', 'API Gateway', 'EventBridge', 'SSM Parameter Store', 'AWS S3', 'Cloudflare DNS', 'Render'],
   },
   {
     id: 'tools',
     title: 'DevOps & Tools',
     icon: <Terminal className="w-6 h-6 text-primary" />,
     description: 'Streamlining development workflows, integrations, and observability.',
-    skills: ['Git & GitHub', 'Docker', 'Turborepo', 'pnpm', 'Sentry', 'Stripe', 'DocuSign', 'SendGrid', 'Clerk', 'OpenAI API', 'Jira', 'VS Code'],
+    skills: ['Git & GitHub', 'Docker', 'Turborepo', 'pnpm', 'Sentry', 'Stripe', 'Stripe Payment Element', 'DocuSign', 'SendGrid', 'Clerk', 'OpenAI API', 'YouTube Data API', 'Spotify API', 'WordPress', 'Elementor', 'Jira', 'VS Code'],
   },
 ];
 
