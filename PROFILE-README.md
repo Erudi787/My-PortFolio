@@ -1,6 +1,6 @@
 <div align="center">
   <h2>Hey there, I'm Elwison. 👋</h2>
-  <p>Software Engineer | Backend Architect | Tech Enthusiast</p>
+  <p>Software Engineer | Full-Stack &amp; AWS Serverless | TypeScript</p>
   
   <a href="https://erudi.vercel.app/" target="_blank">Portfolio</a> • 
   <a href="https://www.linkedin.com/in/elwison-denampo-b2042b285/" target="_blank">LinkedIn</a>
@@ -14,9 +14,9 @@ Whether it's designing highly concurrent APIs or optimizing database bottlenecks
 
 My primary toolkit includes **TypeScript (Next.js / NestJS)**, **Python (FastAPI)**, and occasionally **C# (.NET Ecosystem)**. Off the clock, I'm likely trying to expand my project scopes. Especially if I stumble into a challenging idea that fascinates me, you'd find me architecting my nights away.
 
-Most recently, I shipped **[LaChowOS](https://thelachow.com)** — a property management platform for culinary innovation facilities, built as a monorepo with a NestJS API, dual Next.js portals (admin + tenant), and 10+ third-party integrations (Stripe, DocuSign, SendGrid, AWS S3, ButterflyMX, QuickBooks, and more). Before that, I built the backend for **[FutureThink Edge](https://www.futurethinkedge.org/)**, an AI-powered EdTech platform for neurodivergent students, engineered for 3,000+ concurrent users on FastAPI, PostgreSQL, and Redis.
+Most recently I rebuilt the podcast platform for **[Dr. Rena Malik, MD](https://podcast-new.renamalikmd.com)** (~2.9M YouTube subscribers) as a self-updating static site on **AWS serverless** — a single TypeScript CDK stack (Lambda, DynamoDB, API Gateway, EventBridge) that ingests several third-party APIs on a schedule. Before that I shipped **[LaChowOS](https://thelachow.com)** — a property management platform built as a monorepo with a NestJS API, dual Next.js portals (admin + tenant), and 10+ third-party integrations (Stripe, DocuSign, QuickBooks, AWS S3, and more) — and the backend for **[FutureThink Edge](https://www.futurethinkedge.org/)**, an AI-powered EdTech platform engineered for 3,000+ concurrent users on FastAPI, PostgreSQL, and Redis.
 
-I'm **between roles now and open to what's next** — preferably remote, preferably building systems that hold up when no one is watching. In the meantime I'm planning out a fresh slate of side projects.
+Right now I'm doing full-stack and freelance dev work — mostly **TypeScript on AWS serverless** with deep third-party integrations — building systems that hold up when no one is watching. On the side I keep a steady slate of side projects going.
 
 ---
 
