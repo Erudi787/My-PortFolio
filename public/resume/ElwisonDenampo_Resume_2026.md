@@ -32,6 +32,17 @@ Web development for the world's most-followed urologist (2.9M YouTube subscriber
 - Built a **custom Stripe Payment Element checkout** (Apple Pay / Google Pay) replacing Stripe-hosted Payment Links — a 4-tier bulk pre-order flow (**$397–$9,947**) with a `payment_intent.succeeded` webhook contract to Make.com
 - Engineered a **hybrid metadata-storage strategy** for multi-address bulk orders (up to 300 ship-to addresses), working around Stripe's 500-char metadata limit via base64-CSV metadata for small orders and a Make.com Data Store keyed by Payment Intent ID for large ones
 
+### FULL-STACK DEVELOPER (CONTRACT) &nbsp;&nbsp;|&nbsp;&nbsp; Flat Rate Bookkeeping &nbsp;&nbsp;|&nbsp;&nbsp; June 2026 – August 2026
+
+Development, bug-fixing and maintenance on a live Supabase/Postgres + TanStack Start accounting SaaS, working an internal bug-bounty queue of client-reported issues end to end after the founder declared the feature set complete.
+
+*TypeScript, TanStack Start, TanStack Router, PostgreSQL, Supabase, Row-Level Security, Postgres Triggers, Plaid*
+
+- Root-caused two compounding Postgres performance bugs (a self-referencing CTE re-inlined per outer row, plus a non-sargable `UUID::text` join) in a trigger firing on every bank/credit-card account mapping — diagnosed live against production with `pg_stat_activity` and `EXPLAIN ANALYZE`, cutting a reproducible **8–9s timeout to ~1s**
+- Designed and shipped **Group Chat**, a limited-access contact tier letting third parties (e.g. a client's business partner) join in-app message threads while staying fail-closed from SMS/email/call history — threaded the new access level through all 3 invite-creation code paths, gated ~4 messaging endpoints behind a dedicated auth-middleware variant, and built the matching client-portal and staff-side invite UI
+- Wrote and shipped **18 Postgres row-level-security policies** closing a residual access-control gap the new limited-contact tier opened up across a **7-role RBAC system** (staff/client/admin/auditor/payroll/tax-contractor/customer-success)
+- Established migration hygiene for the codebase — every schema/RPC change shipped with a hand-written revert script, gated by custom verification scripts (`tsc`, server-fn auth-middleware coverage, destructive-migration scanner) run before every production push
+
 ### JUNIOR SOFTWARE ENGINEER &nbsp;&nbsp;|&nbsp;&nbsp; FutureThink Hub & La Chow &nbsp;&nbsp;|&nbsp;&nbsp; July 2025 – March 2026
 
 Shipped three production platforms — an AI-powered adaptive learning platform (FutureThink Edge), a unified property management SaaS (LaChowOS), and La Chow's public marketing site with a custom admin CMS — across full-stack development, database design, third-party integrations, and DevOps.

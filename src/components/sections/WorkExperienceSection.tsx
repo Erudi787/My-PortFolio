@@ -29,6 +29,21 @@ const experiences: Experience[] = [
     tags: ['TypeScript', 'Astro', 'AWS CDK', 'AWS Lambda', 'DynamoDB', 'Amplify Hosting', 'Stripe', 'WordPress', 'YouTube API', 'Spotify API', 'Make.com'],
   },
   {
+    id: 4,
+    title: 'Full-Stack Developer (Contract)',
+    company: 'Flat Rate Bookkeeping',
+    location: 'Remote · PH',
+    period: 'Jun 2026 — Aug 2026',
+    description: [
+      'Took over bug-fixing and maintenance on a live Supabase/Postgres + TanStack Start accounting SaaS after its feature set was declared complete, working an internal bug-bounty queue of client-reported issues end to end.',
+      'Root-caused two compounding Postgres performance bugs (a self-referencing CTE being re-inlined per outer row, plus a non-sargable UUID::text join) inside a trigger that ran on every bank/credit-card account mapping — diagnosed live against production with pg_stat_activity and EXPLAIN ANALYZE, cutting a reproducible 8–9s timeout to ~1s.',
+      'Designed and shipped Group Chat, a limited-access contact tier letting third parties (e.g. a client\'s business partner) join in-app message threads while staying fail-closed from SMS/email/call history — threaded the new access level through all 3 invite-creation code paths, gated ~4 messaging endpoints behind a dedicated auth-middleware variant, and built the matching client-portal and staff-side invite UI.',
+      'Wrote and shipped 18 Postgres row-level-security policies closing a residual access-control gap the new limited-contact tier opened up across a 7-role RBAC system (staff/client/admin/auditor/payroll/tax-contractor/customer-success).',
+      'Established migration hygiene for the codebase: every schema/RPC change shipped with a hand-written revert script, gated by custom verification scripts (tsc, server-fn auth-middleware coverage, destructive-migration scanner) run before every production push.',
+    ],
+    tags: ['TypeScript', 'TanStack Start', 'TanStack Router', 'PostgreSQL', 'Supabase', 'Row-Level Security', 'Postgres Triggers', 'Plaid'],
+  },
+  {
     id: 1,
     title: 'Software Engineer',
     company: 'La Chow',
