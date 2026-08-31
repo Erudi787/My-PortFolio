@@ -14,9 +14,11 @@ Whether it's designing highly concurrent APIs or optimizing database bottlenecks
 
 My primary toolkit includes **TypeScript (Next.js / NestJS)**, **Python (FastAPI)**, and occasionally **C# (.NET Ecosystem)**. Off the clock, I'm likely trying to expand my project scopes. Especially if I stumble into a challenging idea that fascinates me, you'd find me architecting my nights away.
 
-Most recently, I shipped **[LaChowOS](https://thelachow.com)** — a property management platform for culinary innovation facilities, built as a monorepo with a NestJS API, dual Next.js portals (admin + tenant), and 10+ third-party integrations (Stripe, DocuSign, SendGrid, AWS S3, ButterflyMX, QuickBooks, and more). Before that, I built the backend for **[FutureThink Edge](https://www.futurethinkedge.org/)**, an AI-powered EdTech platform for neurodivergent students, engineered for 3,000+ concurrent users on FastAPI, PostgreSQL, and Redis.
+Right now I'm doing freelance full-stack work for **[Dr. Rena Malik, MD](https://podcast-new.renamalikmd.com)** — the world's most-followed urologist — where I shipped a 326-episode auto-updating podcast site on AWS serverless (CDK, Lambda, DynamoDB, EventBridge) and a custom Stripe Payment Element checkout for her book pre-order funnel.
 
-I'm **between roles now and open to what's next** — preferably remote, preferably building systems that hold up when no one is watching. In the meantime I'm planning out a fresh slate of side projects.
+Before that I spent a contract at **Flat Rate Bookkeeping** working a client-bug queue on a live Supabase/Postgres + TanStack Start accounting SaaS — root-causing production Postgres performance bugs, shipping 18 row-level-security policies across a 7-role RBAC system, and building a limited-access contact tier from schema to UI. Earlier I shipped **[LaChowOS](https://thelachow.com)**, a property management platform for culinary innovation facilities (NestJS + dual Next.js portals + 10 third-party integrations), and the backend for **[FutureThink Edge](https://www.futurethinkedge.org/)**, an AI-powered EdTech platform engineered for 3,000+ concurrent users on FastAPI, PostgreSQL, and Redis.
+
+The freelance work is part-time, so I'm **open to a full-time role and available now** — preferably remote, preferably building systems that hold up when no one is watching. In between, I'm planning out a fresh slate of side projects.
 
 ---
 
