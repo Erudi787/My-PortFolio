@@ -50,9 +50,9 @@ const MAZE: string[] = [
   '#...................#',
   '#.###.#.#####.#.###.#',
   '#.....#...#...#.....#',
-  '#####.### # ###.#####',
-  '    #.#       #.#    ',
-  '#####.# ##G## #.#####',
+  '#####.#       #.#####',
+  '    #.####-####.#    ',
+  '#####.###   ###.#####',
   'T....   #   #   ....T',
   '#####.# ##### #.#####',
   '    #.#       #.#    ',
@@ -120,6 +120,7 @@ function parseMaze() {
   const dots = new Set<string>();
   const power = new Set<string>();
   const tunnel = new Set<string>();
+  const door = new Set<string>();
   let pacSpawn: [number, number] = [10, 16];
   let ghostSpawn: [number, number] = [10, 9];
   for (let y = 0; y < ROWS; y++) {
@@ -130,14 +131,19 @@ function parseMaze() {
       else if (c === '.') dots.add(key);
       else if (c === 'o') power.add(key);
       else if (c === 'T') tunnel.add(key);
+      else if (c === '-') { walls.add(key); door.add(key); } // ghost-house gate: solid for pac + normal ghosts
       else if (c === 'P') pacSpawn = [x, y];
       else if (c === 'G') ghostSpawn = [x, y];
     }
   }
-  return { walls, dots, power, tunnel, pacSpawn, ghostSpawn };
+  return { walls, dots, power, tunnel, door, pacSpawn, ghostSpawn };
 }
 
 const PARSED = parseMaze();
+
+// Ghost-house waypoints derived from the spawn tile.
+const HOUSE_EXIT: [number, number] = [PARSED.ghostSpawn[0], PARSED.ghostSpawn[1] - 2]; // just above the gate
+const HOUSE_INSIDE: [number, number] = [PARSED.ghostSpawn[0], PARSED.ghostSpawn[1]];   // top-center of the house
 
 function isWall(x: number, y: number): boolean {
   if (y < 0 || y >= ROWS) return true;
@@ -276,6 +282,7 @@ function buildWallLayer(cell: number, c: Colors): HTMLCanvasElement {
   ctx.strokeStyle = `hsl(${c.primaryRaw} / 0.34)`;
   ctx.lineWidth = 1;
   for (const k of PARSED.walls) {
+    if (PARSED.door.has(k)) continue; // leave a visible gap at the gate
     const [x, y] = k.split(',').map(Number);
     const px = x * cell;
     const py = y * cell;
@@ -447,8 +454,8 @@ function render(
   };
 
   if (now < gs.bannerUntilWall) line(`LEVEL ${gs.level}`);
-  else if (status === 'idle') line('READY', 'swipe · arrows · tap');
-  else if (status === 'paused') line('PAUSED', 'space / esc to resume');
+  else if (status === 'idle') line('PICK A DIRECTION', 'swipe · arrows · wasd');
+  else if (status === 'paused') line('PAUSED', 'click or space to resume');
   else if (status === 'gameover') {
     line('GAME OVER', gs.score >= hi && gs.score > 0 ? `new best · ${gs.score}` : `${gs.score} pts · tap to retry`);
   }
@@ -472,6 +479,7 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
   const [cell, setCell] = useState(cellSize);
   const [status, setStatus] = useState<Status>('idle');
   const [visible, setVisible] = useState(true);
+  const [coarse, setCoarse] = useState(false); // touch-primary device → show the D-pad
   const [hud, setHud] = useState({ score: 0, lives: 3, level: 1 });
   const [highScore, setHighScore] = useState(0);
 
@@ -483,9 +491,11 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
   const reducedRef = useRef(false);
   const wallLayerRef = useRef<{ canvas: HTMLCanvasElement; key: string } | null>(null);
   const touchRef = useRef<{ x: number; y: number; t: number } | null>(null);
+  const coarseRef = useRef(false);
 
   statusRef.current = status;
   hudRef.current = hud;
+  coarseRef.current = coarse;
 
   const syncHud = useCallback(() => {
     const g = gRef.current;
@@ -504,30 +514,35 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
     setStatus('gameover');
   }, []);
 
-  const startGame = useCallback(() => {
+  // Rebuild a fresh game and wait — the round only begins once a direction is chosen.
+  const resetGame = useCallback(() => {
     gRef.current = createGame();
     hudRef.current = { score: 0, lives: 3, level: 1 };
     setHud(hudRef.current);
-    setStatus('playing');
+    setStatus('idle');
   }, []);
 
   const setDir = useCallback((d: Dir) => {
     const st = statusRef.current;
-    if (st === 'gameover') { startGame(); gRef.current.nextDir = d; buzz(6); return; }
     if (st === 'paused') return;
+    if (st === 'gameover') {
+      resetGame();
+      gRef.current.nextDir = d;
+      setStatus('playing');
+      buzz(6);
+      return;
+    }
     gRef.current.nextDir = d;
-    if (st === 'idle') setStatus('playing');
+    if (st === 'idle') setStatus('playing'); // first input starts the round
     if (!reducedRef.current) buzz(5);
-  }, [startGame]);
+  }, [resetGame]);
 
   const togglePause = useCallback(() => {
-    setStatus(s => {
-      if (s === 'playing') { gRef.current.autoPaused = false; return 'paused'; }
-      if (s === 'paused') return 'playing';
-      if (s === 'gameover') { startGame(); return 'playing'; }
-      return s;
-    });
-  }, [startGame]);
+    const s = statusRef.current;
+    if (s === 'playing') { gRef.current.autoPaused = false; setStatus('paused'); }
+    else if (s === 'paused') setStatus('playing');
+    else if (s === 'gameover') resetGame();
+  }, [resetGame]);
 
   // ---- one simulation step (stable; all state via refs) --------------------
   const step = useCallback(() => {
@@ -567,22 +582,21 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
     const frightened = g.frightenedUntil > g.clock;
     const mode = currentMode(g.clock);
     const blinky = g.ghosts.find(gh => gh.name === 'blinky') ?? null;
-    const [gsx, gsy] = PARSED.ghostSpawn;
 
     // ---- Ghosts ----
     for (const gh of g.ghosts) {
       gh.px = gh.x; gh.py = gh.y;
 
-      // eyes returning home — move fast, straight for the door
+      // eyes returning home — race to the gate, then drop through it
       if (gh.eaten) {
         for (let s = 0; s < 2; s++) {
-          if (gh.x === gsx && Math.abs(gh.y - gsy) <= 1) {
+          if (gh.x === HOUSE_EXIT[0] && gh.y === HOUSE_EXIT[1]) {
+            gh.x = HOUSE_INSIDE[0]; gh.y = HOUSE_INSIDE[1];
             gh.eaten = false; gh.housed = true; gh.dir = 'up';
-            gh.releaseAt = g.clock + 1500;
-            gh.x = gsx; gh.y = gsy;
+            gh.releaseAt = g.clock + 1200;
             break;
           }
-          const d = pickGhostDir(gh, [gsx, gsy], false);
+          const d = pickGhostDir(gh, HOUSE_EXIT, false);
           const nxt = tryMove(gh.x, gh.y, d);
           if (!nxt) break;
           gh.x = nxt[0]; gh.y = nxt[1]; gh.dir = d;
@@ -594,7 +608,7 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
       if (gh.housed && g.clock < gh.releaseAt) continue;
       if (gh.housed && g.clock >= gh.releaseAt) {
         gh.housed = false;
-        gh.x = gsx; gh.y = gsy - 2; gh.px = gh.x; gh.py = gh.y;
+        gh.x = HOUSE_EXIT[0]; gh.y = HOUSE_EXIT[1]; gh.px = gh.x; gh.py = gh.y;
         gh.dir = 'left';
         continue;
       }
@@ -726,6 +740,15 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
     return () => mq.removeEventListener('change', apply);
   }, []);
 
+  // ---- coarse (touch) pointer detection ----------------------------
+  useEffect(() => {
+    const mq = window.matchMedia('(pointer: coarse)');
+    const apply = () => setCoarse(mq.matches);
+    apply();
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, []);
+
   // ---- high score bootstrap ---------------------------------------
   useEffect(() => {
     const hi = loadHi();
@@ -773,8 +796,15 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
     else if (k === ' ' || k === 'escape') { e.preventDefault(); togglePause(); }
     else if (k === 'enter') {
       e.preventDefault();
-      if (statusRef.current === 'idle') setStatus('playing');
-      else if (statusRef.current === 'gameover') startGame();
+      if (statusRef.current === 'gameover') resetGame();
+    }
+  };
+
+  // Desktop: clicking away from the board pauses the round.
+  const onBlur = () => {
+    if (!coarseRef.current && statusRef.current === 'playing') {
+      gRef.current.autoPaused = false;
+      setStatus('paused');
     }
   };
 
@@ -794,10 +824,9 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
     const ady = Math.abs(dy);
     wrapRef.current?.focus();
     if (Math.max(adx, ady) < 20) {
-      // tap
-      if (statusRef.current === 'idle') setStatus('playing');
-      else if (statusRef.current === 'paused') togglePause();
-      else if (statusRef.current === 'gameover') startGame();
+      // tap — resume or restart only; a fresh round still waits for a direction
+      if (statusRef.current === 'paused') setStatus('playing');
+      else if (statusRef.current === 'gameover') resetGame();
       return;
     }
     setDir(adx > ady ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
@@ -805,9 +834,8 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
 
   const onBoardClick = () => {
     wrapRef.current?.focus();
-    if (status === 'idle') setStatus('playing');
-    else if (status === 'paused') togglePause();
-    else if (status === 'gameover') startGame();
+    if (status === 'paused') setStatus('playing');
+    else if (status === 'gameover') resetGame();
   };
 
   const centerLabel =
@@ -844,6 +872,7 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
         aria-label="Pac-Man mini game. Steer with arrow keys, WASD, swipe, or the on-screen pad."
         tabIndex={0}
         onKeyDown={onKeyDown}
+        onBlur={onBlur}
         onClick={onBoardClick}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
@@ -861,28 +890,30 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
             : `Level ${hud.level}.`}
       </p>
 
-      {/* D-pad — usable with mouse, touch, or as a control legend */}
-      <div className="grid grid-cols-3 grid-rows-3 gap-1.5" style={{ touchAction: 'none' }}>
-        <span />
-        <DpadButton label="Up" onPress={() => setDir('up')}>▲</DpadButton>
-        <span />
-        <DpadButton label="Left" onPress={() => setDir('left')}>◀</DpadButton>
-        <button
-          type="button"
-          aria-label={centerLabel}
-          onPointerDown={(e) => { e.preventDefault(); togglePause(); }}
-          className="flex h-9 w-9 items-center justify-center rounded border border-primary/50 bg-primary/10 text-primary transition-colors hover:bg-primary/20 active:bg-primary/30"
-        >
-          <CenterIcon className="h-4 w-4" />
-        </button>
-        <DpadButton label="Right" onPress={() => setDir('right')}>▶</DpadButton>
-        <span />
-        <DpadButton label="Down" onPress={() => setDir('down')}>▼</DpadButton>
-        <span />
-      </div>
+      {/* D-pad — touch devices only; desktop steers with keys */}
+      {coarse && (
+        <div className="grid grid-cols-3 grid-rows-3 gap-1.5" style={{ touchAction: 'none' }}>
+          <span />
+          <DpadButton label="Up" onPress={() => setDir('up')}>▲</DpadButton>
+          <span />
+          <DpadButton label="Left" onPress={() => setDir('left')}>◀</DpadButton>
+          <button
+            type="button"
+            aria-label={centerLabel}
+            onPointerDown={(e) => { e.preventDefault(); togglePause(); }}
+            className="flex h-9 w-9 items-center justify-center rounded border border-primary/50 bg-primary/10 text-primary transition-colors hover:bg-primary/20 active:bg-primary/30"
+          >
+            <CenterIcon className="h-4 w-4" />
+          </button>
+          <DpadButton label="Right" onPress={() => setDir('right')}>▶</DpadButton>
+          <span />
+          <DpadButton label="Down" onPress={() => setDir('down')}>▼</DpadButton>
+          <span />
+        </div>
+      )}
 
       <p className="text-center font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-        Arrows · WASD · swipe · space to pause
+        {coarse ? 'Swipe or use the pad · ● to pause' : 'Arrows · WASD to move · click away to pause'}
       </p>
     </div>
   );
