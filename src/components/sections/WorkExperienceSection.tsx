@@ -30,7 +30,7 @@ const experiences: Experience[] = [
   },
   {
     id: 4,
-    title: 'Full-Stack Developer (Contract)',
+    title: 'Software Developer',
     company: 'Flat Rate Bookkeeping',
     location: 'Remote · PH',
     period: 'Jun 2026 — Aug 2026',
