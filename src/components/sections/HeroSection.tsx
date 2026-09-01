@@ -55,7 +55,7 @@ export default function HeroSection() {
 
         {/* RIGHT — Pacman game */}
         <div className="flex justify-center md:justify-end animate-fade-in-delay-3">
-          <PacmanGame cellSize={14} />
+          <PacmanGame cellSize={16} />
         </div>
       </div>
 
