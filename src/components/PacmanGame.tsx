@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pause, Play, RotateCcw } from 'lucide-react';
+import { Pause, Play, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 
 /**
  * Classic Pac-Man with 4 ghosts and authentic targeting AI:
@@ -31,6 +31,9 @@ const ROWS = 23;
 const BASE_TICK_MS = 140;
 const FRIGHT_MS = 6000;
 const HI_KEY = 'portfolio.pacman.hi';
+const MUTED_KEY = 'portfolio.pacman.muted';
+
+type SfxName = 'chomp' | 'pellet' | 'ghost' | 'death' | 'level';
 
 const MODE_SCHEDULE: { mode: 'scatter' | 'chase'; ms: number }[] = [
   { mode: 'scatter', ms: 5000 },
@@ -77,13 +80,18 @@ const DIR_VEC: Record<Dir, [number, number]> = {
 const OPPOSITE: Record<Dir, Dir> = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const DIR_ROT: Record<Dir, number> = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 };
 
-interface Entity { x: number; y: number; px: number; py: number; dir: Dir; }
+interface Entity {
+  x: number; y: number;     // current tile
+  px: number; py: number;   // tile before the in-progress move
+  dir: Dir;
+  moveStartWall: number;    // performance.now() when the current move began
+  moveDurMs: number;        // how long that move should take to draw (enables per-entity speed)
+}
 interface GhostState extends Entity {
   name: 'blinky' | 'pinky' | 'inky' | 'clyde';
   color: string;
   scatterTarget: [number, number];
-  housed: boolean;   // still in the ghost house
-  eaten: boolean;    // eyes returning to the house
+  housed: boolean;   // sitting in the ghost house
   releaseAt: number; // clock ms at which it leaves the house
 }
 
@@ -101,10 +109,10 @@ interface GameState {
   frame: number;
   frightenedUntil: number; // clock ms
   frightCombo: number;
-  lastStepWall: number;    // performance.now() of last sim step (for interpolation)
   freezeUntilWall: number; // wall-clock gate: death pause
   bannerUntilWall: number; // wall-clock gate: "LEVEL n" banner
   autoPaused: boolean;     // paused by scroll/visibility, eligible for auto-resume
+  popups: { x: number; y: number; text: string; untilWall: number }[]; // floating eat-score labels
 }
 
 interface Colors {
@@ -211,18 +219,18 @@ function chaseTarget(name: GhostState['name'], pac: Entity, blinky: GhostState |
 function mkGhosts(clock: number, staggered: boolean): GhostState[] {
   const [gx, gy] = PARSED.ghostSpawn;
   const rel = staggered ? [0, 2000, 5000, 8000] : [0, 1500, 3500, 6000];
-  const base = (x: number, y: number) => ({ x, y, px: x, py: y });
+  const base = (x: number, y: number) => ({ x, y, px: x, py: y, moveStartWall: 0, moveDurMs: 0 });
   return [
-    { ...base(gx, gy - 2), name: 'blinky', color: '#ff4136', dir: 'left', scatterTarget: [COLS - 1, 0],        housed: false, eaten: false, releaseAt: clock + rel[0] },
-    { ...base(gx, gy),     name: 'pinky',  color: '#ff8ad0', dir: 'down', scatterTarget: [0, 0],               housed: true,  eaten: false, releaseAt: clock + rel[1] },
-    { ...base(gx - 1, gy), name: 'inky',   color: '#2ee6ff', dir: 'up',   scatterTarget: [COLS - 1, ROWS - 1], housed: true,  eaten: false, releaseAt: clock + rel[2] },
-    { ...base(gx + 1, gy), name: 'clyde',  color: '#ffb14e', dir: 'up',   scatterTarget: [0, ROWS - 1],        housed: true,  eaten: false, releaseAt: clock + rel[3] },
+    { ...base(gx, gy - 2), name: 'blinky', color: '#ff4136', dir: 'left', scatterTarget: [COLS - 1, 0],        housed: false, releaseAt: clock + rel[0] },
+    { ...base(gx, gy),     name: 'pinky',  color: '#ff8ad0', dir: 'down', scatterTarget: [0, 0],               housed: true,  releaseAt: clock + rel[1] },
+    { ...base(gx - 1, gy), name: 'inky',   color: '#2ee6ff', dir: 'up',   scatterTarget: [COLS - 1, ROWS - 1], housed: true,  releaseAt: clock + rel[2] },
+    { ...base(gx + 1, gy), name: 'clyde',  color: '#ffb14e', dir: 'up',   scatterTarget: [0, ROWS - 1],        housed: true,  releaseAt: clock + rel[3] },
   ];
 }
 
 function mkPac(): Entity {
   const [x, y] = PARSED.pacSpawn;
-  return { x, y, px: x, py: y, dir: 'left' };
+  return { x, y, px: x, py: y, dir: 'left', moveStartWall: 0, moveDurMs: 0 };
 }
 
 function createGame(): GameState {
@@ -240,10 +248,10 @@ function createGame(): GameState {
     frame: 0,
     frightenedUntil: 0,
     frightCombo: 0,
-    lastStepWall: 0,
     freezeUntilWall: 0,
     bannerUntilWall: 0,
     autoPaused: false,
+    popups: [],
   };
 }
 
@@ -292,7 +300,15 @@ function buildWallLayer(cell: number, c: Colors): HTMLCanvasElement {
   return cv;
 }
 
-function screenPos(e: Entity, t: number): [number, number] {
+// Per-entity interpolation: each entity carries its own move start + duration,
+// so a half-speed (frightened) ghost glides over two ticks instead of stuttering.
+function screenPos(e: Entity, now: number, reduced: boolean): [number, number] {
+  let t = 1;
+  if (!reduced && e.moveDurMs > 0) {
+    t = (now - e.moveStartWall) / e.moveDurMs;
+    if (t < 0) t = 0;
+    else if (t > 1) t = 1;
+  }
   let sx = e.px + (e.x - e.px) * t;
   let sy = e.py + (e.y - e.py) * t;
   if (Math.abs(e.x - e.px) > 1) sx = e.x; // tunnel wrap — don't lerp across the board
@@ -309,7 +325,7 @@ function drawGhost(
   const eyeY = -r * 0.05;
   const eyeR = r * 0.32;
 
-  if (!g.eaten) {
+  {
     // body colour: frightened (with end-of-fright blink), else identity colour
     let fill = g.color;
     if (gs.frightenedUntil > gs.clock) {
@@ -332,7 +348,7 @@ function drawGhost(
     ctx.fill();
   }
 
-  // eyes (always — eaten ghosts are just eyes gliding home)
+  // eyes
   for (const s of [-1, 1]) {
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
@@ -376,11 +392,6 @@ function render(
   ctx.drawImage(layer.canvas, 0, 0, boardW, boardH);
 
   const now = performance.now();
-  let t = 1;
-  if (status === 'playing' && gs.lastStepWall && now >= gs.freezeUntilWall) {
-    t = Math.min(1, (now - gs.lastStepWall) / gs.tickMs);
-  }
-  if (reduced) t = 1;
 
   // dots
   ctx.fillStyle = `hsl(${c.fgRaw} / 0.7)`;
@@ -406,7 +417,7 @@ function render(
 
   // pac-man
   {
-    const [sx, sy] = screenPos(gs.pac, t);
+    const [sx, sy] = screenPos(gs.pac, now, reduced);
     const cx = sx * cell + cell / 2;
     const cy = sy * cell + cell / 2;
     const r = cell * 0.46;
@@ -426,13 +437,26 @@ function render(
 
   // ghosts
   for (const g of gs.ghosts) {
-    const gt = g.eaten ? 1 : t;
-    const [sx, sy] = screenPos(g, gt);
+    const [sx, sy] = screenPos(g, now, reduced);
     let cy = sy * cell + cell / 2;
-    if (g.housed && g.releaseAt > gs.clock && !g.eaten && !reduced) {
+    if (g.housed && g.releaseAt > gs.clock && !reduced) {
       cy += Math.sin(now / 260) * cell * 0.12; // idle bob in the house
     }
     drawGhost(ctx, sx * cell + cell / 2, cy, cell * 0.46, g, gs, reduced, now);
+  }
+
+  // floating eat-score labels
+  for (const p of gs.popups) {
+    const life = (p.untilWall - now) / 900;
+    if (life <= 0) continue;
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, life);
+    ctx.fillStyle = `hsl(${c.primaryRaw})`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = `${Math.max(9, Math.round(cell * 0.7))}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+    ctx.fillText(p.text, p.x * cell + cell / 2, p.y * cell + cell / 2 - (1 - life) * cell * 1.4);
+    ctx.restore();
   }
 
   // banners / overlays
@@ -480,6 +504,7 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
   const [status, setStatus] = useState<Status>('idle');
   const [visible, setVisible] = useState(true);
   const [coarse, setCoarse] = useState(false); // touch-primary device → show the D-pad
+  const [muted, setMuted] = useState(false);
   const [hud, setHud] = useState({ score: 0, lives: 3, level: 1 });
   const [highScore, setHighScore] = useState(0);
 
@@ -492,10 +517,81 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
   const wallLayerRef = useRef<{ canvas: HTMLCanvasElement; key: string } | null>(null);
   const touchRef = useRef<{ x: number; y: number; t: number } | null>(null);
   const coarseRef = useRef(false);
+  const mutedRef = useRef(false);
+  const acRef = useRef<AudioContext | null>(null);
+  const chompHiRef = useRef(false);
 
   statusRef.current = status;
   hudRef.current = hud;
   coarseRef.current = coarse;
+  mutedRef.current = muted;
+
+  // ---- sound: tiny Web-Audio synth, no assets --------------------------
+  const primeAudio = useCallback(() => {
+    if (mutedRef.current) return;
+    try {
+      type ACtor = typeof AudioContext;
+      const Ctor: ACtor | undefined =
+        window.AudioContext ?? (window as unknown as { webkitAudioContext?: ACtor }).webkitAudioContext;
+      if (!Ctor) return;
+      if (!acRef.current) acRef.current = new Ctor();
+      if (acRef.current.state === 'suspended') void acRef.current.resume();
+    } catch { /* ignore */ }
+  }, []);
+
+  const tone = useCallback((
+    freq: number, durMs: number,
+    opts?: { type?: OscillatorType; gain?: number; to?: number; delay?: number },
+  ) => {
+    const ac = acRef.current;
+    if (!ac || mutedRef.current) return;
+    const t0 = ac.currentTime + (opts?.delay ?? 0);
+    const dur = durMs / 1000;
+    const osc = ac.createOscillator();
+    const g = ac.createGain();
+    osc.type = opts?.type ?? 'square';
+    osc.frequency.setValueAtTime(freq, t0);
+    if (opts?.to) osc.frequency.exponentialRampToValueAtTime(Math.max(1, opts.to), t0 + dur);
+    const peak = opts?.gain ?? 0.04;
+    g.gain.setValueAtTime(peak, t0);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(t0); osc.stop(t0 + dur + 0.02);
+  }, []);
+
+  const playSfx = useCallback((name: SfxName) => {
+    if (mutedRef.current || !acRef.current) return;
+    switch (name) {
+      case 'chomp':
+        chompHiRef.current = !chompHiRef.current;
+        tone(chompHiRef.current ? 520 : 380, 45, { type: 'sine', gain: 0.022 });
+        break;
+      case 'pellet':
+        tone(150, 260, { type: 'sawtooth', gain: 0.05, to: 66 });
+        break;
+      case 'ghost':
+        tone(260, 90, { type: 'square', gain: 0.05, to: 620 });
+        tone(660, 130, { type: 'square', gain: 0.045, to: 1180, delay: 0.09 });
+        break;
+      case 'death':
+        tone(560, 260, { type: 'sawtooth', gain: 0.06, to: 180 });
+        tone(300, 380, { type: 'sawtooth', gain: 0.05, to: 55, delay: 0.24 });
+        break;
+      case 'level':
+        tone(440, 90, { type: 'square', gain: 0.04 });
+        tone(660, 130, { type: 'square', gain: 0.04, delay: 0.1 });
+        break;
+    }
+  }, [tone]);
+
+  const toggleMute = useCallback(() => {
+    setMuted(m => {
+      const next = !m;
+      try { window.localStorage.setItem(MUTED_KEY, next ? '1' : '0'); } catch { /* ignore */ }
+      if (!next) primeAudio();
+      return next;
+    });
+  }, [primeAudio]);
 
   const syncHud = useCallback(() => {
     const g = gRef.current;
@@ -523,6 +619,7 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
   }, []);
 
   const setDir = useCallback((d: Dir) => {
+    primeAudio(); // first steer doubles as the audio unlock gesture
     const st = statusRef.current;
     if (st === 'paused') return;
     if (st === 'gameover') {
@@ -535,7 +632,7 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
     gRef.current.nextDir = d;
     if (st === 'idle') setStatus('playing'); // first input starts the round
     if (!reducedRef.current) buzz(5);
-  }, [resetGame]);
+  }, [resetGame, primeAudio]);
 
   const togglePause = useCallback(() => {
     const s = statusRef.current;
@@ -549,15 +646,12 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
     const g = gRef.current;
     const now = performance.now();
 
-    // death pause / level banner: freeze the sim but keep interpolation calm
-    if (now < g.freezeUntilWall || now < g.bannerUntilWall) {
-      g.lastStepWall = now;
-      return;
-    }
+    // death pause / level banner: freeze the whole sim
+    if (now < g.freezeUntilWall || now < g.bannerUntilWall) return;
 
     g.frame++;
     g.clock += g.tickMs;
-    g.lastStepWall = now;
+    if (g.popups.length) g.popups = g.popups.filter(p => p.untilWall > now);
 
     // ---- Pac-Man ----
     g.pac.px = g.pac.x; g.pac.py = g.pac.y;
@@ -569,14 +663,17 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
       moved = tryMove(g.pac.x, g.pac.y, g.pac.dir);
     }
     if (moved) { g.pac.x = moved[0]; g.pac.y = moved[1]; }
+    g.pac.moveStartWall = now;
+    g.pac.moveDurMs = g.tickMs;
 
     const key = `${g.pac.x},${g.pac.y}`;
-    if (g.dots.delete(key)) g.score += 10;
+    if (g.dots.delete(key)) { g.score += 10; playSfx('chomp'); }
     if (g.power.delete(key)) {
       g.score += 50;
       g.frightenedUntil = g.clock + FRIGHT_MS;
       g.frightCombo = 0;
-      for (const gh of g.ghosts) if (!gh.eaten && !gh.housed) gh.dir = OPPOSITE[gh.dir];
+      for (const gh of g.ghosts) if (!gh.housed) gh.dir = OPPOSITE[gh.dir];
+      playSfx('pellet');
     }
 
     const frightened = g.frightenedUntil > g.clock;
@@ -585,37 +682,21 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
 
     // ---- Ghosts ----
     for (const gh of g.ghosts) {
-      gh.px = gh.x; gh.py = gh.y;
-
-      // eyes returning home — race to the gate, then drop through it
-      if (gh.eaten) {
-        for (let s = 0; s < 2; s++) {
-          if (gh.x === HOUSE_EXIT[0] && gh.y === HOUSE_EXIT[1]) {
-            gh.x = HOUSE_INSIDE[0]; gh.y = HOUSE_INSIDE[1];
-            gh.eaten = false; gh.housed = true; gh.dir = 'up';
-            gh.releaseAt = g.clock + 1200;
-            break;
-          }
-          const d = pickGhostDir(gh, HOUSE_EXIT, false);
-          const nxt = tryMove(gh.x, gh.y, d);
-          if (!nxt) break;
-          gh.x = nxt[0]; gh.y = nxt[1]; gh.dir = d;
-        }
-        continue;
-      }
-
-      // in the house, waiting
+      // in the house, waiting — leave the in-progress interpolation untouched
       if (gh.housed && g.clock < gh.releaseAt) continue;
       if (gh.housed && g.clock >= gh.releaseAt) {
         gh.housed = false;
         gh.x = HOUSE_EXIT[0]; gh.y = HOUSE_EXIT[1]; gh.px = gh.x; gh.py = gh.y;
         gh.dir = 'left';
+        gh.moveStartWall = now; gh.moveDurMs = g.tickMs;
         continue;
       }
 
-      // frightened ghosts move at half speed
+      // frightened ghosts advance every other tick — skip WITHOUT resetting
+      // px/py so the previous move keeps gliding across two ticks (no stutter)
       if (frightened && g.frame % 2 === 0) continue;
 
+      gh.px = gh.x; gh.py = gh.y;
       let target: [number, number];
       if (frightened) target = [Math.floor(Math.random() * COLS), Math.floor(Math.random() * ROWS)];
       else if (mode === 'scatter') target = gh.scatterTarget;
@@ -624,20 +705,35 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
       const d = pickGhostDir(gh, target, frightened);
       const nxt = tryMove(gh.x, gh.y, d);
       if (nxt) { gh.x = nxt[0]; gh.y = nxt[1]; gh.dir = d; }
+      gh.moveStartWall = now;
+      gh.moveDurMs = frightened ? g.tickMs * 2 : g.tickMs;
     }
 
-    // ---- Collisions ----
+    // ---- Collisions (tile match OR a same-tick swap past each other) ----
     for (const gh of g.ghosts) {
-      if (gh.x !== g.pac.x || gh.y !== g.pac.y || gh.housed) continue;
-      if (gh.eaten) continue;
+      if (gh.housed) continue;
+      const samePos = gh.x === g.pac.x && gh.y === g.pac.y;
+      const swapped =
+        gh.px === g.pac.x && gh.py === g.pac.y &&
+        gh.x === g.pac.px && gh.y === g.pac.py;
+      if (!samePos && !swapped) continue;
+
       if (frightened) {
-        gh.eaten = true;
         const gain = 200 * Math.pow(2, Math.min(g.frightCombo, 3));
         g.score += gain;
         g.frightCombo++;
+        g.popups.push({ x: g.pac.x, y: g.pac.y, text: String(gain), untilWall: now + 900 });
+        // straight back into the house — no eyes phase
+        gh.housed = true;
+        gh.x = HOUSE_INSIDE[0]; gh.y = HOUSE_INSIDE[1]; gh.px = gh.x; gh.py = gh.y;
+        gh.dir = 'up';
+        gh.moveStartWall = now; gh.moveDurMs = 0;
+        gh.releaseAt = g.clock + 1200;
+        playSfx('ghost');
         buzz(18);
       } else {
         g.lives--;
+        playSfx('death');
         buzz([30, 40, 30]);
         if (g.lives <= 0) { endGame(); return; }
         g.pac = mkPac();
@@ -665,7 +761,7 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
     }
 
     syncHud();
-  }, [endGame, syncHud]);
+  }, [endGame, syncHud, playSfx]);
 
   // ---- sim driver: self-scheduling timeout, reads live tickMs -------------
   useEffect(() => {
@@ -749,11 +845,12 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
     return () => mq.removeEventListener('change', apply);
   }, []);
 
-  // ---- high score bootstrap ---------------------------------------
+  // ---- high score + mute preference bootstrap --------------------
   useEffect(() => {
     const hi = loadHi();
     hiRef.current = hi;
     setHighScore(hi);
+    try { setMuted(window.localStorage.getItem(MUTED_KEY) === '1'); } catch { /* ignore */ }
   }, []);
 
   // ---- auto-pause: scroll off-screen + tab hidden ----------------
@@ -912,9 +1009,20 @@ export default function PacmanGame({ cellSize = 16 }: PacmanGameProps) {
         </div>
       )}
 
-      <p className="text-center font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-        {coarse ? 'Swipe or use the pad · ● to pause' : 'Arrows · WASD to move · click away to pause'}
-      </p>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={toggleMute}
+          aria-label={muted ? 'Unmute game sounds' : 'Mute game sounds'}
+          aria-pressed={!muted}
+          className="flex h-7 w-7 items-center justify-center rounded border border-border text-muted-foreground transition-colors hover:border-primary/60 hover:text-primary"
+        >
+          {muted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+        </button>
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          {coarse ? 'Swipe or use the pad · ● to pause' : 'Arrows · WASD · click away to pause'}
+        </p>
+      </div>
     </div>
   );
 }
