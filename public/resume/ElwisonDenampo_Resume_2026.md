@@ -7,9 +7,9 @@ elwisondenampo@gmail.com | +63 945 623 2885 | Cebu, Philippines | [Portfolio](ht
 ## SKILLS
 
 - **Backend**: TypeScript, Node.js, NestJS, Express, Prisma, Python, FastAPI, SQLAlchemy, PostgreSQL, Redis, REST APIs, JWT Auth, Socket.IO
-- **Frontend**: Next.js, React, Astro, Vite, Tailwind CSS, shadcn/ui, React Query, React Hook Form, Zod, Zustand, Framer Motion, Recharts
-- **AWS & DevOps**: AWS CDK, Lambda, API Gateway, DynamoDB, EventBridge, SSM Parameter Store, S3, Amplify, Docker, Turborepo, pnpm, Git, CI/CD, Vercel, Render
-- **Integrations**: Stripe, DocuSign, SendGrid, Supabase, Sentry, Make.com, YouTube Data API, Spotify Web API
+- **Frontend**: Next.js, React, Astro, Vite, Tailwind CSS, shadcn/ui, React Query, React Hook Form, Zod, Zustand, Framer Motion, Recharts, Technical SEO, JSON-LD
+- **AWS & DevOps**: AWS CDK, Lambda, API Gateway, DynamoDB, EventBridge, S3, Amplify, Cloudflare Workers, Docker, Turborepo, pnpm, Git, CI/CD, Vercel, Render
+- **Integrations**: Stripe, DocuSign, SendGrid, Supabase, Sentry, Make.com, YouTube Data API, Spotify Web API, beehiiv API, Google Search Console
 - **AI/ML**: OpenAI API, Groq API, LLM Routing, Prompt Engineering
 - **Other**: C#, ASP.NET Core, Entity Framework Core, SQL Server, Hangfire
 
@@ -19,18 +19,22 @@ elwisondenampo@gmail.com | +63 945 623 2885 | Cebu, Philippines | [Portfolio](ht
 
 ### FREELANCE FULL-STACK DEVELOPER &nbsp;&nbsp;|&nbsp;&nbsp; Dr. Rena Malik, MD &nbsp;&nbsp;|&nbsp;&nbsp; Apr 2026 – Present
 
-Web development for the world's most-followed urologist (2.9M YouTube subscribers, 600M+ views) — a podcast site rebuild on AWS serverless, a custom Stripe checkout, and a WordPress pre-order funnel for her debut book.
+Web development for the world's most-followed urologist (2.9M YouTube subscribers, 600M+ views) — a podcast site rebuild on AWS serverless, the commerce stack for her debut book launch, and ongoing site reliability and technical SEO.
 
-**Rena Malik MD Podcast** — *Astro 6, TypeScript, AWS CDK, Lambda (Node 22), DynamoDB, API Gateway, EventBridge, Amplify, SSM* — https://podcast-new.renamalikmd.com
+**Rena Malik MD Podcast** — *Astro, TypeScript, AWS CDK, Lambda, DynamoDB, EventBridge, Amplify* — https://podcast-new.renamalikmd.com
 
-- Built and shipped a **326-episode auto-updating static podcast site** with CDK-managed AWS infrastructure (Lambda, DynamoDB GSI for chronological queries, API Gateway HTTP API, EventBridge cron) — the entire backend reproducible from a single `cdk:deploy`
-- Engineered an **auto-rebuild pipeline** — a daily cron Lambda upserts the Megaphone RSS feed into DynamoDB and POSTs to an Amplify build hook via an SSM-stored secret — taking new episodes from **publish-to-live in under 24 hours with 0 manual deploys**
-- Designed a **5-tier thumbnail resolution chain** across the YouTube Data API v3, Spotify Web API, and RSS sources with bounded-concurrency parallel fetches, raising unique-artwork coverage from **86% to ~92%** while staying inside API rate limits
+- Built a **326-episode auto-updating static podcast site** on CDK-managed AWS serverless — a daily cron Lambda syncs the RSS feed into DynamoDB and triggers an Amplify rebuild, taking episodes **publish-to-live in under 24 hours with 0 manual deploys**
+- Designed a **5-tier thumbnail resolution chain** across YouTube, Spotify and RSS sources with bounded-concurrency fetches, raising unique-artwork coverage from **86% to ~92%**
 
-**The Hard Truth — Pre-Order Funnel** — *WordPress, vanilla JS, Stripe.js, Stripe Payment Element + Payment Intents, Make.com* — https://renamalikmd.com/hardtruth/
+**Book Launch Commerce** — *Stripe Payment Element, Cloudflare Workers, TypeScript, WordPress, Make.com* — https://renamalikmd.com/hardtruth/
 
-- Built a **custom Stripe Payment Element checkout** (Apple Pay / Google Pay) replacing Stripe-hosted Payment Links — a 4-tier bulk pre-order flow (**$397–$9,947**) with a `payment_intent.succeeded` webhook contract to Make.com
-- Engineered a **hybrid metadata-storage strategy** for multi-address bulk orders (up to 300 ship-to addresses), working around Stripe's 500-char metadata limit via base64-CSV metadata for small orders and a Make.com Data Store keyed by Payment Intent ID for large ones
+- Built a **custom Stripe Payment Element checkout** (Apple Pay / Google Pay) for a 4-tier bulk pre-order flow (**$397–$9,947**, up to 300 ship-to addresses), working around Stripe's 500-char metadata limit with a hybrid metadata / Make.com Data Store strategy
+- Shipped a **~1,100-LOC Cloudflare Worker** running the book's affiliate program across three pipelines — **HMAC-signed webhooks with timing-safe verification**, Stripe signature validation, and dedupe keys so a referral can't be scored twice
+
+**Site Reliability & Technical SEO** — *Python, SQLite, Google Search Console*
+
+- Built a **monitoring system running 32 checks across 7 subsystems in ~15s** (pages, redirects, two Stripe checkouts, the AWS pipeline, the Worker) with SQLite history and an HTML dashboard that surfaces only on failure — backed by **48 negative tests** that caught a check passing a nonexistent stylesheet
+- **Technical SEO**: cut internal redirects **733 → 152**, reduced sitewide HTML weight **−89%**, and shipped **26 numbered fixes** including a FAQ metabox driving both visible Q&A and JSON-LD schema from one field
 
 ### FULL-STACK DEVELOPER (CONTRACT) &nbsp;&nbsp;|&nbsp;&nbsp; Flat Rate Bookkeeping &nbsp;&nbsp;|&nbsp;&nbsp; June 2026 – August 2026
 
@@ -75,7 +79,6 @@ AI-powered mood-based playlist recommender using a custom Curated Intersect Algo
 
 - Engineered a 5-tier weighted scoring pipeline processing 2,000+ candidate tracks with `asyncio.gather` concurrency, **reducing recommendation latency by 44%**
 - Built real-time multiplayer Spotify Blend rooms with 5-letter shortcode matchmaking and group consensus scoring, **cutting collaborative generation time by 67%**
-- Deployed a serverless FastAPI backend on Vercel with stateless OAuth 2.0, automated Alembic migrations on cold boot, and an async background data-retention scheduler
 
 ### SchemaFlow — Interactive Schema Visualizer &nbsp;&nbsp;|&nbsp;&nbsp; https://schemaflow-pi.vercel.app
 
@@ -84,7 +87,6 @@ AI-powered mood-based playlist recommender using a custom Curated Intersect Algo
 Interactive schema visualization tool that parses SQL DDL and JSON payloads into live ERD diagrams with field-level edge connections, auto-layout, and relationship labels.
 
 - Engineered a real-time SQL DDL and JSON schema parser processing 50-table schemas in **< 2ms (~25K tables/sec)** using regex-based parsing and recursive descent
-- Architected a zero-latency React Flow transformation pipeline achieving **185K transforms/sec** with Dagre auto-layout, field-level edge routing, and Zod runtime validation
 - Built a multi-format export engine generating Mermaid ERD, Markdown docs, TypeScript interfaces, and mock REST API specs at **~40K exports/sec**, enabling one-click schema documentation
 
 ---
@@ -105,5 +107,3 @@ Interactive schema visualization tool that parses SQL DDL and JSON payloads into
 
 **Bachelor of Science in Computer Engineering** &nbsp;&nbsp;|&nbsp;&nbsp; August 2022 – May 2026
 Cebu Institute of Technology - University *(Cum Laude — Consistent Dean's Lister & Full Scholar)*
-
-**Science, Technology, Engineering, and Mathematics Strand (Secondary)** &nbsp;&nbsp;|&nbsp;&nbsp; June 2016 – July 2022
