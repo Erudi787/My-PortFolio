@@ -17,11 +17,11 @@ elwisondenampo@gmail.com | +63 945 623 2885 | Cebu, Philippines | [Portfolio](ht
 
 ## WORK EXPERIENCE
 
-### FREELANCE FULL-STACK DEVELOPER &nbsp;&nbsp;|&nbsp;&nbsp; Dr. Rena Malik, MD &nbsp;&nbsp;|&nbsp;&nbsp; Apr 2026 – Present
+### FULL-STACK DEVELOPER &nbsp;&nbsp;|&nbsp;&nbsp; Dr. Rena Malik, MD &nbsp;&nbsp;|&nbsp;&nbsp; April 2026 – Present
 
 Web development for the world's most-followed urologist (2.9M YouTube subscribers, 600M+ views) — a podcast site rebuild on AWS serverless, the commerce stack for her debut book launch, and ongoing site reliability and technical SEO.
 
-**Rena Malik MD Podcast** — *Astro, TypeScript, AWS CDK, Lambda, DynamoDB, EventBridge, Amplify* — https://podcast-new.renamalikmd.com
+**Rena Malik, MD Podcast** — *Astro, TypeScript, AWS CDK, Lambda, DynamoDB, EventBridge, Amplify* — https://podcast-new.renamalikmd.com/
 
 - Built a **326-episode auto-updating static podcast site** on CDK-managed AWS serverless — a daily cron Lambda syncs the RSS feed into DynamoDB and triggers an Amplify rebuild, taking episodes **publish-to-live in under 24 hours with 0 manual deploys**
 - Designed a **5-tier thumbnail resolution chain** across YouTube, Spotify and RSS sources with bounded-concurrency fetches, raising unique-artwork coverage from **86% to ~92%**
@@ -36,36 +36,32 @@ Web development for the world's most-followed urologist (2.9M YouTube subscriber
 - Built a **monitoring system running 32 checks across 7 subsystems in ~15s** (pages, redirects, two Stripe checkouts, the AWS pipeline, the Worker) with SQLite history and an HTML dashboard that surfaces only on failure — backed by **48 negative tests** that caught a check passing a nonexistent stylesheet
 - **Technical SEO**: cut internal redirects **733 → 152**, reduced sitewide HTML weight **−89%**, and shipped **26 numbered fixes** including a FAQ metabox driving both visible Q&A and JSON-LD schema from one field
 
-### FULL-STACK DEVELOPER (CONTRACT) &nbsp;&nbsp;|&nbsp;&nbsp; Flat Rate Bookkeeping &nbsp;&nbsp;|&nbsp;&nbsp; June 2026 – August 2026
-
-Development, bug-fixing and maintenance on a live Supabase/Postgres + TanStack Start accounting SaaS, working an internal bug-bounty queue of client-reported issues end to end after the founder declared the feature set complete.
+### SOFTWARE DEVELOPER &nbsp;&nbsp;|&nbsp;&nbsp; Flatrate Bookkeeping LLC &nbsp;&nbsp;|&nbsp;&nbsp; June 2026 – August 2026
 
 *TypeScript, TanStack Start, TanStack Router, PostgreSQL, Supabase, Row-Level Security, Postgres Triggers, Plaid*
 
+Development, bug-fixing and maintenance on a live Supabase/Postgres + TanStack Start accounting SaaS, working an internal bug-bounty queue of client-reported issues end to end after the founder declared the feature set complete.
+
 - Root-caused two compounding Postgres performance bugs (a self-referencing CTE re-inlined per outer row, plus a non-sargable `UUID::text` join) in a trigger firing on every bank/credit-card account mapping — diagnosed live against production with `pg_stat_activity` and `EXPLAIN ANALYZE`, cutting a reproducible **8–9s timeout to ~1s**
-- Designed and shipped **Group Chat**, a limited-access contact tier letting third parties (e.g. a client's business partner) join in-app message threads while staying fail-closed from SMS/email/call history — threaded the new access level through all 3 invite-creation code paths, gated ~4 messaging endpoints behind a dedicated auth-middleware variant, and built the matching client-portal and staff-side invite UI
-- Wrote and shipped **18 Postgres row-level-security policies** closing a residual access-control gap the new limited-contact tier opened up across a **7-role RBAC system** (staff/client/admin/auditor/payroll/tax-contractor/customer-success)
+- Designed and shipped Group Chat, a limited-access contact tier letting third parties (e.g. a client's business partner) join in-app message threads while staying fail-closed from SMS/email/call history — threaded the new access level through all 3 invite-creation code paths, gated ~4 messaging endpoints behind a dedicated auth-middleware variant, and built the matching client-portal and staff-side invite UI
+- Wrote and shipped 18 Postgres row-level-security policies closing an access-control gap in a **7-role RBAC system** (staff/client/admin/auditor/payroll/tax-contractor/customer-success)
 - Established migration hygiene for the codebase — every schema/RPC change shipped with a hand-written revert script, gated by custom verification scripts (`tsc`, server-fn auth-middleware coverage, destructive-migration scanner) run before every production push
 
-### JUNIOR SOFTWARE ENGINEER &nbsp;&nbsp;|&nbsp;&nbsp; FutureThink Hub & La Chow &nbsp;&nbsp;|&nbsp;&nbsp; July 2025 – March 2026
+### SOFTWARE ENGINEER &nbsp;&nbsp;|&nbsp;&nbsp; FutureThink Hub & La Chow &nbsp;&nbsp;|&nbsp;&nbsp; July 2025 – May 2026
 
 Shipped three production platforms — an AI-powered adaptive learning platform (FutureThink Edge), a unified property management SaaS (LaChowOS), and La Chow's public marketing site with a custom admin CMS — across full-stack development, database design, third-party integrations, and DevOps.
 
-**FutureThink Edge** — *Next.js 15, FastAPI, PostgreSQL, Redis, OpenAI API* — https://www.futurethinkedge.org
+**FutureThink Edge** — *Next.js, TypeScript, FastAPI, PostgreSQL, Redis, OpenAI API* — https://www.futurethinkedge.org
 
 - Engineered a full-stack adaptive learning platform serving 6 user roles with **86 REST API endpoints** achieving P95 latency of 29ms under load — **85% below the 200ms SLA target**
 - Architected a config-driven **multi-LLM routing layer** across 4 AI providers (Gemini, DeepSeek, Grok, Claude), **reducing per-query cost ~60%** via subject-specific model selection and a <5ms pre-LLM curriculum enforcement classifier
 - Scaled the backend to sustain **492 req/s under 500 concurrent users** (k6, 590K+ iterations) and built **1,870+ automated tests** (pytest, Vitest, Playwright E2E) eliminating 100% of type errors to reach Six Sigma 5.9 quality
 
-**LaChowOS** — *Next.js 16, NestJS 11, Prisma, PostgreSQL, Stripe, Turborepo, AWS S3, Redis*
+**LaChowOS** — *Next.js 16, NestJS 11, Prisma, PostgreSQL, Stripe, Turborepo, AWS S3, Redis* — https://portal.thelachow.com/
 
 - Architected a **Turborepo monorepo** (pnpm workspaces) shipping a NestJS 11 API with **52 feature modules**, a Next.js 16 / React 19 frontend with **62 admin + 34 tenant-portal pages**, and a shared Prisma package with **84 models** generating type-safe clients across both apps
 - Designed a PostgreSQL schema with **`tsrange` exclusion constraints + GiST indexes** preventing double-booking of shared kitchen spaces at the database level, eliminating application-layer race conditions
 - Integrated **9+ third-party services**: Stripe (rent + webhooks), DocuSign (eSignature lease workflows), SendGrid, AWS S3 (presigned-URL uploads + PDF parsing), QuickBooks, Supabase, Redis caching, Sentry, and DoorLoop (idempotent legacy import via `externalId` deduplication)
-
-**La Chow Public Site & Admin CMS** — *Next.js 16, React 19, Tailwind, Stripe, Supabase, Google Analytics Data API*
-
-- Built a **17-page Next.js marketing site** with full SEO (`sitemap.ts`, `robots.ts`), markdown-driven blog/magazine via remark, and Stripe checkout for online ordering and tour booking, paired with a custom admin CMS with bcrypt auth and a live **Google Analytics Data API** dashboard
 
 ---
 
@@ -75,7 +71,7 @@ Shipped three production platforms — an AI-powered adaptive learning platform 
 
 *React, TypeScript, Vite, FastAPI, PostgreSQL, Spotify API, Vercel*
 
-AI-powered mood-based playlist recommender using a custom Curated Intersect Algorithm that scrapes and scores 2,000+ tracks from curated Spotify playlists against listening history and ML feedback.
+AI-powered mood-based playlist recommender using a custom Curated Intersect Algorithm that scrapes and scores 2,000+ tracks from curated Spotify playlists against listening history and ML feedback, achieving 44% faster recommendations than deprecated endpoints.
 
 - Engineered a 5-tier weighted scoring pipeline processing 2,000+ candidate tracks with `asyncio.gather` concurrency, **reducing recommendation latency by 44%**
 - Built real-time multiplayer Spotify Blend rooms with 5-letter shortcode matchmaking and group consensus scoring, **cutting collaborative generation time by 67%**
@@ -94,6 +90,7 @@ Interactive schema visualization tool that parses SQL DDL and JSON payloads into
 ## CERTIFICATIONS
 
 **SEO Certification — HubSpot Academy** &nbsp;&nbsp;|&nbsp;&nbsp; Valid: Dec 2025 – Jan 2027
+Demonstrated knowledge in SEO fundamentals, keyword research, ranking factors, and optimization strategies.
 
 ---
 
@@ -105,5 +102,8 @@ Interactive schema visualization tool that parses SQL DDL and JSON payloads into
 
 ## EDUCATION
 
-**Bachelor of Science in Computer Engineering** &nbsp;&nbsp;|&nbsp;&nbsp; August 2022 – May 2026
-Cebu Institute of Technology - University *(Cum Laude — Consistent Dean's Lister & Full Scholar)*
+**Bachelor of Science in Computer Engineering (Tertiary)** &nbsp;&nbsp;|&nbsp;&nbsp; August 2022 – May 2026
+Cebu Institute of Technology - University *(Cum Laude)*
+
+**Science, Technology, Engineering, and Mathematics Strand (Secondary)** &nbsp;&nbsp;|&nbsp;&nbsp; June 2016 – July 2022
+University of Cebu - Pri *(High Honors)*
