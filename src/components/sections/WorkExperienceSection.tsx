@@ -25,8 +25,12 @@ const experiences: Experience[] = [
       'Designed a 5-tier per-episode thumbnail resolution chain (YouTube Data API v3 → Spotify Web API → RSS itunes:image → Spotify embed-page scrape → show cover) — raised cover coverage from ~86% to ~92% of 326 episodes by combining platform-specific APIs with a parallel-fetched fallback scrape.',
       'Built a custom Stripe Payment Element checkout replacing Stripe-hosted Payment Links — 4-tier BUPP system ($397–$9,947) with Apple Pay / Google Pay, multi-step shipping intents (individual / single / donate-some / donate-all), and a hybrid Make.com Data Store fallback for the 500-char Stripe metadata cap on Diamond-tier 300-copy orders.',
       'Delivered a WordPress + Elementor + WPCode snippet suite for the book pre-order funnel — $608+ bonus stack, vanilla-JS infinite-loop carousel for 13 endorsers with credential-verified billing (caught DO-vs-MD on multiple endorsers), and a redesigned Podcast Appearances page.',
+      'Shipped a ~1,100-LOC Cloudflare Worker running the affiliate referral program across three pipelines — HMAC-signed webhooks verified with timing-safe comparison, Stripe signature validation, receipt details read server-side from the beehiiv API rather than trusted from the browser, and dedupe keys so a referral cannot be scored twice.',
+      'Built a stdlib-only Python monitoring system covering 7 subsystems (WordPress pages, redirects, two Stripe checkouts, the AWS podcast pipeline, the Cloudflare Worker, snippet integrity) — 32 checks in ~15s, SQLite run history, a self-contained HTML dashboard with incident timeline and flaky-check detection, and a scheduled task that stays silent when clean and surfaces the dashboard only on failure.',
+      'Wrote 48 negative tests asserting every check can actually fail — which caught a false pass where a missing stylesheet answers 302 to an HTML fallback, so "status 200 and non-empty" passed a completely dead CSS file.',
+      'Technical SEO: cut internal redirects 733 → 152, reduced sitewide HTML weight −89%, and shipped 26 numbered fixes including a WordPress FAQ metabox driving both the visible Q&A and its JSON-LD schema from a single field.',
     ],
-    tags: ['TypeScript', 'Astro', 'AWS CDK', 'AWS Lambda', 'DynamoDB', 'Amplify Hosting', 'Stripe', 'WordPress', 'YouTube API', 'Spotify API', 'Make.com'],
+    tags: ['TypeScript', 'Astro', 'AWS CDK', 'AWS Lambda', 'DynamoDB', 'Amplify Hosting', 'Cloudflare Workers', 'Stripe', 'WordPress', 'Python', 'SQLite', 'YouTube API', 'Spotify API', 'Make.com'],
   },
   {
     id: 4,

@@ -743,4 +743,73 @@ export const projectsData: Project[] = [
     // Source intentionally omitted — client engagement, not publicly viewable.
     liveDemoUrl: "https://renamalikmd.com/hardtruth/",
   },
+  {
+    id: "10",
+    slug: "silent-failure-monitor",
+    year: "2026",
+    pullQuote: "Every check in it exists because that exact thing already broke once, silently, and was only found because somebody happened to look.",
+    title: "Silent-Failure Monitor — Health Checks for a Live Book Launch",
+    shortDescription: "A stdlib-only Python monitoring system watching 7 subsystems across WordPress, Stripe, AWS and Cloudflare for a client estate — 32 checks in ~15s, SQLite run history, a self-contained HTML dashboard, and a scheduled task that stays silent when clean and only speaks up on failure.",
+    tags: ["Python", "SQLite", "Observability", "Testing", "Cloudflare", "AWS"],
+    longDescription: "A maintenance tool built for Dr. Rena Malik's web estate in the weeks before her book launch (HarperCollins, Nov 3 2026). The estate spans a WordPress site behind Cloudflare, two custom Stripe checkouts, an AWS serverless podcast pipeline, a Cloudflare Worker running an affiliate program, and a set of hand-pasted JS snippets. The problem was not that things broke — it was that they broke *silently*: the podcast pipeline stopped publishing for 4 days, a post-payment thank-you page 404'd for 6 days, a bonus form was blocked for a paying customer for 12 days, 42 pages served dead CSS, and a meta description understated the book's bonus offer by $114 for four months. Every one of those was visible from outside and would have been caught in seconds by a check that nobody had written. So the design brief was not 'build a dashboard' but 'encode what has actually failed here'. The whole thing is Python standard library — no pip install, no credentials, no AWS or Cloudflare keys — because every check reads either a public URL or a local file. The most interesting work was not the checks but the tests that prove the checks can fail, and the three separate bugs they caught in the monitor itself.",
+    myRole: "Sole engineer — design, implementation, testing, deployment",
+    myRoles: [
+      "Reliability Engineer — chose what to watch by auditing the engagement's actual incident history rather than monitoring what was easy to monitor",
+      "Backend — stdlib-only Python, concurrent reachability sweep, SQLite history schema, no third-party dependencies by design",
+      "Frontend — self-contained HTML dashboard with hand-rolled inline-SVG sparklines, light/dark theming, zero network requests so it works offline",
+      "Test Engineer — 48 negative tests asserting each check fails on broken input; these caught three real bugs in the monitor that a green production run did not",
+      "DevOps — Windows Task Scheduler registration/removal scripts, written as a matched pair so the change is reversible in one command",
+    ],
+    techStack: [
+      "Python 3 (standard library only)", "sqlite3", "urllib", "concurrent.futures",
+      "SQLite", "HTML5", "CSS custom properties", "Inline SVG",
+      "PowerShell", "Windows Task Scheduler", "Batch",
+      "Cloudflare", "AWS API Gateway", "Stripe", "WordPress",
+    ],
+    backendFeatures: [
+      "Seven check groups — page reachability, retired-page redirects, the pre-order page's invariants, Stripe live-mode verification, the AWS podcast pipeline, the Cloudflare Worker's routes, and local snippet integrity.",
+      "SQLite run history with a normalised runs/results schema, powering incident spans, flaky-check detection and latency trends.",
+      "Incident detection that merges consecutive failures into one span and splits them when a passing run interrupts — so the dashboard answers 'when did this start and is it still going', not just 'is it red now'.",
+      "Flaky-check detection — a check that both passed and failed inside the recent window is reported separately, because a flapping dependency reads very differently from a check that has only just started failing.",
+      "Stripe live-mode verification that matches the `TEST_MODE` declaration rather than searching for key substrings — both the test and live publishable keys are always present in the page source because a ternary picks between them, so a substring search always matches and proves nothing.",
+      "Podcast pipeline checks that cross-reference the Megaphone RSS feed against the API, and read each episode's `wp_post_status` to catch anything errored or stuck mid-transcription past 24 hours.",
+      "Cloudflare Worker verification that treats `405 Method Not Allowed` as the healthy signal — the routes are POST-only, so 405 proves the Worker is deployed and the route registered, while 404 means the route is gone.",
+      "Exit codes (0 clean / 1 failed / 2 bad arguments) and a `--json` mode, so the same script drives both a human report and a scheduled job without changes.",
+    ],
+    frontendFeatures: [
+      "Self-contained HTML dashboard — no CDN, no fonts, no scripts fetched at runtime, so it renders correctly offline and still works if opened a month later.",
+      "Hand-rolled inline-SVG sparklines for response-time trends; no charting library.",
+      "Failures and warnings render above the fold so a bad run needs no scrolling, with the full passing report below.",
+      "Light/dark theming via CSS custom properties driven by `prefers-color-scheme`, with an explicit `data-theme` override.",
+      "Every value HTML-escaped — check detail is scraped from live page content, so a filename containing a tag must render as text rather than execute.",
+      "A one-click `.cmd` launcher that runs the checks, records the run, rebuilds the dashboard and opens it; silent on success, holds the window open on failure.",
+    ],
+    challengesAndSolutions: [
+      {
+        challenge: "The dead-stylesheet check — the single most important one, written for an incident where 42 pages served purged CSS — passed a stylesheet that did not exist. A green production run looked identical to a correct one, because every live stylesheet genuinely was fine.",
+        solution: "A missing Autoptimize file does not 404 here: it answers 302 to `autoptimize_single_fallback.css`, which serves 212KB of `text/html`. So 'status 200 and body not empty' passes a completely dead stylesheet. Fixed by refusing to follow redirects (a 302 is already the symptom) and requiring `Content-Type: text/css`. Only the negative test caught this — it is the reason that test file exists."
+      },
+      {
+        challenge: "The RSS ingestion check failed against a perfectly healthy pipeline, on the client's first real use of the tool.",
+        solution: "Ingestion is a batch job on a once-daily 14:00 UTC cron, and episodes publish at 13:00 UTC — so 'in the feed but not yet in the API' is the normal state for up to a day, and the check had no allowance for it. Added a 30-hour grace period derived from the cron interval plus slack. Pinned both halves in tests: a just-published episode must not fail, and one missing for four days must still fail — fixing only the first half would have silently disabled the check."
+      },
+      {
+        challenge: "Response-time trending produced unusable noise — the same page measured 16,634ms in one run and 466ms in the next, while sequential curl to it held steady at ~170ms.",
+        solution: "Latency was being read from the concurrent reachability sweep, where eight simultaneous requests each open their own TLS handshake and Cloudflare queues the burst. The slow page changed every run, which is contention at the client, not a slow server. Split the two concerns: reachability stays concurrent, while three key pages are timed sequentially as the faster of two samples (the first request of a run also pays DNS and the handshake — 2,296ms against 511ms and 521ms after it). The invalid samples were cleared from the history and the pass/fail record kept."
+      },
+      {
+        challenge: "A scheduled task pointed at `python` on PATH would have failed quietly — which is exactly the class of failure the tool exists to catch.",
+        solution: "On the target machine `python.exe` on PATH is a zero-byte Windows app-execution alias: fine in an interactive shell, unreliable from Task Scheduler. The installer asks Python for its own `sys.executable`, refuses to continue if that resolves to a zero-byte file, and uses the `pythonw.exe` beside the real interpreter so no console window appears. Related discovery: under Task Scheduler both `sys.stdout` and `sys.stderr` are `None`, so `print()` silently does nothing — which is why the log file is mandatory in scheduled mode rather than optional."
+      },
+      {
+        challenge: "Several of the most valuable things to verify cannot be fetched by a script at all, and naive checks on them would have cried wolf on every run.",
+        solution: "The newsletter form URL answers 403 to a script and 200 to a browser; six of the ten retailer purchase links go through TinyURL, which starts returning 403/429 after the first request. Rather than disabling those checks or accepting daily false alarms, they assert *presence and shape* on the page — the embed ID, the fallback link, ten retailer anchors each with a destination. A report that cries wolf is a report nobody reads, which would have cost more than the checks were worth."
+      },
+      {
+        challenge: "A scheduled monitor that announces itself every morning gets ignored within a week — and then it is worth nothing on the morning it actually matters.",
+        solution: "Silent-when-clean by design: the daily run records the result, appends one line to a log and exits without a window. Only a failure opens the dashboard. The open/no-open decision and the log-line format were extracted into pure functions specifically so both could be unit-tested, since neither is exercised by a clean manual run."
+      },
+    ],
+    // Source intentionally omitted — lives inside a private client engagement repo.
+  },
 ];
